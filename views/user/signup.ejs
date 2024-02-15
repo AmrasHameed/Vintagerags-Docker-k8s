@@ -1,0 +1,29 @@
+<%- include ("header.ejs") %>
+<div class="signup-container">
+    <h1>User Signup</h1>
+    <br>
+    <form class="signupForm" action="/signup" method="post">
+        <label class="signupUsernameLabel" for="username">Username:</label>
+        <input class="signupUsernameInput" type="text" id="username" name="username" required>
+        <br>
+        <label class="signupEmailLabel" for="email">Email:</label>
+        <input class="signupEmailInput" type="email" id="email" name="email" required>
+        <br>
+        <label class="signupPhoneLabel" for="phone">Phone Number:</label>
+        <input class="signupPhoneInput" type="text" id="phone" name="phone" required>
+        <br>
+        <label class="signupPasswordLabel" for="password">Password:</label>
+        <input class="signupPasswordInput" type="password" id="password" name="password" required>
+        <br>
+        <label class="signupConfirmPasswordLabel" for="confirm-password">Confirm Password:</label>
+        <input class="signupConfirmPasswordInput" type="password" id="confirm-password" name="confirm-password" required>
+        <br>
+        <button class="signupSubmit" type="submit">Signup</button>
+    </form>
+    <br>
+    <p class="signupLoginQuestion">Already have an account? <a href="/login" class="signupLogin">Login</a></p>
+</div>
+
+
+<%- include ("footer.ejs") %>
+

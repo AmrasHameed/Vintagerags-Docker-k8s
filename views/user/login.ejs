@@ -1,0 +1,19 @@
+<%- include ("header.ejs") %>
+<div class="login-container">
+    <h1>User Login</h1>
+    <br>
+    <form class="loginForm" action="/login" method="post">
+        <label class="loginEmailLabel" for="email">Email:</label>
+        <input class="loginEmailInput" type="email" id="email" name="email" required>
+        <br>
+        <label class="loginPasswordLabel" for="password">Password:</label>
+        <input class="loginPasswordInput" type="password" id="password" name="password" required>
+        <br>
+        <button class="loginSubmit" type="submit">Login</button>
+    </form>
+    <br>
+    <p class="loginQuestion">Don't have an account? <a href="/signup" class="loginSignup">Signup</a></p>
+</div>
+
+<%- include ("footer.ejs") %>
+
