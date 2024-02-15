@@ -5,7 +5,7 @@ const userRouter=require('./server/routers/user')
 const mongoose=require('mongoose')
 const nocache=require('nocache')
 const session= require('express-session')
-
+console.log("skdjfkdjsfhdjf");
 app.use(nocache())
 app.use(session({
     secret:'qwertyasdfghj',
