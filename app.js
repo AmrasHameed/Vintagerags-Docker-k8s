@@ -1,10 +1,21 @@
 const express=require('express');
+require('dotenv').config();
+
 const path=require('path')
 const app=express();
 const userRouter=require('./server/routers/user')
 const mongoose=require('mongoose')
 const nocache=require('nocache')
 const session= require('express-session')
+const flash=require('express-flash')
+
+mongoose.connect(process.env.MONGO_URL).then((s)=>{
+    console.log("connected");
+  }).catch((error)=>{
+    console.log(error);
+  })
+
+app.use(flash())
 app.use(nocache())
 app.use(session({
     secret:'qwertyasdfghj',

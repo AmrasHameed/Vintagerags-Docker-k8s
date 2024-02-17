@@ -2,28 +2,40 @@
 <div class="signup-container">
     <h1>User Signup</h1>
     <br>
-    <form class="signupForm" action="/signup" method="post">
+    <form class="signupForm" action="/signup" method="post" onsubmit="return validateEmail() && validatePassword()&&validateNumber()&&validateUsername()">
         <label class="signupUsernameLabel" for="username">Username:</label>
-        <input class="signupUsernameInput" type="text" id="username" name="username" required>
+        <input class="signupUsernameInput" type="text" id="username" name="username" onkeyup="validateUsername()" required>
+        <span id="usernameerror"></span>
         <br>
         <label class="signupEmailLabel" for="email">Email:</label>
-        <input class="signupEmailInput" type="email" id="email" name="email" required>
+        <input class="signupEmailInput" type="email" id="email" name="email" onkeyup="validateEmail()" required>
+        <span id="emailerror"></span>
         <br>
         <label class="signupPhoneLabel" for="phone">Phone Number:</label>
-        <input class="signupPhoneInput" type="text" id="phone" name="phone" required>
+        <input class="signupPhoneInput" type="text" id="phone" name="phone" onkeyup="validateNumber()" required>
+        <span id="numbererror"></span>
         <br>
         <label class="signupPasswordLabel" for="password">Password:</label>
-        <input class="signupPasswordInput" type="password" id="password" name="password" required>
+        <input class="signupPasswordInput" type="password" id="password" name="password" onkeyup="validatePassword()" required>
+        <span id="passwordError"></span>
+
         <br>
         <label class="signupConfirmPasswordLabel" for="confirm-password">Confirm Password:</label>
-        <input class="signupConfirmPasswordInput" type="password" id="confirm-password" name="confirm-password" required>
+        <input class="signupConfirmPasswordInput" type="password" id="confirm-password" name="confirmPassword" required>
         <br>
         <button class="signupSubmit" type="submit">Signup</button>
+        <% if(expressFlash.passworderror){%>
+            <div style="color: red; font-size: 16px; font-weight: bold;">
+                <%= expressFlash.passworderror%>
+            </div>
+                <%}%>
+            <% if(expressFlash.emailerror){%>
+                <div style="color: red; font-size: 16px; font-weight: bold;">
+                    <%= expressFlash.emailerror%>
+                </div>
+                           <%}%>
     </form>
-    <br>
     <p class="signupLoginQuestion">Already have an account? <a href="/login" class="signupLogin">Login</a></p>
 </div>
-
-
 <%- include ("footer.ejs") %>
 
