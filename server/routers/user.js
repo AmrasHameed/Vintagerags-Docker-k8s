@@ -13,7 +13,8 @@ userRouter.get('/login',userController.login);
 userRouter.post('/login',userController.loginPost);
 
 userRouter.get('/otp',userController.otp)
-
+userRouter.post('/verifyotp',userController.verifyotp)
+userRouter.post('/resendotp',userController.resendotp)
 
 userRouter.get('/signup',userController.signup);
 userRouter.post('/signup',userController.signupPost)

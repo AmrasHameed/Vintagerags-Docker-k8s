@@ -1,39 +1,46 @@
 <%- include ("header.ejs") %>
-<div class="verification-container">
-    <h1>OTP Verification</h1>
-    <label for="otp" class="verification-label">Enter your 4-digit OTP:</label>
-    <input type="text" maxlength="4" id="otp" class="verification-input">
-    <button type="button" onclick="checkOTP()" class="verification-button">Submit</button>
-    <a href="#" class="verification-resend" onclick="restartTimer()">Resend OTP</a>
-    <div id="timer"></div> <!-- Timer div -->
-</div>
-<script>
-    let timerValue = 60;
-    let timerInterval;
+    <div class="verification-container">
+        <form action="/verifyotp" method="post">
+            <h1>OTP Verification</h1>
+            <label for="otp" class="verification-label">Enter your 4-digit OTP:</label>
+            <input type="text" maxlength="4" id="otp" class="verification-input" name="otp" required>
+            <button type="submit" class="btn btn-success btn-block" id="verify">Submit</button>
+        </form>
+        <% if(expressFlash.otperror){%>
+            <div style="color: red; font-size: 16px; font-weight: bold;">
+                <%= expressFlash.otperror%>
+            </div>
+            <%}%>
+                <p>
+                    <form action="/resendotp" method="post" style="display: none;" id="resend-form">
+                        <button type="submit" class="btn btn-danger btn-block" id="verification-resend">Resend OTP</button>
+                    </form>
+                </p>
+                <div id="timer"></div> <!-- Timer div -->
+    </div>
 
-    // Function to start or restart the timer
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            document.getElementById('timer').innerText = `OTP expire in: ${timerValue}`;
+    <script>
+        (function startTimer() {
+            timerInterval = setInterval(function () {
+                var expiryTime = '<%= otp.expiry.getTime() %>';
+                var currentTime = new Date().getTime();
+                var timeLeft = Math.round((expiryTime - currentTime) / 1000);
+                document.getElementById('timer').innerHTML = 'OTP Expires in: ' + timeLeft + ' sec';
 
-            if (timerValue === 0) {
-                timerValue="pls resend otp"
-                clearInterval(timerInterval);
-            } else {
-                timerValue--;
-            }
-        }, 1000);
-    }
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').innerHTML = '';
+                    document.getElementById('resend-form').style.display = 'block';
+                }
 
-    // Function to restart the timer
-    function restartTimer() {
-        clearInterval(timerInterval);
-        timerValue = 60;
-        startTimer();
-    }
+            }, 1000);
+        })()
+        
+    
+        
 
-    // Start the timer when the page loads
-    window.onload = startTimer;
-</script>
 
-<%- include ("footer.ejs") %>
+    </script>
+
+
+    <%- include ("footer.ejs") %>

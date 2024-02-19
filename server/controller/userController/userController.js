@@ -24,7 +24,6 @@ const generateotp = ()=>{
 
 const sendmail= async(email,otp)=>{
     try{
-        console.log(Email,pass);
         let transporter=nodemailer.createTransport({
             service:'gmail',
             host: 'smtp.gmail.com',
@@ -39,20 +38,12 @@ const sendmail= async(email,otp)=>{
             from:'Vintagerags<vintageragsonline@gmail.com>',
             to:email,
             subject:'E-mail Verification',
-            text:`Dear User,
-
-            Thank you for signing up with Vintagerags! To complete your registration, please use the following OTP (One-Time Password):
-            
-            OTP: ${otp}
-            
-            Enter this OTP on our website to verify your email address and access your account.
-            
-            If you did not sign up for Vintagerags, please disregard this email.
-            
-            Welcome aboard!
-            
-            Best regards,
-            The Vintagerags Team`
+            html: `<p>Dear User,</p>
+           <p>Thank you for signing up with Vintagerags! To complete your registration, please use the following<br> <span style="font-weight: bold; color: #ff0000;">OTP: ${otp}</span></p>
+           <p>Enter this OTP on our website to verify your email address and access your account.</p>
+           <p>If you did not sign up for Vintagerags, please disregard this email.</p>
+           <p>Welcome aboard!</p>
+           <p>Best regards,<br/>The Vintagerags Team</p>`
         }
         await transporter.sendMail(mailOptions);
         console.log("Email sent Successfully");
@@ -153,6 +144,8 @@ const signupPost=async (req,res)=>{
                 password: hashedPassword,
             }
             req.session.user=user;
+            req.session.signup=true;
+
             const otp=generateotp();
             // console.log(req.session.user)
 
@@ -178,7 +171,51 @@ const signupPost=async (req,res)=>{
 const otp=async (req,res)=>{
     try{
         const otp= await otpModel.findOne({email: req.session.user.email})
-        res.render('user/otp')
+        res.render('user/otp',{expressFlash:{
+            otperror:req.flash('otperror')
+        },
+        otp:otp
+    })
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
+const verifyotp=async(req,res)=>{
+    try{
+        const enteredotp=req.body.otp;
+        const user=req.session.user;
+        // console.log(user)
+        const email = req.session.user.email;
+        const userdb = await otpModel.findOne({ email: email });
+        const otp=userdb.otp;
+        const expiry=userdb.expiry;
+        // console.log(otp,expiry)
+        if(enteredotp==otp&&expiry.getTime()>=Date.now()){
+            user.isVerified=true;
+            await userModel.create(user);
+            res.redirect('/')
+        }else{
+            req.flash('otperror','wrong otp or time expired')
+            return res.redirect('/otp')
+        }
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
+const resendotp= async (req,res)=>{
+    try{
+        const email= req.session.user.email;
+        const otp = generateotp();
+
+        const currTime= Date.now()
+        const expiry= currTime+60*1000;
+        await otpModel.updateOne({email:email},{otp:otp,expiry:new Date(expiry)});
+        await sendmail(email,otp);
+        res.redirect('/otp')
     }catch(err){
         console.log(err);
         res.render('user/serverError')
@@ -203,4 +240,4 @@ const loginPost=async(req,res)=>{
         res.redirect('/login');
     }
 }
-module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp};
+module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp,verifyotp,resendotp};
