@@ -1,0 +1,39 @@
+<%- include ("header.ejs") %>
+<div class="verification-container">
+    <h1>OTP Verification</h1>
+    <label for="otp" class="verification-label">Enter your 4-digit OTP:</label>
+    <input type="text" maxlength="4" id="otp" class="verification-input">
+    <button type="button" onclick="checkOTP()" class="verification-button">Submit</button>
+    <a href="#" class="verification-resend" onclick="restartTimer()">Resend OTP</a>
+    <div id="timer"></div> <!-- Timer div -->
+</div>
+<script>
+    let timerValue = 60;
+    let timerInterval;
+
+    // Function to start or restart the timer
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            document.getElementById('timer').innerText = `OTP expire in: ${timerValue}`;
+
+            if (timerValue === 0) {
+                timerValue="pls resend otp"
+                clearInterval(timerInterval);
+            } else {
+                timerValue--;
+            }
+        }, 1000);
+    }
+
+    // Function to restart the timer
+    function restartTimer() {
+        clearInterval(timerInterval);
+        timerValue = 60;
+        startTimer();
+    }
+
+    // Start the timer when the page loads
+    window.onload = startTimer;
+</script>
+
+<%- include ("footer.ejs") %>

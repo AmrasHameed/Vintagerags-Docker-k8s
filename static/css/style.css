@@ -851,3 +851,49 @@ a {
 #emailerror, #passwordError, #numbererror, #usernameerror{
   color: red;
 }
+
+.verification-container {
+  width: 300px; /* Adjust width as needed */
+  margin: 0 auto; /* This centers the container horizontally */
+  text-align: center; /* This centers the content inside the container */
+}
+
+.verification-label {
+  display: block;
+  text-align: left;
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+.verification-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.verification-button {
+  background-color: #7971ea;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.verification-button:hover {
+  background-color: #6c63d2; /* Darker shade on hover */
+}
+
+.verification-resend {
+  margin-top: 1em;
+  color: #7971ea;
+  display: inline-block;
+  text-decoration: none;
+}
+
+#timer {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff0000;
+  margin-top: 20px;
+}

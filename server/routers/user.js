@@ -12,6 +12,8 @@ userRouter.get('/shop-single',userController.shopSingle);
 userRouter.get('/login',userController.login);
 userRouter.post('/login',userController.loginPost);
 
+userRouter.get('/otp',userController.otp)
+
 
 userRouter.get('/signup',userController.signup);
 userRouter.post('/signup',userController.signupPost)

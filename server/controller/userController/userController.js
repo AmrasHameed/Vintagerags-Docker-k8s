@@ -18,11 +18,49 @@ const generateotp = ()=>{
         return otp;
     }catch(err){
         console.log(err);
+        res.render('user/serverError')
     }
 };
 
-console.log(generateotp());
+const sendmail= async(email,otp)=>{
+    try{
+        console.log(Email,pass);
+        let transporter=nodemailer.createTransport({
+            service:'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth:{
+                user:Email,
+                pass:pass,
+            },
+        })
+        let mailOptions={
+            from:'Vintagerags<vintageragsonline@gmail.com>',
+            to:email,
+            subject:'E-mail Verification',
+            text:`Dear User,
 
+            Thank you for signing up with Vintagerags! To complete your registration, please use the following OTP (One-Time Password):
+            
+            OTP: ${otp}
+            
+            Enter this OTP on our website to verify your email address and access your account.
+            
+            If you did not sign up for Vintagerags, please disregard this email.
+            
+            Welcome aboard!
+            
+            Best regards,
+            The Vintagerags Team`
+        }
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent Successfully");
+    }catch(err){
+        console.log(err)
+       
+    }
+}
 
 
 const index= async (req,res)=>{
@@ -30,6 +68,7 @@ const index= async (req,res)=>{
         res.render('user/index')
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 // const cart= async (req,res)=>{
@@ -37,6 +76,7 @@ const index= async (req,res)=>{
 //         res.render('user/cart')
 //     }catch(error){
 //         console.log(error)
+//         res.render('user/serverError')
 //     }
 // }
 const shop= async (req,res)=>{
@@ -44,6 +84,7 @@ const shop= async (req,res)=>{
         res.render('user/shop')
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 const contact= async (req,res)=>{
@@ -51,6 +92,7 @@ const contact= async (req,res)=>{
         res.render('user/contact')
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 const shopSingle= async (req,res)=>{
@@ -58,6 +100,7 @@ const shopSingle= async (req,res)=>{
         res.render('user/shop-single')
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 const login= async (req,res)=>{
@@ -71,6 +114,7 @@ const login= async (req,res)=>{
         })
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 const signup= async (req,res)=>{
@@ -83,6 +127,7 @@ const signup= async (req,res)=>{
     })
     }catch(error){
         console.log(error)
+        res.render('user/serverError')
     }
 }
 
@@ -101,15 +146,21 @@ const signupPost=async (req,res)=>{
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
-            const data = {
+            const user = {
                 username: username,
                 email: email,
                 phone:phone,
                 password: hashedPassword,
             }
+            req.session.user=user;
+            const otp=generateotp();
+            // console.log(req.session.user)
 
-            await userModel.insertMany([data])
-            res.redirect('/')
+            const currTime=Date.now();
+            const expTime=currTime+ 60* 1000;
+            await otpModel.updateOne({email:email},{$set:{email:email,otp:otp,expiry:new Date(expTime)}},{upsert:true});
+            await sendmail(email,otp);
+            res.redirect('/otp')
         } else {
             req.flash('emailerror', "User alredy exist")
             res.redirect('/signup')
@@ -124,6 +175,16 @@ const signupPost=async (req,res)=>{
     }
 }
 
+const otp=async (req,res)=>{
+    try{
+        const otp= await otpModel.findOne({email: req.session.user.email})
+        res.render('user/otp')
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
 const loginPost=async(req,res)=>{
     try {
         const email = req.body.email;
@@ -131,7 +192,6 @@ const loginPost=async(req,res)=>{
 
         const user = await userModel.findOne({ email: email });
         if (user && await bcrypt.compare(password, user.password)) {
-            req.session.user = user;
             req.session.isAuth = true;
             res.redirect('/');
         } else {
@@ -143,4 +203,4 @@ const loginPost=async(req,res)=>{
         res.redirect('/login');
     }
 }
-module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost};
+module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp};
