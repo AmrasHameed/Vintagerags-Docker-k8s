@@ -5,6 +5,7 @@ const bcrypt=require('bcrypt')
 const flash=require('express-flash')
 const otpGenerator = require('otp-generator');
 const nodemailer=require('nodemailer')
+const { use } = require('../../routers/user')
 
 const Email=process.env.Email;
 const pass=process.env.pass;
@@ -55,7 +56,12 @@ const sendmail= async(email,otp)=>{
 
 
 const index= async (req,res)=>{
+    
     try{
+        if(req.user){
+            req.session.isAuth=true;
+            req.session.userId=req.user._id;
+        }
         res.render('user/index')
     }catch(error){
         console.log(error)
@@ -229,6 +235,9 @@ const loginPost=async(req,res)=>{
 
         const user = await userModel.findOne({ email: email });
         if (user && await bcrypt.compare(password, user.password)) {
+            req.session.userId=user._id;
+            req.session.username=user.username;
+            req.session.user=user
             req.session.isAuth = true;
             res.redirect('/');
         } else {
@@ -240,4 +249,36 @@ const loginPost=async(req,res)=>{
         res.redirect('/login');
     }
 }
-module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp,verifyotp,resendotp};
+
+
+const profile=async(req,res)=>{
+    try{
+        const id=req.session.userId;
+        const user=await userModel.findOne({_id:id})
+        const name= user.username
+        const email=user.email
+        res.render('user/profile',{name,email})
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError') 
+    }
+}
+
+const logout= async(req,res)=>{
+    try{
+        req.session.isAuth=false;
+        req.logout(function(err) {
+            if (err) {
+                console.error("Error logging out:", err);
+                // Handle error, if any
+                return res.render('user/serverError');
+            }
+            // Redirect to the home page after successful logout
+            res.redirect('/');
+        });
+    }catch(err){
+        console.log(err)
+        res.render('user/serverError') 
+    }
+}
+module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp,verifyotp,resendotp,profile,logout};

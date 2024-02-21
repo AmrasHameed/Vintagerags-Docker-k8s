@@ -1,0 +1,48 @@
+<%- include('header.ejs')  %>
+<div class="account-container">
+    <header class="account-header">
+      <h1>My Account</h1>
+    </header>
+    <main class="account-main">
+      <section class="user-info">
+        <h2>User Information</h2>
+        <p><b>USERNAME:</b> <%=name %></p>
+        <p><b>EMAIL:</b> <%=email%></p>
+      </section>
+      <nav class="account-nav">
+        <ul>
+          <li>
+            <div class="option-wrapper">
+              <a href="#">My Orders</a>
+            </div>
+          </li>
+          <li>
+            <div class="option-wrapper">
+              <a href="#">Reset Password</a>
+            </div>
+          </li>
+          <li>
+            <div class="option-wrapper">
+              <a href="#">Coupons</a>
+            </div>
+          </li>
+          <li>
+            <div class="option-wrapper">
+              <a href="#">Wallet</a>
+            </div>
+          </li>
+          <li>
+            <div class="option-wrapper">
+              <a href="#">Addresses</a>
+            </div>
+          </li>
+          <li>
+            <div class="option-wrapper">
+              <a href="/logout">Logout</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </main>
+  </div>
+<%- include('footer.ejs')  %>
