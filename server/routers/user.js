@@ -8,22 +8,9 @@ const session=require('../../middleware/userAuth')
 const {logged,ifLogged}=session 
 
 
-userRouter.get('/googleSignIn',
-passport.authenticate('google',{scope:['email','profile']})
-)
-
-
-
-userRouter.get('/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/',
-    failureRedirect: '/auth/failure'
-  }),
-);
-
-userRouter.get('/auth/failure',(req,res)=>{
-    res.send('Something went wrong..')
-  })
+userRouter.get('/googleSignIn',userController.googleSignIn)
+userRouter.get('/google/callback',userController.googleCallback);
+userRouter.get('/auth/failure',userController.authFailure);
 
 userRouter.get('/',userController.index);
 // userRouter.get('/cart',userController.cart);

@@ -1,11 +1,13 @@
 const userModel=require('../../model/userModel')
 const otpModel= require('../../model/otpModel')
+const passport = require('passport');
 const mongoose=require('mongoose')
 const bcrypt=require('bcrypt')
 const flash=require('express-flash')
 const otpGenerator = require('otp-generator');
-const nodemailer=require('nodemailer')
-const { use } = require('../../routers/user')
+const nodemailer=require('nodemailer');
+const userRouter = require('../../routers/user');
+// const { user } = require('../../routers/user')
 
 const Email=process.env.Email;
 const pass=process.env.pass;
@@ -267,7 +269,7 @@ const profile=async(req,res)=>{
 const logout= async(req,res)=>{
     try{
         req.session.isAuth=false;
-        req.logout(function(err) {
+        req.logOut(function(err) {
             if (err) {
                 console.error("Error logging out:", err);
                 // Handle error, if any
@@ -281,4 +283,17 @@ const logout= async(req,res)=>{
         res.render('user/serverError') 
     }
 }
-module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp,verifyotp,resendotp,profile,logout};
+
+const googleSignIn = passport.authenticate('google', { scope: ['email', 'profile'] });
+
+const googleCallback = passport.authenticate('google', {
+  successRedirect: '/',
+  failureRedirect: '/auth/failure'
+});
+
+const authFailure = (req, res) => {
+  res.send('Something went wrong..');
+};
+
+
+module.exports={index,shop,contact,shopSingle,login,signup,signupPost,loginPost,otp,verifyotp,resendotp,profile,logout,googleSignIn,googleCallback,authFailure};
