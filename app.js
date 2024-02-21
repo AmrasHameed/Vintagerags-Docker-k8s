@@ -8,6 +8,7 @@ const flash = require('express-flash');
 const passport = require('passport');
 const userRouter = require('./server/routers/user');
 
+const PORT=process.env.PORT
 mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log("connected");
 }).catch((error) => {
@@ -34,6 +35,6 @@ app.set('view engine', 'ejs');
 
 app.use('/', userRouter);
 
-app.listen(8000, () => {
-    console.log(`Server is running on http://localhost:8000/`);
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}/`);
 });
