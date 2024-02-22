@@ -25,11 +25,11 @@ userRouter.get('/otp',userController.otp)
 userRouter.post('/verifyotp',userController.verifyotp)
 userRouter.post('/resendotp',userController.resendotp)
 
-userRouter.get('/profile',logged,userController.profile)
 
 userRouter.get('/signup',ifLogged,userController.signup);
 userRouter.post('/signup',userController.signupPost)
 
-userRouter.get('/logout',userController.logout)
+userRouter.get('/profile',logged,userController.profile)
 
+userRouter.get('/logout',userController.logout)
 module.exports= userRouter;

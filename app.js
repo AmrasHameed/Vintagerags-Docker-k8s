@@ -7,6 +7,7 @@ const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const userRouter = require('./server/routers/user');
+const adminRouter=require('./server/routers/admin')
 
 const PORT=process.env.PORT
 mongoose.connect(process.env.MONGO_URL).then(() => {
@@ -34,6 +35,7 @@ app.use('/static', express.static(path.join(__dirname, 'static')));
 app.set('view engine', 'ejs');
 
 app.use('/', userRouter);
+app.use('/admin',adminRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}/`);

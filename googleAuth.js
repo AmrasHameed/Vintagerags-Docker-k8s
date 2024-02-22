@@ -18,7 +18,6 @@ passport.use(new GoogleStrategy({
         { email: profile.emails[0].value }, 
         { $set: {
             username: profile.displayName, 
-            provider: 'google', 
           }
         },
         { upsert: true, new: true } 

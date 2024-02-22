@@ -153,7 +153,7 @@ const signupPost=async (req,res)=>{
             }
             req.session.user=user;
             req.session.signup=true;
-
+            
             const otp=generateotp();
             // console.log(req.session.user)
 
@@ -202,8 +202,14 @@ const verifyotp=async(req,res)=>{
         // console.log(otp,expiry)
         if(enteredotp==otp&&expiry.getTime()>=Date.now()){
             user.isVerified=true;
-            await userModel.create(user);
-            res.redirect('/')
+            if(req.session.signup){
+                await userModel.create(user);
+                const userdata=await userModel.findOne({email:email});
+                req.session.userId=userdata._id;
+                req.session.isAuth=true;
+                req.session.signup=false;
+                res.redirect('/')
+            }
         }else{
             req.flash('otperror','wrong otp or time expired')
             return res.redirect('/otp')
