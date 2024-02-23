@@ -8,6 +8,7 @@ const flash = require('express-flash');
 const passport = require('passport');
 const userRouter = require('./server/routers/user');
 const adminRouter=require('./server/routers/admin')
+const multer=require('multer')
 
 const PORT=process.env.PORT
 
@@ -32,11 +33,30 @@ app.use(flash());
 app.use(nocache());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use('/static', express.static(path.join(__dirname, 'static')));
+
 app.set('view engine', 'ejs');
+app.use('/uploads',express.static("uploads"));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); 
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname+".png"); 
+    }
+  });
+  
+  const upload = multer({ storage: storage });
+  
+  app.post('/your-upload-route', upload.array('files'), (req, res) => {
+    console.log(req.files);
+  });
 
 app.use('/', userRouter);
 app.use('/admin',adminRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}/`);
