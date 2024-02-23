@@ -10,6 +10,7 @@ const userRouter = require('./server/routers/user');
 const adminRouter=require('./server/routers/admin')
 
 const PORT=process.env.PORT
+
 mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log("connected");
 }).catch((error) => {
