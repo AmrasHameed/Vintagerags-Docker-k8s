@@ -53,7 +53,7 @@ const unlist= async(req,res)=>{
     }
 }
 
-updateProduct=async (req,res)=>{
+const updateProduct=async (req,res)=>{
     try{
         const id=req.params.id;
         const product= await productModel.findById(id);
@@ -64,4 +64,35 @@ updateProduct=async (req,res)=>{
     }
 }
 
-module.exports = { product, addProduct, addProductPost,unlist,updateProduct}
+const updateProductPost= async (req,res)=>{
+    try{
+        const id=req.params.id;
+        const product= await productModel.findOne({_id:id})
+
+        console.log(req.body);
+
+        product.name= req.body.name
+        product.category=req.body.category
+        product.description= req.body.description
+        product.price= req.body.price
+        product.stock= req.body.stock
+        await product.save();
+        res.redirect('/admin/products')
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+const editImage=async (req,res)=>{
+    try{
+        const id=req.params.id;
+        const product= await productModel.findById(id)
+        res.render('admin/editImage',{product:product})
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+module.exports = { product, addProduct, addProductPost,unlist,updateProduct,updateProductPost,editImage}
