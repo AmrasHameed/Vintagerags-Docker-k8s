@@ -40,5 +40,28 @@ const addProductPost = (req, res) => {
         res.render("user/serverError");
     }
 }
+const unlist= async(req,res)=>{
+    try{
+        const id= req.params.id;
+        const product= await productModel.findById(id);
+        product.status= !product.status;
+        await product.save();
+        res.redirect('/admin/products')
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
 
-module.exports = { product, addProduct, addProductPost }
+updateProduct=async (req,res)=>{
+    try{
+        const id=req.params.id;
+        const product= await productModel.findById(id);
+        res.render('admin/updateProduct',{product})
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+module.exports = { product, addProduct, addProductPost,unlist,updateProduct}

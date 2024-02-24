@@ -35,12 +35,39 @@
         <label for="image">Image:</label>
         <input type="file" class="form-control-file" id="image" name="images" accept="image/*" multiple required>
       </div>
+      <div id="imagePreview"></div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+  <script>
+    document.getElementById("image").addEventListener("change", function() {
+      var files = this.files;
+      var imagePreview = document.getElementById("imagePreview");
+
+      imagePreview.innerHTML = "";
+
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.maxWidth = "100px";
+          img.style.maxHeight = "100px";
+          img.style.marginRight = "10px";
+          img.style.marginBottom = "10px";
+          imagePreview.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

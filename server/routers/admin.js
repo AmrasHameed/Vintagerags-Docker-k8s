@@ -16,6 +16,8 @@ adminRouter.get('/adminPanel',sessions.adAuth,adminController.adminPanel)
 adminRouter.get('/products',sessions.adAuth,productController.product)
 adminRouter.get('/addProduct',sessions.adAuth,productController.addProduct)
 adminRouter.post('/addProduct',sessions.adAuth,upload.array('images'),productController.addProductPost)
+adminRouter.get("/unlist/:id",sessions.adAuth,productController.unlist)
+adminRouter.get("/updateProduct/:id",sessions.adAuth,productController.updateProduct)
 
 adminRouter.get('/adLogout',sessions.adAuth,adminController.adLogout)
 
