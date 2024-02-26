@@ -19,6 +19,14 @@
                 </strong>
             </div>
             <% } %>
+            <% if(updateSuccess && updateSuccess.length > 0) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>
+                        <%= updateSuccess %>
+                    </strong>
+                </div>
+                <% } %>
             <div class="table-responsive">
                 <% if(product != "") { %>
                 <table class="table table-striped text-center">

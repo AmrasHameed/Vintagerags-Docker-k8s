@@ -44,9 +44,32 @@ const adLogout= (req,res)=>{
         req.session.isAdAuth=false;
         res.redirect('/admin')
     }catch(err){
-        console.log(error);
+        console.log(err);
         res.render("user/serverError");
     }
 }
 
-module.exports={login,loginPost,adminPanel,adLogout}
+const user= async (req,res)=>{
+    try{
+        const user= await adminModel.find({}) 
+        res.render('admin/users',{users:user})
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+const unblock=async (req,res)=>{
+    try{
+        const id = req.params.id;
+        const user = await adminModel.findById(id);
+        user.blocked = !user.blocked;
+        await user.save();
+        res.redirect('/admin/users')
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+module.exports={login,loginPost,adminPanel,adLogout,user,unblock}
