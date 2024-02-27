@@ -1,32 +1,33 @@
 <%- include ("header.ejs") %>
-<div class="login-container">
-    <h1>User Login</h1>
-    <br>
-    <form class="loginForm" action="/login" method="post" onsubmit="return validateEmail() && validatePassword()">
-        <label class="loginEmailLabel" for="email">Email:</label>
-        <input class="loginEmailInput" type="email" id="email" name="email" onkeyup="validateEmail()" required>
-        <span id="emailerror"></span>
+    <div class="login-container">
+        <h1>User Login</h1>
         <br>
-        <label class="loginPasswordLabel" for="password">Password:</label>
-        <input class="loginPasswordInput" type="password" id="password" name="password" onkeyup="validatePassword()" required>
-        <span id="passwordError"></span>
-        <br>
-        <button class="loginSubmit" type="submit">Login</button>
-        <% if(expressFlash.invalidpassword){%>
-            <div style="color: red; font-size: 16px; font-weight: bold;">
-                <%= expressFlash.invalidpassword%>
-            </div>
-            <%}%>
-            <% if(expressFlash.invaliduser){%>
+        <form class="loginForm" action="/login" method="post" onsubmit="return validateEmail() && validatePassword()">
+            <label class="loginEmailLabel" for="email">Email:</label>
+            <input class="loginEmailInput" type="email" id="email" name="email" onkeyup="validateEmail()" required>
+            <span id="emailerror"></span>
+            <br>
+            <label class="loginPasswordLabel" for="password">Password:</label>
+            <input class="loginPasswordInput" type="password" id="password" name="password" onkeyup="validatePassword()"
+                required>
+            <span id="passwordError"></span>
+            <br>
+            <button class="loginSubmit" type="submit">Login</button>
+            <% if(expressFlash.invalidpassword){%>
                 <div style="color: red; font-size: 16px; font-weight: bold;">
-                    <%= expressFlash.invaliduser%>
+                    <%= expressFlash.invalidpassword%>
                 </div>
                 <%}%>
-    </form>
-    <br>
-    <a href="/googleSignIn" class="google-sign-in"> <img src="../../static/images/New-Google-Logo.jpg" alt="Google Logo" class="google-logo">Sign in with Google</a>
-    <p class="loginQuestion">Don't have an account? <a href="/signup" class="loginSignup">Signup</a></p>
-</div>
+                    <% if(expressFlash.invaliduser){%>
+                        <div style="color: red; font-size: 16px; font-weight: bold;">
+                            <%= expressFlash.invaliduser%>
+                        </div>
+                        <%}%>
+        </form>
+        <br>
+        <a href="/googleSignIn" class="google-sign-in"> <img src="../../static/images/New-Google-Logo.jpg"
+                alt="Google Logo" class="google-logo">Sign in with Google</a>
+        <p class="loginQuestion">Don't have an account? <a href="/signup" class="loginSignup">Signup</a></p>
+    </div>
 
-<%- include ("footer.ejs") %>
-
+    <%- include ("footer.ejs") %>

@@ -1,5 +1,5 @@
 const productModel = require('../../model/productModel')
-const categoryModel= require('../../model/categModel')
+const categoryModel = require('../../model/categModel')
 const path = require('path')
 const fs = require('fs')
 
@@ -9,8 +9,8 @@ const product = async (req, res) => {
         const productSuccess = req.flash('productSuccess');
         const updateSuccess = req.flash('updateSuccess');
         const products = await productModel.find().populate({
-            path:'category',
-            select:'name'
+            path: 'category',
+            select: 'name'
         });
         res.render('admin/products', { product: products, productSuccess, updateSuccess });
     } catch (error) {
@@ -21,8 +21,8 @@ const product = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const categories= await categoryModel.find({})
-        res.render('admin/addProduct',{category:categories})
+        const categories = await categoryModel.find({})
+        res.render('admin/addProduct', { category: categories })
     } catch (err) {
         console.log(err);
         res.render("user/serverError");

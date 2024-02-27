@@ -2,7 +2,7 @@ const userModel = require("../server/model/userModel")
 
 const logged = async (req, res, next) => {
     try {
-        const user = await userModel.findOne({ _id: req.session.userId})
+        const user = await userModel.findOne({ _id: req.session.userId })
         if (req.session.isAuth && user) {
             next()
         } else {
@@ -15,18 +15,18 @@ const logged = async (req, res, next) => {
     }
 }
 
-const ifLogged= async (req,res,next)=>{
-    try{
-        if(req.session.isAuth){
+const ifLogged = async (req, res, next) => {
+    try {
+        if (req.session.isAuth) {
             res.redirect('/')
-        }else{
+        } else {
             next();
         }
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.render('user/serverError')
     }
 }
 
-module.exports={logged,ifLogged}
+module.exports = { logged, ifLogged }

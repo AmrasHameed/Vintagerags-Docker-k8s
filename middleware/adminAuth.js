@@ -1,28 +1,28 @@
-const adAuth=(req,res,next)=>{
-    try{
-        if(req.session.isAdAuth){
+const adAuth = (req, res, next) => {
+    try {
+        if (req.session.isAdAuth) {
             next()
-        }else{
+        } else {
             res.redirect('/admin')
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
         res.render('user/serverError')
     }
 }
 
-const adLogout=(req,res,next)=>{
-    try{
-        if(req.session.isAdAuth){
+const adLogout = (req, res, next) => {
+    try {
+        if (req.session.isAdAuth) {
             res.redirect('/admin/adminPanel')
-        }else{
+        } else {
             next()
         }
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
         res.render('user/serverError')
     }
 }
 
-module.exports={adAuth,adLogout}
+module.exports = { adAuth, adLogout }
