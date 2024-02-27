@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
   <div class="container mt-5">
     <h2>Add Product</h2>
@@ -17,7 +19,14 @@
       </div>
       <div class="form-group">
         <label for="category">Category:</label>
-        <input type="text" class="form-control" id="category" name="category" required>
+        <select class="form-select" id="category" name="category" required>
+          <option value="" disabled>Select Category</option>
+          <% category.forEach(category=> { %>
+            <option value="<%= category._id %>">
+              <%= category.name %>
+            </option>
+            <% }); %>
+        </select>
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
@@ -40,7 +49,7 @@
     </form>
   </div>
   <script>
-    document.getElementById("image").addEventListener("change", function() {
+    document.getElementById("image").addEventListener("change", function () {
       var files = this.files;
       var imagePreview = document.getElementById("imagePreview");
 
@@ -50,7 +59,7 @@
         var file = files[i];
         var reader = new FileReader();
 
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           var img = document.createElement("img");
           img.src = e.target.result;
           img.style.maxWidth = "100px";
@@ -70,4 +79,5 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
+
 </html>
