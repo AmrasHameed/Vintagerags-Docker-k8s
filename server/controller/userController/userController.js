@@ -1,5 +1,7 @@
 const userModel = require('../../model/userModel')
 const otpModel = require('../../model/otpModel')
+const catModel= require('../../model/categModel')
+const productModel=require('../../model/productModel')
 const passport = require('passport');
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -60,11 +62,14 @@ const sendmail = async (email, otp) => {
 const index = async (req, res) => {
 
     try {
+        const categories=await catModel.find()
+        const products=await productModel.find()
         if (req.user) {
             req.session.isAuth = true;
             req.session.userId = req.user._id;
         }
-        res.render('user/index')
+        console.log(products[0].image);
+        res.render('user/index',{categories,products})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -80,7 +85,15 @@ const index = async (req, res) => {
 // }
 const shop = async (req, res) => {
     try {
-        res.render('user/shop')
+        let products;
+        const categoryId = req.query.category;
+        if(categoryId){
+            products=await productModel.find({ $and: [{ category:categoryId}, { status: true }] }).exec()
+        }else{
+            products=await productModel.find({ status: true }).exec()
+        }
+        const categories=await catModel.find()
+        res.render('user/shop',{products,categories})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -94,14 +107,24 @@ const contact = async (req, res) => {
         res.render('user/serverError')
     }
 }
+
+
 const shopSingle = async (req, res) => {
     try {
-        res.render('user/shop-single')
+        const productId = req.params.id;
+        const categories = await catModel.find();
+        const productOne = await productModel.findById(productId); 
+        const products = await productModel.find(); 
+        console.log(products[0].image);
+        res.render('user/shop-single', { productOne, products, categories });
     } catch (error) {
-        console.log(error)
-        res.render('user/serverError')
+        console.log(error);
+        res.render('user/serverError');
     }
 }
+
+
+
 const login = async (req, res) => {
     try {
         res.render('user/login', {
