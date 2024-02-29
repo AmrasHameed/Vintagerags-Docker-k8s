@@ -973,3 +973,20 @@ a {
   margin-right: 7px;
   width: 30px;
 }
+
+.block-4-image {
+  overflow: hidden; /* Hide overflow */
+  height: 400px; /* Set a fixed height */
+  position: relative; /* Position relative for absolute positioning of overlay */
+}
+.block-4-image img {
+  width: 100%; /* Make sure image fills container width */
+  height: auto; /* Maintain aspect ratio */
+}
+.imgsize{
+  height: 300px;
+}
+
+.descript{
+  height: 200px;
+}

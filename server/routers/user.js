@@ -16,7 +16,7 @@ userRouter.get('/', userController.index);
 // userRouter.get('/cart',userController.cart);
 userRouter.get('/shop', userController.shop);
 userRouter.get('/contact', userController.contact);
-userRouter.get('/shop-single', userController.shopSingle);
+userRouter.get('/shopSingle/:id', userController.shopSingle);
 
 userRouter.get('/login', ifLogged, userController.login);
 userRouter.post('/login', userController.loginPost);

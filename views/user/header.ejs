@@ -70,9 +70,10 @@
             <li class="has-children">
               <a href="about.html">Categories</a>
               <ul class="dropdown">
-                <li><a href="#">Women</a></li>
-                <li><a href="#">Children</a></li>
-                <li><a href="#">Menu</a></li>
+                <% categories.forEach(category => { %>
+                  <li><a href="/shop?category=<%= category._id %>"><%= category.name %></a></li>
+              <% }); %>
+              
               </ul>
             </li>
             <li><a href="/shop">Shop</a></li>
