@@ -12,7 +12,8 @@
                 required>
             <span id="passwordError"></span>
             <br>
-            <button class="loginSubmit" type="submit">Login</button>
+            <button class="loginSubmit" type="submit">Login</button><a href="/forgotPassword">Forgot Password</a>
+
             <% if(expressFlash.invalidpassword){%>
                 <div style="color: red; font-size: 16px; font-weight: bold;">
                     <%= expressFlash.invalidpassword%>

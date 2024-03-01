@@ -18,6 +18,8 @@ adminRouter.get('/adminPanel', sessions.adAuth, adminController.adminPanel)
 
 adminRouter.get('/users', sessions.adAuth, adminController.user)
 adminRouter.get("/unblock/:id", sessions.adAuth, adminController.unblock)
+adminRouter.post('/search',sessions.adAuth,adminController.search)
+adminRouter.get('/searchView',sessions.adAuth,adminController.searchView)
 
 adminRouter.get('/products', sessions.adAuth, productController.product)
 adminRouter.get('/addProduct', sessions.adAuth, productController.addProduct)
@@ -28,6 +30,10 @@ adminRouter.post("/updateProduct/:id", sessions.adAuth, productController.update
 adminRouter.get("/editImage/:id", sessions.adAuth, productController.editImage)
 adminRouter.get('/deleteImage', sessions.adAuth, productController.deleteImage)
 adminRouter.post('/updateImage/:id', sessions.adAuth, upload.array('image'), productController.updateImage)
+adminRouter.post('/searchProduct',sessions.adAuth,productController.searchProduct)
+adminRouter.get('/searchProductView',sessions.adAuth,productController.searchProductView)
+
+
 
 adminRouter.get('/categories', sessions.adAuth, categoryController.category)
 adminRouter.get('/addCategory', sessions.adAuth, categoryController.addCategory)

@@ -15,7 +15,8 @@ const category = async (req, res) => {
 
 const addCategory = async (req, res) => {
     try {
-        res.render('admin/addCategory');
+        const catError=req.flash('catError');
+        res.render('admin/addCategory',{catError});
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -60,7 +61,8 @@ const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
         const category = await CatModel.findById(id);
-        res.render('admin/updateCategory', { category })
+        const catError=req.flash('catError');
+        res.render('admin/updateCategory', { category,catError })
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -71,6 +73,13 @@ const updateCategoryPost = async (req, res) => {
     try {
         const id = req.params.id;
         const category = await CatModel.findById(id);
+        const catName=req.body.name;
+        const catExist = await CatModel.findOne({ name: { $regex: new RegExp("^" + catName + "$", "i") } });
+        if (catExist) {
+            console.log("Already Exist");
+            req.flash('catError', 'Category Already Exists');
+            return res.redirect('/admin/updateCategory/'+id);
+        } 
         category.name = req.body.name
         category.description = req.body.description
         await category.save();

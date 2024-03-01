@@ -68,7 +68,7 @@ const index = async (req, res) => {
             req.session.isAuth = true;
             req.session.userId = req.user._id;
         }
-        console.log(products[0].image);
+        // console.log(products[0].image);
         res.render('user/index',{categories,products})
     } catch (error) {
         console.log(error)
@@ -115,7 +115,6 @@ const shopSingle = async (req, res) => {
         const categories = await catModel.find();
         const productOne = await productModel.findById(productId); 
         const products = await productModel.find(); 
-        console.log(products[0].image);
         res.render('user/shop-single', { productOne, products, categories });
     } catch (error) {
         console.log(error);
@@ -127,7 +126,8 @@ const shopSingle = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        res.render('user/login', {
+        const categories=await catModel.find()
+        res.render('user/login', {categories,
             expressFlash: {
                 invaliduser: req.flash('invaliduser'),
                 invalidpassword: req.flash('invalidpassword'),
@@ -141,7 +141,8 @@ const login = async (req, res) => {
 }
 const signup = async (req, res) => {
     try {
-        res.render('user/signup', {
+        const categories=await catModel.find()
+        res.render('user/signup', {categories,
             expressFlash: {
                 emailerror: req.flash('emailerror'),
                 passworderror: req.flash('passworderror')
@@ -201,8 +202,9 @@ const signupPost = async (req, res) => {
 
 const otp = async (req, res) => {
     try {
+        const categories=await catModel.find()
         const otp = await otpModel.findOne({ email: req.session.user.email })
-        res.render('user/otp', {
+        res.render('user/otp', {categories,
             expressFlash: {
                 otperror: req.flash('otperror')
             },
@@ -226,6 +228,9 @@ const verifyotp = async (req, res) => {
         // console.log(otp,expiry)
         if (enteredotp == otp && expiry.getTime() >= Date.now()) {
             user.isVerified = true;
+            if(req.session.forgot){
+                res.redirect('/newpassword')
+            }
             if (req.session.signup) {
                 await userModel.create(user);
                 const userdata = await userModel.findOne({ email: email });
@@ -243,6 +248,8 @@ const verifyotp = async (req, res) => {
         res.render('user/serverError')
     }
 }
+
+
 
 const resendotp = async (req, res) => {
     try {
@@ -266,7 +273,7 @@ const loginPost = async (req, res) => {
         const password = req.body.password;
 
         const user = await userModel.findOne({ email: email });
-        if (user && await bcrypt.compare(password, user.password)) {
+        if (user.blocked==false && await bcrypt.compare(password, user.password)) {
             req.session.userId = user._id;
             req.session.username = user.username;
             req.session.user = user
@@ -282,14 +289,84 @@ const loginPost = async (req, res) => {
     }
 }
 
+const forgotPassword=async(req,res)=>{
+    try{
+        const categories= await catModel.find()
+        const emailExist=req.flash('emailExist')
+        res.render('user/forgot',{categories,emailExist})
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
+const forgotPasswordPost=async(req,res)=>{
+    try{
+        const email=req.body.gmail;
+        const emailExist=await userModel.find({email})
+        console.log(email,emailExist);
+        if(emailExist[0].email==email){
+            req.session.forgot=true;
+            req.session.signup=false;
+            req.session.user={email:email}
+            const otp = generateotp();
+            // console.log(req.session.user)
+
+            const currTime = Date.now();
+            const expTime = currTime + 60 * 1000;
+            await otpModel.updateOne({ email: email }, { $set: { email: email, otp: otp, expiry: new Date(expTime) } }, { upsert: true });
+            await sendmail(email, otp);
+            res.redirect('/otp')
+        }else{
+            req.flash('emailExist','Email Already Exist')
+            res.redirect('/forgotPassword')
+        }
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
+const newPassword=async(req,res)=>{
+    try{
+        const categories= await catModel.find()
+        const passwordError=req.flash('passwordError')
+        res.render('user/newPassword',{categories,passwordError})
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
+const newPasswordPost=async(req,res)=>{
+    try{
+        const password=req.body.password;
+        const cpassword=req.body.cpassword;
+        if(password===cpassword){
+            const hashedpassword = await bcrypt.hash(password, 10);
+            const email = req.session.user.email;
+            await userModel.updateOne({ email: email }, { password: hashedpassword });
+            req.session.forgot = false;
+            res.redirect("/");
+        }else{
+            req.flash('passwordError','Password Does not match')
+            res.redirect('/newPassword')
+        }
+    }catch(err){
+        console.log(err);
+        res.render('user/serverError')
+    }
+}
+
 
 const profile = async (req, res) => {
     try {
         const id = req.session.userId;
+        const categories=await catModel.find()
         const user = await userModel.findOne({ _id: id })
         const name = user.username
         const email = user.email
-        res.render('user/profile', { name, email })
+        res.render('user/profile', { name, email ,categories})
     } catch (err) {
         console.log(err);
         res.render('user/serverError')
@@ -326,4 +403,4 @@ const authFailure = (req, res) => {
 };
 
 
-module.exports = { index, shop, contact, shopSingle, login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure };
+module.exports = { index, shop, contact, shopSingle, login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure ,forgotPassword,forgotPasswordPost, newPassword,newPasswordPost};

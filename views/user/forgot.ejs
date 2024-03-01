@@ -1,0 +1,25 @@
+<%- include ("header.ejs") %>
+    <div class="verification-container">
+        <form action="/forgotPasswordPost" method="post" >
+            <h1>Forgot Password</h1>
+            <label for="gmail" class="verification-label">Enter your Gmail</label>
+            <input type="email"  id="gmail" class="verification-input" name="gmail" required>
+            <button type="submit" class="btn btn-success btn-block" id="verify">Submit</button>
+            <% if(emailExist){%>
+                <div style="color: red; font-size: 16px; font-weight: bold;">
+                    <%=emailExist%>
+                </div>
+                    <%}%>
+        </form>
+                
+    </div>
+
+    <script>
+
+
+
+
+    </script>
+
+
+    <%- include ("footer.ejs") %>

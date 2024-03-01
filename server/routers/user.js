@@ -5,7 +5,7 @@ const passport = require('passport')
 const userRouter = express.Router();
 const userController = require("../controller/userController/userController");
 const session = require('../../middleware/userAuth')
-const { logged, ifLogged } = session
+const { logged, ifLogged,forgot,signed } = session
 
 
 userRouter.get('/googleSignIn', userController.googleSignIn)
@@ -18,10 +18,15 @@ userRouter.get('/shop', userController.shop);
 userRouter.get('/contact', userController.contact);
 userRouter.get('/shopSingle/:id', userController.shopSingle);
 
+
 userRouter.get('/login', ifLogged, userController.login);
 userRouter.post('/login', userController.loginPost);
+userRouter.get('/forgotPassword',userController.forgotPassword)
+userRouter.post('/forgotPasswordPost',userController.forgotPasswordPost)
+userRouter.get('/newPassword',forgot,userController.newPassword)
+userRouter.post('/newPasswordPost',forgot,userController.newPasswordPost)
 
-userRouter.get('/otp', userController.otp)
+userRouter.get('/otp',signed, userController.otp)
 userRouter.post('/verifyotp', userController.verifyotp)
 userRouter.post('/resendotp', userController.resendotp)
 

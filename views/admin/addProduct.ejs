@@ -12,10 +12,11 @@
 <body>
   <div class="container mt-5">
     <h2>Add Product</h2>
-    <form action="/admin/addProduct" method="POST" enctype="multipart/form-data">
+    <form id="addProductForm" action="/admin/addProduct" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
       <div class="form-group">
         <label for="name">Name:</label>
         <input type="text" class="form-control" id="name" name="name" required>
+        <div id="nameError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="category">Category:</label>
@@ -27,28 +28,102 @@
             </option>
             <% }); %>
         </select>
+        <div id="categoryError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
         <textarea class="form-control" id="description" name="description" required></textarea>
+        <div id="descriptionError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="price">Price:</label>
         <input type="number" class="form-control" id="price" name="price" min="0" required>
+        <div id="priceError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="stock">Stock:</label>
         <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+        <div id="stockError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="image">Image:</label>
         <input type="file" class="form-control-file" id="image" name="images" accept="image/*" multiple required>
+        <div id="imageError" class="text-danger"></div>
       </div>
       <div id="imagePreview"></div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <script>
+    function validateForm() {
+      var name = document.getElementById('name').value;
+      var category = document.getElementById('category').value;
+      var description = document.getElementById('description').value;
+      var price = document.getElementById('price').value;
+      var stock = document.getElementById('stock').value;
+      var image = document.getElementById('image').value;
+
+      var nameError = document.getElementById('nameError');
+      var categoryError = document.getElementById('categoryError');
+      var descriptionError = document.getElementById('descriptionError');
+      var priceError = document.getElementById('priceError');
+      var stockError = document.getElementById('stockError');
+      var imageError = document.getElementById('imageError');
+
+      // Reset error messages
+      nameError.innerHTML = '';
+      categoryError.innerHTML = '';
+      descriptionError.innerHTML = '';
+      priceError.innerHTML = '';
+      stockError.innerHTML = '';
+      imageError.innerHTML = '';
+
+      // Validate name
+      if (name.trim() === '') {
+        nameError.innerHTML = 'Name is required.';
+        return false;
+      }
+
+      // Validate category
+      if (category === '') {
+        categoryError.innerHTML = 'Category is required.';
+        return false;
+      }
+
+      // Validate description
+      if (description.trim() === '') {
+        descriptionError.innerHTML = 'Description is required.';
+        return false;
+      }
+
+      // Validate price
+      if (isNaN(price) || price <= 0) {
+        priceError.innerHTML = 'Price must be a positive number.';
+        return false;
+      }
+
+      // Validate stock
+      if (isNaN(stock) || stock < 0) {
+        stockError.innerHTML = 'Stock must be a non-negative number.';
+        return false;
+      }
+
+      // Validate image (you can also check if a file is selected)
+      if (!image) {
+        imageError.innerHTML = 'Image is required.';
+        return false;
+      }
+
+      return true;
+    }
+
+    // Image preview functionality
     document.getElementById("image").addEventListener("change", function () {
       var files = this.files;
       var imagePreview = document.getElementById("imagePreview");
@@ -73,10 +148,6 @@
       }
     });
   </script>
-  <!-- Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

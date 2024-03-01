@@ -975,13 +975,13 @@ a {
 }
 
 .block-4-image {
-  overflow: hidden; /* Hide overflow */
-  height: 400px; /* Set a fixed height */
-  position: relative; /* Position relative for absolute positioning of overlay */
+  overflow: hidden; 
+  height: 400px; 
+  position: relative; 
 }
 .block-4-image img {
-  width: 100%; /* Make sure image fills container width */
-  height: auto; /* Maintain aspect ratio */
+  width: 100%; 
+  height: auto; 
 }
 .imgsize{
   height: 300px;
@@ -989,4 +989,24 @@ a {
 
 .descript{
   height: 200px;
+}
+
+.product-slider {
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+}
+
+.slide.active {
+  display: block;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.productImage{
+  width: 70%;
+  height: auto;
 }

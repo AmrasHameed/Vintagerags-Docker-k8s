@@ -64,6 +64,7 @@ const unblock = async (req, res) => {
         const id = req.params.id;
         const user = await adminModel.findById(id);
         user.blocked = !user.blocked;
+        req.session.isAuth=false;
         await user.save();
         res.redirect('/admin/users')
     } catch (err) {
@@ -72,4 +73,28 @@ const unblock = async (req, res) => {
     }
 }
 
-module.exports = { login, loginPost, adminPanel, adLogout, user, unblock }
+const search=async(req,res)=>{
+    try{
+        const searchName=req.body.search;
+        const data=await adminModel.find({
+            username: { $regex: new RegExp(`^${searchName}`, `i`) },
+          });
+          req.session.searchUser=data;
+          res.redirect('/admin/searchView')
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+const searchView=async(req,res)=>{
+    try{
+        const user=req.session.searchUser;
+        res.render('admin/users', { users: user })
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError");
+    }
+}
+
+module.exports = { login, loginPost, adminPanel, adLogout, user, unblock ,search,searchView}

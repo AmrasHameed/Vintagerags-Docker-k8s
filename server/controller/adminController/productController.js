@@ -1,7 +1,8 @@
 const productModel = require('../../model/productModel')
 const categoryModel = require('../../model/categModel')
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs');
+const { search } = require('../../routers/user');
 
 
 const product = async (req, res) => {
@@ -145,4 +146,34 @@ const updateImage = async (req, res) => {
     }
 }
 
-module.exports = { product, addProduct, addProductPost, unlist, updateProduct, updateProductPost, editImage, deleteImage, updateImage }
+const searchProduct=async(req,res)=>{
+    try{
+        const searchName=req.body.search;
+        const data=await productModel.find({
+            name: { $regex: new RegExp(`^${searchName}`, `i`) },
+          }).populate({
+            path: 'category',
+            select: 'name'
+        });
+
+        req.session.searchProduct=data;
+        res.redirect('/admin/searchProductView')
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError")
+    }
+}
+
+const searchProductView= async(req,res)=>{
+    try{
+        const productSuccess = req.flash('productSuccess');
+        const updateSuccess = req.flash('updateSuccess');
+        const product=req.session.searchProduct;
+        res.render('admin/products', { product,productSuccess, updateSuccess})
+    }catch(err){
+        console.log(err);
+        res.render("user/serverError")
+    }
+}
+
+module.exports = { product, addProduct, addProductPost, unlist, updateProduct, updateProductPost, editImage, deleteImage, updateImage ,searchProduct,searchProductView}
