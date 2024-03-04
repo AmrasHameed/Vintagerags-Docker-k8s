@@ -1010,3 +1010,11 @@ a {
   width: 70%;
   height: auto;
 }
+
+.size-btn {
+  width: 42px;
+  border-radius: 5px; 
+  margin-right: 5px;
+}
+
+

@@ -4,7 +4,7 @@ const catModel= require('../../model/categModel')
 const productModel=require('../../model/productModel')
 const passport = require('passport');
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt') 
 const flash = require('express-flash')
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
@@ -83,22 +83,7 @@ const index = async (req, res) => {
 //         res.render('user/serverError')
 //     }
 // }
-const shop = async (req, res) => {
-    try {
-        let products;
-        const categoryId = req.query.category;
-        if(categoryId){
-            products=await productModel.find({ $and: [{ category:categoryId}, { status: true }] }).exec()
-        }else{
-            products=await productModel.find({ status: true }).exec()
-        }
-        const categories=await catModel.find()
-        res.render('user/shop',{products,categories})
-    } catch (error) {
-        console.log(error)
-        res.render('user/serverError')
-    }
-}
+
 const contact = async (req, res) => {
     try {
         res.render('user/contact')
@@ -109,18 +94,6 @@ const contact = async (req, res) => {
 }
 
 
-const shopSingle = async (req, res) => {
-    try {
-        const productId = req.params.id;
-        const categories = await catModel.find();
-        const productOne = await productModel.findById(productId); 
-        const products = await productModel.find(); 
-        res.render('user/shop-single', { productOne, products, categories });
-    } catch (error) {
-        console.log(error);
-        res.render('user/serverError');
-    }
-}
 
 
 
@@ -403,4 +376,4 @@ const authFailure = (req, res) => {
 };
 
 
-module.exports = { index, shop, contact, shopSingle, login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure ,forgotPassword,forgotPasswordPost, newPassword,newPasswordPost};
+module.exports = { index, contact,login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure ,forgotPassword,forgotPasswordPost, newPassword,newPasswordPost};

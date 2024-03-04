@@ -4,6 +4,7 @@ require('./../../googleAuth')
 const passport = require('passport')
 const userRouter = express.Router();
 const userController = require("../controller/userController/userController");
+const productController=require('../controller/userController/productController');
 const session = require('../../middleware/userAuth')
 const { logged, ifLogged,forgot,signed } = session
 
@@ -14,9 +15,9 @@ userRouter.get('/auth/failure', userController.authFailure);
 
 userRouter.get('/', userController.index);
 // userRouter.get('/cart',userController.cart);
-userRouter.get('/shop', userController.shop);
+userRouter.get('/shop', productController.shop);
 userRouter.get('/contact', userController.contact);
-userRouter.get('/shopSingle/:id', userController.shopSingle);
+userRouter.get('/shopSingle/:id', productController.shopSingle);
 
 
 userRouter.get('/login', ifLogged, userController.login);

@@ -78,8 +78,9 @@
 </footer>
 </div>
 <script>
-  let currentSlide = 0;
+
   const slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
 
   function showSlide(n) {
     slides[currentSlide].classList.remove('active');
@@ -94,6 +95,15 @@
   function nextSlide() {
     showSlide(currentSlide + 1);
   }
+
+  // Add click event listeners to each slide
+  slides.forEach((slide, index) => {
+    slide.addEventListener('click', () => {
+      showSlide(index);
+    });
+  });
+
+  
 
 
 
@@ -153,7 +163,8 @@
 <script>
   const logout = document.getElementById('logoutMain')
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/min/tiny-slider.js"></script>
 <script src="../../static/js/magiczoom.js"></script>
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/popper.min.js"></script>

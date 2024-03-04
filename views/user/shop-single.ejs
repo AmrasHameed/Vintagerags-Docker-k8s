@@ -1,52 +1,110 @@
 <%- include ("header.ejs") %>
-<div class="bg-light py-3">
-  <div class="container">
-      <div class="row">
-          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                  class="text-black"><%= productOne.name %></strong></div>
-      </div>
-  </div>
-</div>
 
-<div class="site-section">
-  <div class="container">
+
+
+  <div class="bg-light py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-0">
+          <a href="/">Home</a> <span class="mx-2 mb-0">/</span>
+          <strong class="text-black">
+            <%= productOne.name %>
+          </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-section">
+    <div class="container">
       <div class="row">
         <div class="col-md-6">
           <div id="productSlider" class="product-slider">
-            <% productOne.image.forEach((image, index) => { %>
+            <% productOne.image.forEach((image, index)=> { %>
               <div class="slide <%= index === 0 ? 'active' : '' %>">
                 <a href="/<%= image %>" class="MagicZoom" id="Mag" style="width: 80%; height: auto;">
                   <img src="/<%= image %>" alt="<%= productOne.name %> Image" class="img-fluid productImage" />
-              </a>              
+                </a>
               </div>
-            <% }); %>
+              <% }); %>
           </div>
-          <button class="prev verification-button" onclick="prevSlide()">Previous</button>
-          <button class="next verification-button" onclick="nextSlide()">Next</button>
+          <div class="position-absolute bottom-0 start-50 translate-middle-x" style="left: calc(50% - 120px);">
+            <div class="d-flex justify-content-center">
+              <div class="rounded-circle bg-white p-2 mr-3">
+                <button class="btn btn-link" type="button" onclick="prevSlide()">
+                  <i class="fas fa-arrow-left text-primary"></i>
+                </button>
+              </div>
+              <div class="rounded-circle bg-white p-2">
+                <button class="btn btn-link" type="button" onclick="nextSlide()">
+                  <i class="fas fa-arrow-right text-primary"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        
-          <div class="col-md-6">
-              <h2 class="text-black"><%= productOne.name %></h2>
-              <p><%= productOne.description %></p>
-              <p><strong class="text-primary h4">$<%= productOne.price %></strong></p>
-              <div class="mb-5">
-                  <div class="input-group mb-3" style="max-width: 120px;">
-                      <div class="input-group-prepend">
-                          <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-                      </div>
-                      <input type="text" class="form-control text-center" value="1" placeholder=""
-                          aria-label="Example text with button addon" aria-describedby="button-addon1">
-                      <div class="input-group-append">
-                          <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-                      </div>
-                  </div>
-              </div>
-              <p><a href="/cart" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
 
+        <div class="col-md-6">
+          <h2 class="text-black">
+            <%= productOne.name %>
+          </h2>
+          <p>
+            <%= productOne.description %>
+          </p>
+          <p><strong class="text-primary h4">$<%= productOne.price %></strong></p>
+          <div class="mb-4">
+            <!-- Size selection buttons -->
+            <div class="btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-outline-primary size-btn">
+                <input type="radio" name="size" id="sizeXS" autocomplete="off"> XS
+              </label>
+              <label class="btn btn-outline-primary size-btn">
+                <input type="radio" name="size" id="sizeS" autocomplete="off"> S
+              </label>
+              <label class="btn btn-outline-primary size-btn">
+                <input type="radio" name="size" id="sizeM" autocomplete="off"> M
+              </label>
+              <label class="btn btn-outline-primary size-btn">
+                <input type="radio" name="size" id="sizeL" autocomplete="off"> L
+              </label>
+              <label class="btn btn-outline-primary size-btn">
+                <input type="radio" name="size" id="sizeXL" autocomplete="off"> XL
+              </label>
+            </div>
           </div>
+          <div class="mb-4">
+            <!-- Quantity selection -->
+            <div class="input-group" style="max-width: 120px;">
+              <div class="input-group-prepend">
+                <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+              </div>
+              <input id="quantity" name="quantity" type="text" class="form-control text-center" value="1" placeholder=""
+                aria-label="Example text with button addon" aria-describedby="button-addon1">
+              <div class="input-group-append">
+                <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+              </div>
+            </div>
+          </div>
+          <div class="buttons-row">
+            <a href="/addtoCart/<%= productOne._id %>" onclick="addToCart(event);quantity(event)">
+              <button class="btn btn-primary">
+                <span class="fas fa-shopping-cart"></span> Add to Cart
+              </button>
+            </a>
+            <a href="/addtofavourites/<%= productOne._id %>">
+              <button class="btn btn-primary wishlist-btn">
+                <span class="fas fa-heart"></span> Add to Wishlist
+              </button>
+            </a>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
-</div>
+
+
+
+
 
 
 
@@ -86,5 +144,45 @@
       </div>
     </div>
   </div>
+
+ 
+
+  <script>
+    function quantity(event) {
+      let quantityValue = parseInt(document.getElementById('quantity').value);
+      if (quantityValue < 1) {
+        event.preventDefault();
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Quantity must be greater than 0',
+      });
+      }
+    }
+
+    function addToCart(event) {
+      var sizes = document.getElementsByName("size");
+      var sizeSelected = false;
+      for (var i = 0; i < sizes.length; i++) {
+        if (sizes[i].checked) {
+          sizeSelected = true;
+          break;
+        }
+      }
+
+      if (!sizeSelected) {
+        event.preventDefault();
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please select a size.',
+        });
+        return;
+      }
+    }
+    
+
+  </script>
+
 
   <%- include ("footer.ejs") %>
