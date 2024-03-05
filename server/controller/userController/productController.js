@@ -1,5 +1,5 @@
-const catModel= require('../../model/categModel')
-const productModel=require('../../model/productModel')
+const catModel = require('../../model/categModel')
+const productModel = require('../../model/productModel')
 const mongoose = require('mongoose')
 const flash = require('express-flash')
 
@@ -11,53 +11,94 @@ const flash = require('express-flash')
 const shop = async (req, res) => {
     try {
         let products;
+        const perPage=3;
         const categoryId = req.query.category;
         const sortBy = req.query.sortBy;
-
-        if (sortBy === 'nameAZ') {
-            let matchStage = { status: true };
-            if (categoryId) {
-                matchStage.category = categoryId;
+        const page=parseInt(req.query.page)||1;
+        if (sortBy) {
+            if (req.session.filterCat) {
+                products = await getProductsWithSorting({ category:new mongoose.Types.ObjectId(req.session.filterCat), status: true }, sortBy);
+            } else {
+                products = await getProductsWithSorting({ status: true }, sortBy);
             }
-            products = await productModel.aggregate([
-                { $match: matchStage },
-                { 
-                    $addFields: { 
-                        name_lower: { $toLower: "$name" } 
-                    } 
-                },
-                { $sort: { name_lower: 1 } }
-            ]).exec();
         } else {
-            let filter = { status: true };
             if (categoryId) {
-                filter.category = categoryId;
+                products = await productModel.find({ category: categoryId, status: true }).exec();
+                req.session.filterCat = categoryId;
+            } else {
+                products = await productModel.find({ status: true }).exec();
             }
-            products = await productModel.find(filter).exec();
         }
-
-        const categoryCounts = await productModel.aggregate([
-            { $match: { status: true } },
-            {
-                $group: {
-                    _id: "$category",
-                    count: { $sum: 1 }
-                }
-            }
-        ]);
-
-        const categoryCountsMap = {};
-        categoryCounts.forEach(count => {
-            categoryCountsMap[count._id] = count.count;
-        });
-
+        const totalPages = Math.ceil(products.length / perPage);
+        const startIndex = (page - 1) * perPage;
+        const endIndex = page * perPage;
+        const productsPaginated = products.slice(startIndex, endIndex);
+        
+        
+        const categoryCounts = await getCategoryCounts();
         const categories = await catModel.find();
-        res.render('user/shop', { products, categories, categoryCounts: categoryCountsMap });
+
+        res.render('user/shop', { products:productsPaginated, categories, categoryCounts ,currentPage:page,totalPages,sortBy});
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
     }
 }
+
+const getProductsWithSorting = async (filter, sortBy) => {
+    const aggregationPipeline = [
+        { $match: filter }
+    ];
+
+    if (sortBy === 'nameAZ') {
+        aggregationPipeline.push(
+            { $addFields: { name_lower: { $toLower: "$name" } } },
+            { $sort: { name_lower: 1 } }
+        );
+    }
+    if (sortBy === 'nameZA') {
+        aggregationPipeline.push(
+            { $addFields: { name_lower: { $toLower: "$name" } } },
+            { $sort: { name_lower: -1 } }
+        );
+    }
+    if (sortBy === 'priceHigh') {
+        aggregationPipeline.push(
+            { $sort: { price: 1 } }
+        );
+    }
+    if (sortBy === 'priceLow') {
+        aggregationPipeline.push(
+            { $sort: { price: -1 } }
+        );
+    }
+    if(sortBy=='newArrivals'){
+        aggregationPipeline.push(
+            {$sort:{_id:-1}},
+            {$limit:6}
+        )
+    }
+
+
+    return productModel.aggregate(aggregationPipeline).exec();
+}
+
+const getCategoryCounts = async () => {
+    const aggregationPipeline = [
+        { $match: { status: true } },
+        { $group: { _id: "$category", count: { $sum: 1 } } }
+    ];
+
+    const categoryCounts = await productModel.aggregate(aggregationPipeline);
+    const categoryCountsMap = {};
+
+    categoryCounts.forEach(count => {
+        categoryCountsMap[count._id] = count.count;
+    });
+
+    return categoryCountsMap;
+}
+
 
 
 
@@ -66,8 +107,8 @@ const shopSingle = async (req, res) => {
     try {
         const productId = req.params.id;
         const categories = await catModel.find();
-        const productOne = await productModel.findById(productId); 
-        const products = await productModel.find(); 
+        const productOne = await productModel.findById(productId);
+        const products = await productModel.find();
         res.render('user/shop-single', { productOne, products, categories });
     } catch (error) {
         console.log(error);
@@ -77,4 +118,5 @@ const shopSingle = async (req, res) => {
 
 
 
-module.exports={shop,shopSingle}
+
+module.exports = { shop, shopSingle}

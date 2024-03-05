@@ -59,7 +59,6 @@
                       <span class="count">2</span>
                     </a>
                   </li>
-                  <!-- <li id="logoutMain"><a href="#"><span class="icon icon-sign-out"></span></a></li> -->
                   <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><span
                         class="icon-menu"></span></a></li>
                 </ul>
@@ -76,6 +75,7 @@
             <li class="has-children">
               <a href="#">Categories</a>
               <ul class="dropdown">
+                
                 <% categories.forEach(category => { %>
                   <li><a href="/shop?category=<%= category._id %>"><%= category.name %></a></li>
               <% }); %>
@@ -83,7 +83,7 @@
               </ul>
             </li>
             <li><a href="/shop">Shop</a></li>
-            <li><a href="/">New Arrivals</a></li>
+            <li><a href="/shop?sortBy=newArrivals">New Arrivals</a></li>
             <li><a href="/contact">Contact</a></li>
           </ul>
         </div>

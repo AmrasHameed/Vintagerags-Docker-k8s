@@ -20,6 +20,7 @@ userRouter.get('/contact', userController.contact);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
 
 
+
 userRouter.get('/login', ifLogged, userController.login);
 userRouter.post('/login', userController.loginPost);
 userRouter.get('/forgotPassword',userController.forgotPassword)

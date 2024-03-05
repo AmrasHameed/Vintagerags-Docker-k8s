@@ -27,30 +27,25 @@
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                     <ul class="dropdown">
-                      <% categories.forEach(category => { %>
-                        <li><a href="/shop?category=<%= category._id %>"><%= category.name %></a></li>
-                    <% }); %>
-                    
+                      <% categories.forEach(category=> { %>
+                        <li><a href="/shop?category=<%= category._id %>">
+                            <%= category.name %>
+                          </a></li>
+                        <% }); %>
+
                     </ul>
                   </div>
                 </div>
                 <div class="btn-group">
                   <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
-                    data-toggle="dropdown">Reference</button>
+                    data-toggle="dropdown">Sort By</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                    <a class="dropdown-item" href="#">Relevance</a>
-                    <% if (categories.length > 0) { %>
-                      <% categories.forEach(category => { %>
-                          <a class="dropdown-item" href="/shop?category=<%= category._id %>&sortBy=nameAZ">Name, A to Z</a>
-                      <% }); %>
-                  <% } else { %>
-                      <a class="dropdown-item" href="/shop?sortBy=nameAZ">Name, A to Z</a>
-                  <% } %>
-                  
-                    <a class="dropdown-item" href="#">Name, Z to A</a>
+                    <a class="dropdown-item" href="/shop?sortBy=newArrivals">New Arrivals</a>
+                    <a class="dropdown-item" href="/shop?sortBy=nameAZ">Name, A to Z</a>
+                    <a class="dropdown-item" href="/shop?sortBy=nameZA">Name, Z to A</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Price, low to high</a>
-                    <a class="dropdown-item" href="#">Price, high to low</a>
+                    <a class="dropdown-item" href="/shop?sortBy=priceHigh">Price, low to high</a>
+                    <a class="dropdown-item" href="/shop?sortBy=priceLow">Price, high to low</a>
                   </div>
                 </div>
               </div>
@@ -58,61 +53,64 @@
           </div>
           <div class="row mb-5">
 
-            <% products.forEach(product => { %>
+            <% products.forEach(product=> { %>
               <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                  <div class="block-4 text-center border">
-                      <figure class="block-4-image imgsize">
-                          <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>" alt="<%= product.name %>" class="img-fluid"></a>
-                      </figure>
-                      <div class="block-4-text p-4 descript">
-                          <h3><a href="/shopSingle/<%= product._id %>"><%= product.name %></a></h3>
-                          <p class="mb-0"><%= product.description %></p>
-                          <p class="text-primary font-weight-bold">$<%= product.price %></p>
-                      </div>
+                <div class="block-4 text-center border">
+                  <figure class="block-4-image imgsize">
+                    <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>"
+                        alt="<%= product.name %>" class="img-fluid"></a>
+                  </figure>
+                  <div class="block-4-text p-4 descript">
+                    <h3><a href="/shopSingle/<%= product._id %>">
+                        <%= product.name %>
+                      </a></h3>
+                    <p class="mb-0">
+                      <%= product.description %>
+                    </p>
+                    <p class="text-primary font-weight-bold">$<%= product.price %>
+                    </p>
                   </div>
+                </div>
               </div>
-          <% }); %>
+              <% }); %>
           </div>
           <div class="row" data-aos="fade-up">
             <div class="col-md-12 text-center">
-              <div class="site-block-27">
-                <ul>
-                  <li><a href="#">&lt;</a></li>
-                  <li class="active"><span>1</span></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#">&gt;</a></li>
-                </ul>
-              </div>
+                <div class="site-block-27">
+                    <ul>
+                        <% if (currentPage > 1) { %>
+                        <li><a href="?page=<%= currentPage - 1 %><%= sortBy ? '&sortBy=' + sortBy : '' %>">&lt;</a></li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li <%= currentPage === i ? 'class="active"' : '' %>><a href="?page=<%= i %><%= sortBy ? '&sortBy=' + sortBy : '' %>"><%= i %></a></li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                        <li><a href="?page=<%= currentPage + 1 %><%= sortBy ? '&sortBy=' + sortBy : '' %>">&gt;</a></li>
+                        <% } %>
+                    </ul>
+                </div>
             </div>
-          </div>
+        </div>
+        
         </div>
 
         <div class="col-md-3 order-1 mb-5 mb-md-0">
           <div class="border p-4 rounded mb-4">
             <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
             <ul class="list-unstyled mb-0">
-              <% categories.forEach(category => { %>
+              <% categories.forEach(category=> { %>
                 <li class="mb-1">
                   <a href="/shop?category=<%= category._id %>" class="d-flex">
-                    <span><%= category.name %></span>
+                    <span>
+                      <%= category.name %>
+                    </span>
                     <span class="text-black ml-auto">
                       (<%= categoryCounts[category._id] || 0 %>)
-                  </span> 
+                    </span>
                   </a>
                 </li>
-              <% }); %>
+                <% }); %>
             </ul>
-          </div>
-
-          <div class="border p-4 rounded mb-4">
-            <div class="mb-4">
-              <h3 class="mb-3 h6 text-uppercase text-black d-block">Filter by Price</h3>
-              <div id="slider-range" class="border-primary"></div>
-              <input type="text" name="text" id="amount" class="form-control border-0 pl-0 bg-white" disabled="" />
-            </div>
           </div>
         </div>
       </div>
