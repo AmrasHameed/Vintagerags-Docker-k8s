@@ -1,10 +1,10 @@
 const express = require('express')
 require('./../../googleAuth')
-// const{passport,setSessionVariables}=require('../../googleAuth')
 const passport = require('passport')
 const userRouter = express.Router();
 const userController = require("../controller/userController/userController");
 const productController=require('../controller/userController/productController');
+const cartController=require('../controller/userController/cartController')
 const session = require('../../middleware/userAuth')
 const { logged, ifLogged,forgot,signed } = session
 
@@ -14,10 +14,14 @@ userRouter.get('/google/callback', userController.googleCallback);
 userRouter.get('/auth/failure', userController.authFailure);
 
 userRouter.get('/', userController.index);
-// userRouter.get('/cart',userController.cart);
-userRouter.get('/shop', productController.shop);
 userRouter.get('/contact', userController.contact);
+
+
+userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
+
+userRouter.get('/cart',logged,cartController.showcart)
+userRouter.post('/addtoCart/:id',logged,cartController.addcart);
 
 
 

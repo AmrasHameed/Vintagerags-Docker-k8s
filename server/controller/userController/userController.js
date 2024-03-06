@@ -63,26 +63,17 @@ const index = async (req, res) => {
 
     try {
         const categories=await catModel.find()
-        const products=await productModel.find()
+        const products=await productModel.find().limit(9)
         if (req.user) {
             req.session.isAuth = true;
             req.session.userId = req.user._id;
         }
-        // console.log(products[0].image);
         res.render('user/index',{categories,products})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
     }
 }
-// const cart= async (req,res)=>{
-//     try{
-//         res.render('user/cart')
-//     }catch(error){
-//         console.log(error)
-//         res.render('user/serverError')
-//     }
-// }
 
 const contact = async (req, res) => {
     try {
@@ -257,7 +248,7 @@ const loginPost = async (req, res) => {
             res.redirect('/login');
         }
     } catch {
-        req.flash('invaliduser', "An unexpected error occurred");
+        req.flash('invaliduser', "Invalid Email or Password");
         res.redirect('/login');
     }
 }

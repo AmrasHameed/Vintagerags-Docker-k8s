@@ -38,7 +38,7 @@ const shop = async (req, res) => {
         const categoryCounts = await getCategoryCounts();
         const categories = await catModel.find();
 
-        res.render('user/shop', { products:productsPaginated, categories, categoryCounts ,currentPage:page,totalPages,sortBy});
+        res.render('user/shop', { products:productsPaginated, categories, categoryCounts ,currentPage:page,totalPages,sortBy,categoryId});
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
@@ -115,8 +115,5 @@ const shopSingle = async (req, res) => {
         res.render('user/serverError');
     }
 }
-
-
-
 
 module.exports = { shop, shopSingle}

@@ -1017,4 +1017,32 @@ a {
   margin-right: 5px;
 }
 
+.rate{
+  font-family: sans-serif;
+  font-size: 18px;
+}
 
+.rateMain{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  color: #000;
+  font-weight: 600;
+}
+
+.rateOff{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  color: #f98e67;
+  font-weight: 400;
+}
+
+.rating{
+  border: 0.1px solid ;
+}
+.rating:hover {
+  border: 2px solid #1f2020; /* Specify border style and color */
+ 
+}
+.green-star {
+  color: rgb(14, 210, 122);
+}

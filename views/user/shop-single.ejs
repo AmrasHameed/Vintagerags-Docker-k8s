@@ -1,7 +1,5 @@
 <%- include ("header.ejs") %>
 
-
-
   <div class="bg-light py-3">
     <div class="container">
       <div class="row">
@@ -51,62 +49,53 @@
           <p>
             <%= productOne.description %>
           </p>
-          <p><strong class="text-primary h4">$<%= productOne.price %></strong></p>
-          <div class="mb-4">
-            <!-- Size selection buttons -->
-            <div class="btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-outline-primary size-btn">
-                <input type="radio" name="size" id="sizeXS" autocomplete="off"> XS
-              </label>
-              <label class="btn btn-outline-primary size-btn">
-                <input type="radio" name="size" id="sizeS" autocomplete="off"> S
-              </label>
-              <label class="btn btn-outline-primary size-btn">
-                <input type="radio" name="size" id="sizeM" autocomplete="off"> M
-              </label>
-              <label class="btn btn-outline-primary size-btn">
-                <input type="radio" name="size" id="sizeL" autocomplete="off"> L
-              </label>
-              <label class="btn btn-outline-primary size-btn">
-                <input type="radio" name="size" id="sizeXL" autocomplete="off"> XL
-              </label>
-            </div>
-          </div>
-          <div class="mb-4">
-            <!-- Quantity selection -->
-            <div class="input-group" style="max-width: 120px;">
-              <div class="input-group-prepend">
-                <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+          <span id="ratingContainer" class="rating-container">
+            <span class="rating">
+              <span style="font-family: Arial, Helvetica, sans-serif; font-weight: 400; color: #000;">&nbsp;3.7</span>&nbsp;<span class="green-star">★</span>&nbsp;<span id="avgrating"></span>&nbsp;<span>1.8k Ratings&nbsp;</span>
+            </span>
+          </span>
+          <hr>
+          <p><strong class="rateMain">₹<%= productOne.price %></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+              class="rate">MRP.</span>&nbsp;&nbsp;&nbsp;<span class="rate"
+              style="text-decoration: line-through;color: #857b79;">₹<%= productOne.price+(productOne.price*10/100) %>
+                </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="rateOff">(10% OFF)</span><br><span style="font-weight: 300;color: rgb(11, 215, 157);">inclusive of all taxes</span></p>
+          <form id="addToCartForm" onsubmit="return addToCart(event);" method="post"
+            action="/addtoCart/<%= productOne._id %>">
+
+            <div class="mb-4">
+              <!-- Size selection buttons -->
+              <div class="btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-outline-primary size-btn">
+                  <input type="radio" name="size" id="sizeXS" value="XS" autocomplete="off"> XS
+                </label>
+                <label class="btn btn-outline-primary size-btn">
+                  <input type="radio" name="size" id="sizeS" value="S" autocomplete="off"> S
+                </label>
+                <label class="btn btn-outline-primary size-btn">
+                  <input type="radio" name="size" id="sizeM" value="M" autocomplete="off"> M
+                </label>
+                <label class="btn btn-outline-primary size-btn">
+                  <input type="radio" name="size" id="sizeL" value="L" autocomplete="off"> L
+                </label>
+                <label class="btn btn-outline-primary size-btn">
+                  <input type="radio" name="size" id="sizeXL" value="XL" autocomplete="off"> XL
+                </label>
               </div>
-              <input id="quantity" name="quantity" type="text" class="form-control text-center" value="1" placeholder=""
-                aria-label="Example text with button addon" aria-describedby="button-addon1">
-              <div class="input-group-append">
-                <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-              </div>
             </div>
-          </div>
-          <div class="buttons-row">
-            <a href="/addtoCart/<%= productOne._id %>" onclick="addToCart(event);quantity(event)">
-              <button class="btn btn-primary">
-                <span class="fas fa-shopping-cart"></span> Add to Cart
+            <br>
+            <div class="d-flex align-items-center mb-4">
+              <button type="submit" class="btn btn-primary mr-2">
+                  <span class="fas fa-shopping-cart"></span> Add to Cart
               </button>
-            </a>
-            <a href="/addtofavourites/<%= productOne._id %>">
-              <button class="btn btn-primary wishlist-btn">
-                <span class="fas fa-heart"></span> Add to Wishlist
-              </button>
-            </a>
+              <a href="/addtofavourites/<%= productOne._id %>" class="btn btn-primary wishlist-btn">
+                  <span class="fas fa-heart"></span> Add to Wishlist
+              </a>
           </div>
+        </form>
         </div>
       </div>
     </div>
   </div>
-
-
-
-
-
-
 
   <div class="site-section block-3 site-blocks-2 bg-light">
     <div class="container">
@@ -132,7 +121,7 @@
                       <p class="mb-0">
                         <%= product.description %>
                       </p>
-                      <p class="text-primary font-weight-bold">$<%= product.price %>
+                      <p class="text-primary font-weight-bold">₹<%= product.price %>
                       </p>
                     </div>
                   </div>
@@ -145,22 +134,13 @@
     </div>
   </div>
 
- 
-
   <script>
-    function quantity(event) {
-      let quantityValue = parseInt(document.getElementById('quantity').value);
-      if (quantityValue < 1) {
+    document.getElementById("addToCartForm").addEventListener("submit", function (event) {
+      if (!addToCart()) {
         event.preventDefault();
-        Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Quantity must be greater than 0',
-      });
       }
-    }
-
-    function addToCart(event) {
+    });
+    function addToCart() {
       var sizes = document.getElementsByName("size");
       var sizeSelected = false;
       for (var i = 0; i < sizes.length; i++) {
@@ -171,18 +151,15 @@
       }
 
       if (!sizeSelected) {
-        event.preventDefault();
         Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please select a size.',
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please select a size.',
         });
-        return;
+        return false;
       }
+      return true;
     }
-    
-
   </script>
-
 
   <%- include ("footer.ejs") %>
