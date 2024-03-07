@@ -19,9 +19,19 @@ const productSchema = new mongoose.Schema(
             type: Number,
             required: true
         },
-        stock: {
+        stock: [{
+            size: {
+                type: String,
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        }],
+        totalstock: {
             type: Number,
-            required: true
+            required: true,
         },
         image: {
             type: Array,

@@ -22,7 +22,7 @@ userRouter.get('/shopSingle/:id', productController.shopSingle);
 
 userRouter.get('/cart',logged,cartController.showcart)
 userRouter.post('/addtoCart/:id',logged,cartController.addcart);
-
+userRouter.post('/updateCartQuantity/:productId/:size',logged,cartController.updateCart)
 
 
 userRouter.get('/login', ifLogged, userController.login);

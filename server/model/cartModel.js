@@ -13,16 +13,16 @@ const cartSchema = new mongoose.Schema({
                 ref:'productDetails',
                 required: true
             },
+            stock:{
+                type:String,
+                required:true,
+            },
             quantity:{
                 type:Number,
                 required:true
             },
             size:{
                 type:String,
-                required:true
-            },
-            stock:{
-                type:Number,
                 required:true
             },
             price:{
@@ -36,7 +36,7 @@ const cartSchema = new mongoose.Schema({
         }
     ],
     total:Number,
-});
+},{strictPopulate:false});
 
 const cartModel = mongoose.model('cart', cartSchema);
 

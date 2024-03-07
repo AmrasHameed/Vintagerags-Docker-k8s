@@ -37,7 +37,28 @@ const addProductPost = async (req, res) => {
             category: req.body.category,
             description: req.body.description,
             price: req.body.price,
-            stock: req.body.stock,
+            stock:[{
+                size:'XS',
+                quantity:req.body.s1,
+            },
+            {
+                size:'S',
+                quantity:req.body.s2,
+            },
+            {
+                size:'M',
+                quantity:req.body.s3,
+            },
+            {
+                size:'L',
+                quantity:req.body.s4,
+            },
+            {
+                size:'XL',
+                quantity:req.body.s5,
+            }
+            ],
+            totalstock:parseInt(req.body.s1)+parseInt(req.body.s2)+parseInt(req.body.s3)+parseInt(req.body.s4)+parseInt(req.body.s5),
             image: req.files.map(file => file.path),
         })
         await product.save()
@@ -79,7 +100,14 @@ const updateProductPost = async (req, res) => {
         product.name = req.body.name
         product.description = req.body.description
         product.price = req.body.price
-        product.stock = req.body.stock
+        product.stock = [
+            {size:'XS',quantity:req.body.s1},
+            {size:'S',quantity:req.body.s2},
+            {size:'M',quantity:req.body.s3},
+            {size:'L',quantity:req.body.s4},
+            {size:'XL',quantity:req.body.s5},
+        ]
+        product.totalstock=parseInt(req.body.s1)+parseInt(req.body.s2)+parseInt(req.body.s3)+parseInt(req.body.s4)+parseInt(req.body.s5)
         await product.save();
         req.flash('updateSuccess', "Product Updated Successfully")
         res.redirect('/admin/products')
