@@ -3,10 +3,11 @@ require('./../../googleAuth')
 const passport = require('passport')
 const userRouter = express.Router();
 const userController = require("../controller/userController/userController");
-const productController=require('../controller/userController/productController');
-const cartController=require('../controller/userController/cartController')
+const productController = require('../controller/userController/productController');
+const cartController = require('../controller/userController/cartController')
+const checkoutController=require('../controller/userController/checkoutController')
 const session = require('../../middleware/userAuth')
-const { logged, ifLogged,forgot,signed } = session
+const { logged, ifLogged, forgot, signed ,checkoutValid} = session
 
 
 userRouter.get('/googleSignIn', userController.googleSignIn)
@@ -20,19 +21,24 @@ userRouter.get('/contact', userController.contact);
 userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
 
-userRouter.get('/cart',logged,cartController.showcart)
-userRouter.post('/addtoCart/:id',logged,cartController.addcart);
-userRouter.post('/updateCartQuantity/:productId/:size',logged,cartController.updateCart)
+userRouter.get('/cart', logged, cartController.showcart)
+userRouter.post('/addtoCart/:id', logged, cartController.addcart);
+userRouter.post('/updateCartQuantity/:productId/:size', logged, cartController.updateCart)
+userRouter.get('/deletcart/:id/:size', logged, cartController.deleteCart)
+
+
+userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
+userRouter.get('/checkoutreload',logged,checkoutValid,checkoutController.checkoutreload)
 
 
 userRouter.get('/login', ifLogged, userController.login);
 userRouter.post('/login', userController.loginPost);
-userRouter.get('/forgotPassword',userController.forgotPassword)
-userRouter.post('/forgotPasswordPost',userController.forgotPasswordPost)
-userRouter.get('/newPassword',forgot,userController.newPassword)
-userRouter.post('/newPasswordPost',forgot,userController.newPasswordPost)
+userRouter.get('/forgotPassword', userController.forgotPassword)
+userRouter.post('/forgotPasswordPost', userController.forgotPasswordPost)
+userRouter.get('/newPassword', forgot, userController.newPassword)
+userRouter.post('/newPasswordPost', forgot, userController.newPasswordPost)
 
-userRouter.get('/otp',signed, userController.otp)
+userRouter.get('/otp', signed, userController.otp)
 userRouter.post('/verifyotp', userController.verifyotp)
 userRouter.post('/resendotp', userController.resendotp)
 
