@@ -23,7 +23,8 @@
     "nodemailer": "^6.9.9",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
-    "passport-google-oauth2": "^0.2.0"
+    "passport-google-oauth2": "^0.2.0",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"
