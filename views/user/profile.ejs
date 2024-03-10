@@ -13,16 +13,21 @@
           <%=email%>
         </p>
       </section>
+      <% if(success){%>
+        <div style="color: rgb(0, 149, 22); font-size: 16px; font-weight: bold;">
+            <%= success%>
+            <% } %>
+        </div>
       <nav class="account-nav">
         <ul>
           <li>
             <div class="option-wrapper">
-              <a href="#">My Orders</a>
+              <a href="/orders">My Orders</a>
             </div>
           </li>
           <li>
             <div class="option-wrapper">
-              <a href="#">Reset Password</a>
+              <a href="/resetpassword">Reset Password</a>
             </div>
           </li>
           <li>
@@ -37,7 +42,7 @@
           </li>
           <li>
             <div class="option-wrapper">
-              <a href="#">Addresses</a>
+              <a href="/address">Addresses</a>
             </div>
           </li>
           <li>

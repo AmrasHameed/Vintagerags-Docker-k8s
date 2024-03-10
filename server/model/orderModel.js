@@ -43,6 +43,9 @@ const schema = new mongoose.Schema({
     }, address: {
         type: Array,
         required: true
+    },amount:{
+        type:String,
+        required:true
     },
     payment: {
         type: String,

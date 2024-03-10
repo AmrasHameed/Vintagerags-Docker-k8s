@@ -1047,3 +1047,17 @@ a {
   color: rgb(14, 210, 122);
 }
 
+#newAddressForm {
+  position: absolute;
+  top: 400px;
+  left: 50px;
+}
+#newAddressForm input[type="text"],
+#newAddressForm input[type="email"],
+#newAddressForm input[type="number"],
+#newAddressForm select {
+  width: auto;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}

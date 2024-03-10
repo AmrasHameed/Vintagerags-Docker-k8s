@@ -11,6 +11,11 @@
   <div class="site-section">
     <div class="container">
       <div class="row mb-5 justify-content-center"> <!-- Center aligning the row -->
+        <% if(nostock){%>
+          <div style="color: red; font-size: 16px; font-weight: bold;">
+              <%=nostock%>
+          </div>
+              <%}%>
         <form class="col-md-12" method="post">
           <% if (cart && cart.item && cart.item.length> 0) { %>
             <div class="site-blocks-table">

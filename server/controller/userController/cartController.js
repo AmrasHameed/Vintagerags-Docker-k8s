@@ -1,6 +1,7 @@
 const productModel = require("../../model/productModel");
 const catModel = require("../../model/categModel");
 const cartModel = require("../../model/cartModel");
+const flash=require('express-flash')
 
 const showcart = async (req, res) => {
     try {
@@ -32,7 +33,8 @@ const showcart = async (req, res) => {
             }
         }
         req.session.checkout = true;
-        res.render("user/cart", { cart, insufficientStock, categories });
+        const nostock=req.flash('nostock')
+        res.render("user/cart", { cart, insufficientStock, categories ,nostock});
     } catch (error) {
         console.log(error);
         res.render("user/serverError");
@@ -54,6 +56,7 @@ const addcart = async (req, res) => {
         const quantity = 1;
 
         if (selectedStock.quantity === 0) {
+            req.flash('nostock','No stock Found')
             res.redirect("/cart");
         } else {
             let cart;
@@ -152,7 +155,6 @@ const updateCart = async (req, res) => {
         const total = cart.item.reduce((acc, item) => acc + item.total, 0);
         cart.total = total;
         await cart.save();
-
         res.json({
             success: true,
             newQuantity: updatedQuantity,

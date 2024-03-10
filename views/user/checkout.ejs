@@ -1,294 +1,325 @@
 <%- include ("header.ejs") %>
-
-  <div class="bg-light py-3">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 mb-0">
-          <a href="/">Home</a> <span class="mx-2 mb-0">/</span> <a href="/cart">Cart</a> <span
-            class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong>
-        </div>
+<hr>
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-0">
+        <a href="/">Home</a> <span class="mx-2 mb-0">/</span> <a href="/cart">Cart</a> <span class="mx-2 mb-0">/</span>
+        <strong class="text-black">Checkout</strong>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="site-section">
-    <div class="container">
-      <form id="orderform">
-      <div class="row">
-        <div class="col-md-6">
-          <% if (address && address.address) { %>
-            <div class="address-list">
-              <% address.address.forEach(address=> { %>
-                <div class="address-item btn border">
-                  <label>
-                    <!-- Add a data attribute to the radio button to store the address ID -->
-                    <input type="radio" name="address" value="<%= address.id %>" class="address-radio"
-                      data-address-id="<%= address.id %>">
-                    <span class="larger-text font-weight-bold text-black">
-                      <%= address.save_as %>
-                    </span>
-                    <div class="address-details larger-text">
-                      <p><span class="key">Full Name: </span>
-                        <%= address.name %>
-                      </p>
-                      <p><span class="key">House name/Flat no:</span>
-                        <%= address.housename %>
-                      </p>
-                      <p><span class="key">Street:</span>
-                        <%= address.street %>
-                      </p>
-                      <p><span class="key">City:</span>
-                        <%= address.city %>
-                      </p>
-                      <p><span class="key">Pin-Code:</span>
-                        <%= address.pincode %>
-                      </p>
-                      <p><span class="key">State:</span>
-                        <%= address.state %>
-                      </p>
-                      <p><span class="key">Country:</span>
-                        <%= address.country %>
-                      </p>
-                      <!-- Add other address properties as needed -->
-                    </div>
-                  </label>
-                </div>
-                <% }); %>
-            </div>
-            <% } else { %>
-              <div>No addresses found.</div>
-              <% } %>
-                <div>
-                  <button type="button" class="btn btn-primary mt-3" id="addAddressBtn">Add Address</button>
-                </div>
-
-                <div class="form-group mt-4">
-                  <div class="edit-profile-form" id="newAddressForm" style="display: none;">
-                    <!-- Address form -->
-                    <p style="font-weight: 600; color: red;">!! The Address May not be saved if you enter invalid
-                      details </p>
-                    <h2 class="mb-3">Add New Address</h2>
-                    <form action="/checkoutreload" id="addressForm" method="post" class="row">
-                      <!-- Personal details -->
-                      <div class="form-group col-md-6">
-                        <label for="saveas">Save as</label>
-                        <input type="text" id="saveas" name="saveas" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="fullname">Full Name</label>
-                        <input type="text" id="fullname" name="name" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="fullname">Email</label>
-                        <input type="email" id="email" name="email" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="adname">House Name / Flat No</label>
-                        <input type="text" id="adname" name="housename" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="street">Street</label>
-                        <input type="text" id="street" name="street" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="pincode">Pincode</label>
-                        <input type="number" id="pincode" name="pincode" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="state">State</label>
-                        <select id="state" name="state" class="form-control" required>
-                          <option value="" disabled selected>Select a state</option>
-                          <option value="Kerala">Kerala</option>
-                          <option value="Karnataka">Karnataka</option>
-                          <option value="TamilNadu">Tamil Nadu</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="country">Country</label>
-                        <select id="country" name="country" class="form-control" required>
-                          <option value="India">India</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="phone">Phone Number</label>
-                        <input type="number" id="mobile" name="mobile" class="form-control">
-                      </div>
-                      <input type="hidden" name="cartId" value="<%= data._id %>">
-                      <div class="form-group col-12">
-                        <button id="saveChangesButton" type="submit" class="btn btn-primary">Save Changes</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <% if (address && address.address) { %>
+        <div class="address-list">
+          <% address.address.forEach((address,index)=> { %>
+          <div class="address-item btn border">
+            <label for="address<%= index + 1 %>">
+              <!-- Add a data attribute to the radio button to store the address ID -->
+              <input type="radio" name="address" id="address<%= index+1 %>" value="<%= index %>" class="address-radio"
+                data-address-id="<%= address._id %>">
+              <span class="larger-text font-weight-bold text-black">
+                <%= address.save_as %>
+              </span>
+              <div class="address-details larger-text">
+                <p><span class="key">Full Name: </span>
+                  <%= address.name %>
+                </p>
+                <p><span class="key">House name/Flat no:</span>
+                  <%= address.housename %>
+                </p>
+                <p><span class="key">Street:</span>
+                  <%= address.street %>
+                </p>
+                <p><span class="key">City:</span>
+                  <%= address.city %>
+                </p>
+                <p><span class="key">Pin-Code:</span>
+                  <%= address.pincode %>
+                </p>
+                <p><span class="key">State:</span>
+                  <%= address.state %>
+                </p>
+                <p><span class="key">Country:</span>
+                  <%= address.country %>
+                </p>
+                <!-- Add other address properties as needed -->
+              </div>
+            </label>
+          </div>
+          <% }); %>
         </div>
+        <% } else { %>
+        <div>No addresses found.</div>
+        <% } %>
+        <div>
+          <a class="btn btn-primary mt-3" href="/addAddress">Add Address</a>
+        </div>
+      </div>
 
-        <!-- Right Column for Coupon Code and Your Order -->
-        <div class="col-md-6">
-          <div class="row mb-5">
-            <div class="col-md-12">
-              <h2 class="h3 mb-3 text-black">Coupon Code</h2>
-              <div class="p-3 p-lg-5 border">
-                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
-                <div class="input-group w-75">
-                  <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code"
-                    aria-describedby="button-addon2">
-                  <div class="input-group-append">
-                    <button class="btn btn-primary btn-sm" type="button" id="button-addon2">Apply</button>
-                  </div>
+      <!-- Right Column for Coupon Code and Your Order -->
+      <div class="col-md-6">
+        <div class="row mb-5">
+          <div class="col-md-12">
+            <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+            <div class="p-3 p-lg-5 border">
+              <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+              <div class="input-group w-75">
+                <input type="text" class="form-control" id="c_code" placeholder="Coupon Code"
+                  aria-label="Coupon Code" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-primary btn-sm" type="button" id="button-addon2">Apply</button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-           <input type="hidden" id="pay" name="pay" value="0" />
-            <div class="col-md-12 mb-5">
-              <h2 class="h3 mb-3 text-black">Your Order</h2>
-              <div class="p-3 p-lg-5 border">
-                <table class="table site-block-order-table mb-5">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% data.item.forEach((item)=> { %>
-                      <tr>
-                        <td>
-                          <%= item.productId.name %> <strong class="mx-2">x</strong>
-                            <%= item.quantity %>
-                        </td>
-                        <td>
-                          <%= item.total %>
-                        </td>
-                      </tr>
-                      <% }) %>
-                        <tr>
-                          <td class="text-black font-weight-bold">Cart Subtotal:</td>
-                          <td class="text-black font-weight-bold">₹<%= data.total %>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-black font-weight-bold">Discount:</td>
-                          <td class="text-black font-weight-bold">₹0</td>
-                        </tr>
-                        <tr>
-                          <td class="text-black font-weight-bold">Order Total:</td>
-                          <td class="text-black font-weight-bold">₹<%= data.total %>
-                          </td>
-                        </tr>
-                  </tbody>
-                </table>
-              </div>
+        <input type="hidden" id="pay" name="pay" value="0" />
+        <div class="col-md-12 mb-5">
+          <h2 class="h3 mb-3 text-black">Your Order</h2>
+          <div class="p-3 p-lg-5 border">
+            <table class="table site-block-order-table mb-5">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% data.item.forEach((item)=> { %>
+                <tr>
+                  <td>
+                    <%= item.productId.name %> <strong class="mx-2">x</strong>
+                    <%= item.quantity %>
+                  </td>
+                  <td>
+                    <%= item.total %>
+                  </td>
+                </tr>
+                <% }) %>
+                <tr>
+                  <input type="hidden" name="cartId" value="<%= data._id %>">
+                  <input type="hidden" id="amount" name="amount" value="<%= data.total %>" />
+                  <td class="text-black font-weight-bold">Cart Subtotal:</td>
+                  <td class="text-black font-weight-bold">₹<%= data.total %>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-black font-weight-bold">Discount:</td>
+                  <td class="text-black font-weight-bold">₹0</td>
+                </tr>
+                <tr>
+                  <td class="text-black font-weight-bold">Order Total:</td>
+                  <td class="text-black font-weight-bold" id="total">₹<%= data.total %>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="d-flex flex-column border p-3 mb-3 btn">
+              <label class="flex-grow-1 d-flex align-items-center">
+                <input type="radio" name="paymentOption" value="cashOnDelivery" onclick="handlePaymentMethodSelection()"
+                  class="h6 mb-0 align-self-start">
+                <span class="d-block ml-3 text-primary">Cash on Delivery</span>
+              </label>
             </div>
+          </div>
 
-            <div class="row">
-              <div class="col-md-12">
-                <div class="d-flex flex-column border p-3 mb-3 btn">
-                  <label class="flex-grow-1 d-flex align-items-center">
-                    <input type="radio" name="paymentOption" value="cashOnDelivery" onclick="handlePaymentMethodSelection()" class="h6 mb-0 align-self-start">
-                    <span class="d-block ml-3 text-primary">Cash on Delivery</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <div class="d-flex flex-column border p-3 mb-3 btn">
-                  <label class="flex-grow-1 d-flex align-items-center">
-                    <input type="radio" name="paymentOption" onclick="handlePaymentMethodSelection()" class="h6 mb-0 align-self-start">
-                    <span class="d-block ml-3 text-primary">Direct Bank Transfer</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <div class="d-flex flex-column border p-3 mb-3 btn">
-                  <label class="flex-grow-1 d-flex align-items-center">
-                    <input type="radio" name="paymentOption" onclick="handlePaymentMethodSelection()" class="h6 mb-0 align-self-start">
-                    <span class="d-block ml-3 text-primary">Paypal</span>
-                  </div>
-                </label>
-              </div>
+          <div class="col-md-12">
+            <div class="d-flex flex-column border p-3 mb-3 btn">
+              <label class="flex-grow-1 d-flex align-items-center">
+                <input type="radio" name="paymentOption" onclick="handlePaymentMethodSelection()"
+                  class="h6 mb-0 align-self-start">
+                <span class="d-block ml-3 text-primary">Direct Bank Transfer</span>
+              </label>
             </div>
+          </div>
 
-            <div class="form-group">
-              <button id="placeOrderBtn" class="btn btn-primary btn-lg py-3 btn-block" onclick="proceedToOrder()">Place Order</button>
+          <div class="col-md-12">
+            <div class="d-flex flex-column border p-3 mb-3 btn">
+              <label class="flex-grow-1 d-flex align-items-center">
+                <input type="radio" name="paymentOption" onclick="handlePaymentMethodSelection()"
+                  class="h6 mb-0 align-self-start">
+                <span class="d-block ml-3 text-primary">Paypal</span>
+              </label>
             </div>
-          </form>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button id="placeOrderBtn" class="btn btn-primary btn-lg py-3 btn-block" onclick="proceedToOrder()">Place
+            Order</button>
         </div>
       </div>
     </div>
   </div>
-
+</div>
   <script>
     function handlePaymentMethodSelection() {
-        const selectedPaymentMethod = document.querySelector(
-          'input[name="paymentOption"]:checked'
-        );
-        if (selectedPaymentMethod) {
-          const hiddenInput = document.getElementById("pay");
-          hiddenInput.value = selectedPaymentMethod.value;
-        }
+      const selectedPaymentMethod = document.querySelector(
+        'input[name="paymentOption"]:checked'
+      );
+      if (selectedPaymentMethod) {
+        const hiddenInput = document.getElementById("pay");
+        hiddenInput.value = selectedPaymentMethod.value;
+      }
+    }
+    document.getElementById('placeOrderBtn').addEventListener('click', function (event) {
+      event.preventDefault(); // Prevent the default form submission behavior
+      proceedToOrder(); // Call the proceedToOrder function
+    });
+
+    function proceedToOrder() {
+      var selectedAddress = document.querySelector('input[name="address"]:checked');
+      var selectedPayment = document.querySelector('input[name="paymentOption"]:checked');
+
+      if (!selectedAddress) {
+        console.log("Address not selected");
+        Swal.fire({
+          text: "Select the delivery address",
+          icon: "error",
+          confirmButtonText: "OK",
+          customClass: {
+            title: "text-danger",
+            popup: "swal2-popup-custom",
+            confirmButton: "btn btn-danger",
+          },
+          showCancelButton: false,
+          showCloseButton: true,
+          showLoaderOnConfirm: false
+        });
+      } else if (!selectedPayment) {
+        console.log("Payment option not selected");
+        Swal.fire({
+          text: "Select a Payment option",
+          icon: "error",
+          confirmButtonText: "OK",
+          customClass: {
+            title: "text-danger",
+            popup: "swal2-popup-custom",
+            confirmButton: "btn btn-danger",
+          },
+          showCancelButton: false,
+          showCloseButton: true,
+          showLoaderOnConfirm: false
+        });
+      } else if (selectedPayment.value == "cashOnDelivery") {
+        console.log("Cash on Delivery selected");
+        document.getElementById("orderform").action = "/order";
+        document.getElementById("orderform").method = "post";
+        document.getElementById("orderform").submit();
+        const amount = document.getElementById("total").textContent.trim();
+        document.getElementById("total").innerText = `${amount}`;
+        document.getElementById("amount").value = `${amount}`;
+      }
     }
 
-    document.getElementById('addAddressBtn').addEventListener('click', function () {
-      var addressForm = document.getElementById('newAddressForm');
-      if (addressForm.style.display === 'none') {
-        addressForm.style.display = 'block';
+    function validateAddress() {
+      var errors = '';
+      var saveas = document.getElementById('saveas').value;
+      var fullname = document.getElementById('fullname').value;
+      var email = document.getElementById('email').value;
+      var adname = document.getElementById('adname').value;
+      var street = document.getElementById('street').value;
+      var pincode = document.getElementById('pincode').value;
+      var city = document.getElementById('city').value;
+      var state = document.getElementById('state').value;
+      var country = document.getElementById('country').value;
+      var mobile = document.getElementById('mobile').value;
+
+      var saveasError = document.getElementById('saveasError');
+      var fullnameError = document.getElementById('fullnameError');
+      var emailError = document.getElementById('emailError');
+      var adnameError = document.getElementById('adnameError');
+      var streetError = document.getElementById('streetError');
+      var pincodeError = document.getElementById('pincodeError');
+      var cityError = document.getElementById('cityError');
+      var stateError = document.getElementById('stateError');
+      var countryError = document.getElementById('countryError');
+      var mobileError = document.getElementById('mobileError');
+
+      saveasError.innerHTML = '';
+      fullnameError.innerHTML = '';
+      emailError.innerHTML = '';
+      adnameError.innerHTML = '';
+      streetError.innerHTML = '';
+      pincodeError.innerHTML = '';
+      cityError.innerHTML = '';
+      stateError.innerHTML = '';
+      countryError.innerHTML = '';
+      mobileError.innerHTML = '';
+
+      if (!saveas) {
+        saveasError.innerHTML = 'Save as is required.';
+        errors += 'Save as is required.\n';
+      }
+      if (!fullname) {
+        fullnameError.innerHTML = 'Full name is required.';
+        errors += 'Full name is required.\n';
+      }
+      if (!email) {
+        emailError.innerHTML = 'Email is required.';
+        errors += 'Email is required.\n';
+      } else if (!email.match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)) {
+        emailError.innerHTML = 'Invalid email address.';
+        errors += 'Invalid email address.\n';
+      }
+      if (!adname) {
+        adnameError.innerHTML = 'House name/Flat no is required.';
+        errors += 'House name/Flat no is required.\n';
+      }
+      if (!street) {
+        streetError.innerHTML = 'Street is required.';
+        errors += 'Street is required.\n';
+      }
+      if (!pincode) {
+        pincodeError.innerHTML = 'Pincode is required.';
+        errors += 'Pincode is required.\n';
+      } else if (!pincode.match(/^\d{6}$/)) {
+        pincodeError.innerHTML = 'Invalid pincode.';
+        errors += 'Invalid pincode.\n';
+      }
+      if (!city) {
+        cityError.innerHTML = 'City is required.';
+        errors += 'City is required.\n';
+      }
+      if (!state) {
+        stateError.innerHTML = 'State is required.';
+        errors += 'State is required.\n';
+      }
+      if (!country) {
+        countryError.innerHTML = 'Country is required.';
+        errors += 'Country is required.\n';
+      }
+      if (!mobile) {
+        mobileError.innerHTML = 'Mobile number is required.';
+        errors += 'Mobile number is required.\n';
+      } else if (!mobile.match(/^\d{10}$/)) {
+        mobileError.innerHTML = 'Invalid mobile number.';
+        errors += 'Invalid mobile number.\n';
+      }
+
+      if (errors) {
+        return false;
       } else {
-        addressForm.style.display = 'none';
+        return true;
+      }
+    }
+
+    document.getElementById('saveChangesButton').addEventListener('click', function (event) {
+      if (!validateAddress()) {
+        event.preventDefault();
       }
     });
-    document.getElementById('placeOrderBtn').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    proceedToOrder(); // Call the proceedToOrder function
-  });
-
-  function proceedToOrder() {
-    var selectedAddress = document.querySelector('input[name="address"]:checked');
-    var selectedPayment = document.querySelector('input[name="paymentOption"]:checked');
-
-    if (!selectedAddress) {
-      console.log("Address not selected");
-      Swal.fire({
-        text: "Select the delivery address",
-        icon: "error",
-        confirmButtonText: "OK",
-        customClass: {
-          title: "text-danger",
-          popup: "swal2-popup-custom",
-          confirmButton: "btn btn-danger",
-        },
-        showCancelButton: false,
-        showCloseButton: true,
-        showLoaderOnConfirm: false
-      });
-    } else if (!selectedPayment) {
-      console.log("Payment option not selected");
-      Swal.fire({
-        text: "Select a Payment option",
-        icon: "error",
-        confirmButtonText: "OK",
-        customClass: {
-          title: "text-danger",
-          popup: "swal2-popup-custom",
-          confirmButton: "btn btn-danger",
-        },
-        showCancelButton: false,
-        showCloseButton: true,
-        showLoaderOnConfirm: false
-      });
-    } else if (selectedPayment.value == "cashOnDelivery") {
-      console.log("Cash on Delivery selected");
-      document.getElementById("orderform").action = "/order";
-      document.getElementById("orderform").method = "post";
-      document.getElementById("orderform").submit();
-    }
-  }
   </script>
-
   <%- include ("footer.ejs") %>

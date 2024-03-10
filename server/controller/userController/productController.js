@@ -116,4 +116,26 @@ const shopSingle = async (req, res) => {
     }
 }
 
-module.exports = { shop, shopSingle}
+
+const search=async(req,res)=>{
+    try{
+        const sortBy = req.query.sortBy;
+        const search = req.query.search;
+        const categoryId = req.query.category;
+        const perPage=3;
+        const categories=await catModel.find()
+        const products = await productModel.find({ name: { $regex: new RegExp(`^${search}`, 'i') } });
+        const page=parseInt(req.query.page)||1;
+        const totalPages = Math.ceil(products.length / perPage);
+        const startIndex = (page - 1) * perPage;
+        const endIndex = page * perPage;
+        const productsPaginated = products.slice(startIndex, endIndex);
+        const categoryCounts = await getCategoryCounts();
+        res.render('user/shop', { products: productsPaginated,categories,currentPage:page,totalPages,categoryCounts,sortBy,categoryId})
+    }catch(error){
+        console.log(error);
+        res.render('user/serverError');
+    }
+}
+
+module.exports = { shop, shopSingle,search}

@@ -6,6 +6,7 @@ const userController = require("../controller/userController/userController");
 const productController = require('../controller/userController/productController');
 const cartController = require('../controller/userController/cartController')
 const checkoutController=require('../controller/userController/checkoutController')
+const profileController=require('../controller/userController/profileController')
 const session = require('../../middleware/userAuth')
 const { logged, ifLogged, forgot, signed ,checkoutValid} = session
 
@@ -20,6 +21,19 @@ userRouter.get('/contact', userController.contact);
 
 userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
+userRouter.get('/search',productController.search)
+
+userRouter.get('/orders',logged,profileController.order)
+userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
+userRouter.get('/order-tracking/:id', logged, profileController.ordertracking)
+userRouter.get('/resetpassword',logged,profileController.resetPassword)
+userRouter.post('/passwordUpdating',logged,profileController.updatePassword)
+userRouter.get('/address',logged,profileController.showaddress)
+userRouter.get('/editAddress/:id',logged , profileController.editAddress)
+userRouter.get('/deleteAddress/:id',logged, profileController.deleteAddress)
+userRouter.post('/addressupdated/:id', logged, profileController.addressPost)
+userRouter.get('/addAddress',logged , profileController.addAddress)
+userRouter.post('/addressPost',logged , profileController.addaddressPost)
 
 userRouter.get('/cart', logged, cartController.showcart)
 userRouter.post('/addtoCart/:id', logged, cartController.addcart);

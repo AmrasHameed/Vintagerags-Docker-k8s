@@ -5,6 +5,7 @@ const adminRouter = express.Router()
 const adminController = require('../controller/adminController/adminController')
 const productController = require('../controller/adminController/productController')
 const categoryController = require('../controller/adminController/categoryController')
+const orderController=require('../controller/adminController/orderController')
 const sessions = require('../../middleware/adminAuth')
 const multer = require('multer')
 
@@ -41,6 +42,9 @@ adminRouter.post('/addCategory', sessions.adAuth, categoryController.addCategory
 adminRouter.get('/unlistCat/:id', sessions.adAuth, categoryController.unlist)
 adminRouter.get('/updateCategory/:id', sessions.adAuth, categoryController.updateCategory)
 adminRouter.post('/updateCategory/:id', sessions.adAuth, categoryController.updateCategoryPost)
+
+adminRouter.get('/orders',sessions.adAuth,orderController.order)
+adminRouter.post('/updateOrderStatus',sessions.adAuth, orderController.orderstatus)
 
 adminRouter.get('/adLogout', sessions.adAuth, adminController.adLogout)
 

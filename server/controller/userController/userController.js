@@ -330,7 +330,8 @@ const profile = async (req, res) => {
         const user = await userModel.findOne({ _id: id })
         const name = user.username
         const email = user.email
-        res.render('user/profile', { name, email ,categories})
+        const success=req.flash('success')
+        res.render('user/profile', { name, email ,categories,success})
     } catch (err) {
         console.log(err);
         res.render('user/serverError')

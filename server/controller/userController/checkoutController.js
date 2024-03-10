@@ -10,11 +10,12 @@ const catModel=require('../../model/categModel')
 const checkout=async(req,res)=>{
     try{
         const userId=req.session.userId;
+        req.session.checkoutSave=true;
         const categories=await catModel.find()
         const address=await addressModel.findOne({userId:userId})
         const data=await cartModel.findOne({userId}).populate({
             path:'item.productId',
-            select:'name'
+            select:'name image'
         })  
         for(const cartItem of data.item||[]){
             const pro=cartItem.productId;
@@ -28,7 +29,7 @@ const checkout=async(req,res)=>{
         if (data.item.length == 0) {
             return res.redirect('/cart')
         }
-        res.render('user/checkout',{data,address,categories})
+        res.render('user/checkout',{data:data,address:address,categories})
     }catch(error){
         console.log(error);
         res.render("user/serverError");
@@ -72,9 +73,9 @@ const checkoutreload=async(req,res)=>{
                 pincode: pincode,
                 save_as: saveas
             });
-
+            
             await existingUser.save();
-
+            
             return res.redirect('/checkout');
         }
 
@@ -105,11 +106,12 @@ const order=async(req,res)=>{
     try{
         const categories=await catModel.find()
         const {address,pay}=req.body
-        console.log(address,pay);
+        let amount=req.body.amount
         const userId=req.session.userId;
         const cart=await cartModel.findOne({userId:userId})
         const useraddress = await addressModel.findOne({ userId: userId })
         const selectedaddress = useraddress.address[address]
+        console.log(selectedaddress)
         const items = cart.item.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -125,6 +127,7 @@ const order=async(req,res)=>{
         const order=new orderModel({
             userId:userId,
             items:items,
+            amount:amount,
             payment:pay,
             address:selectedaddress,
             createdAt: new Date(),
