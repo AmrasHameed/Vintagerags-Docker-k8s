@@ -42,7 +42,6 @@ userRouter.get('/deletcart/:id/:size', logged, cartController.deleteCart)
 
 
 userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
-userRouter.post('/checkoutreload',logged,checkoutValid,checkoutController.checkoutreload)
 userRouter.post('/order', logged, checkoutValid, checkoutController.order)
 
 

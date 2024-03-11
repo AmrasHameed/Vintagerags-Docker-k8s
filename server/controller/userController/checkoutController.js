@@ -36,72 +36,6 @@ const checkout=async(req,res)=>{
     }
 }
 
-const checkoutreload=async(req,res)=>{
-    try{
-        const { name, mobile, email, housename, street, city, state, country, pincode, saveas } = req.body;
-        const userId = req.session.userId;
-        const existingUser = await addressModel.findOne({ userId: userId });
-
-        if (existingUser) {
-            const existingAddress = await addressModel.findOne({
-                'userId': userId,
-                'address.name': name,
-                'address.mobile': mobile,
-                'address.email': email,
-                'address.housename': housename,
-                'address.street': street,
-                'address.city': city,
-                'address.state': state,
-                'address.country': country,
-                'address.pincode': pincode,
-                'address.save_as': saveas
-            });
-
-            if (existingAddress) {
-                return res.redirect(`/checkout`)
-            }
-
-            existingUser.address.push({
-                name: name,
-                mobile: mobile,
-                email: email,
-                housename: housename,
-                street: street,
-                city: city,
-                state: state,
-                country: country,
-                pincode: pincode,
-                save_as: saveas
-            });
-            
-            await existingUser.save();
-            
-            return res.redirect('/checkout');
-        }
-
-        const newAddress = await addressModel.create({
-            userId: userId,
-            address: {
-                name: name,
-                mobile: mobile,
-                email: email,
-                housename: housename,
-                street: street,
-                city: city,
-                state: state,
-                country: country,
-                pincode: pincode,
-                save_as: saveas,
-            },
-        });
-
-        res.redirect('/checkout');
-    }catch(error){
-        console.log(error);
-        res.render("user/serverError");
-    }
-}
-
 const order=async(req,res)=>{
     try{
         const categories=await catModel.find()
@@ -111,7 +45,6 @@ const order=async(req,res)=>{
         const cart=await cartModel.findOne({userId:userId})
         const useraddress = await addressModel.findOne({ userId: userId })
         const selectedaddress = useraddress.address[address]
-        console.log(selectedaddress)
         const items = cart.item.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -148,4 +81,4 @@ const order=async(req,res)=>{
     }
 }
 
-module.exports={checkout,checkoutreload,order}
+module.exports={checkout,order}

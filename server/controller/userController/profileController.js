@@ -113,6 +113,7 @@ const showaddress=async (req,res)=>{
         const userId = req.session.userId
         const categories=await catModel.find()
         const data = await addressModel.findOne({ userId: userId })
+        req.session.checkoutSave=false;
         res.render('user/address', { userData: data ,categories})
     }catch(error){
         console.log(error)
@@ -259,7 +260,7 @@ const addaddressPost=async(req,res)=>{
             }
             return res.redirect('/address');
         }
-
+        
         const newAddress = await addressModel.create({
             userId: userId,
             address: {

@@ -26,6 +26,7 @@ const shop = async (req, res) => {
                 products = await productModel.find({ category: categoryId, status: true }).exec();
                 req.session.filterCat = categoryId;
             } else {
+                delete req.session.filterCat
                 products = await productModel.find({ status: true }).exec();
             }
         }
@@ -108,8 +109,12 @@ const shopSingle = async (req, res) => {
         const productId = req.params.id;
         const categories = await catModel.find();
         const productOne = await productModel.findById(productId);
-        const products = await productModel.find();
-        res.render('user/shop-single', { productOne, products, categories });
+        let pass;
+        if(productOne.totalstock==0){
+            pass='Out of Stock'
+        }
+        const products = await productModel.find({ category: productOne.category });
+        res.render('user/shop-single', { productOne, products, categories ,pass});
     } catch (error) {
         console.log(error);
         res.render('user/serverError');

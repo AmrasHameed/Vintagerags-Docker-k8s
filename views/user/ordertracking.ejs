@@ -1,12 +1,15 @@
 <%- include ("header.ejs") %>
-<div class="container mt-5">
+<div class="container mt-5 text-center"> <!-- Added 'text-center' class to center content -->
     <div class="row">
-        <div class="col-12 col-md-10 hh-grayBox mx-auto text-center pt-4 pb-4" style="width: 1140px;">
-            <% if (order[0].status === 'pending') { %>
+        <div class="col-12 col-md-10 hh-grayBox mx-auto text-center pt-4 pb-4">
+            <% if (order[0].status==='pending' ) { %>
                 <div class="row justify-content-between">
                     <div class="order-tracking completed">
                         <span class="is-complete"></span>
-                        <p class="text-dark"><%= order[0].updated.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %><br>Ordered</p>
+                        <p class=" bg-primary rounded px-3" style="color: aliceblue;">
+                            <%= order[0].updated.toLocaleString('en-US', { year: 'numeric' , month: 'short' ,
+                                day: 'numeric' }) %><br>Ordered
+                        </p>
                     </div>
                     <div class="order-tracking">
                         <span class="is-complete"></span>
@@ -21,7 +24,8 @@
                         <p class="text-dark">Delivered</p>
                     </div>
                 </div>
-            <% } else if (order[0].status === 'processing') { %>
+            <% } else if (order[0].status==='processing' ) { %>
+                <!-- Adjusted alignment -->
                 <div class="row justify-content-between">
                     <div class="order-tracking completed">
                         <span class="is-complete"></span>
@@ -29,7 +33,10 @@
                     </div>
                     <div class="order-tracking completed">
                         <span class="is-complete"></span>
-                        <p class="text-dark"><%= order[0].updated.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %><br>Processing</p>
+                        <p class=" bg-primary rounded px-3" style="color: aliceblue;">
+                            <%= order[0].updated.toLocaleString('en-US', { year: 'numeric' , month: 'short' ,
+                                day: 'numeric' }) %><br>Processing
+                        </p>
                     </div>
                     <div class="order-tracking">
                         <span class="is-complete"></span>
@@ -40,7 +47,31 @@
                         <p class="text-dark">Delivered</p>
                     </div>
                 </div>
-            <% } else if (order[0].status === 'shipped') { %>
+            <% } else if (order[0].status==='shipped' ) { %>
+                <!-- Adjusted alignment -->
+                <div class="row justify-content-between">
+                    <div class="order-tracking completed">
+                        <span class="is-complete"></span>
+                        <p class="text-dark">Ordered</p>
+                    </div>
+                    <div class="order-tracking completed">
+                        <span class="is-complete"></span>
+                        <p class="text-dark">Processing</p>
+                    </div>
+                    <div class="order-tracking completed">
+                        <span class="is-complete "></span>
+                        <p class=" bg-primary rounded px-3" style="color: aliceblue;">
+                            <%= order[0].updated.toLocaleString('en-US', { year: 'numeric' , month: 'short'
+                                , day: 'numeric' }) %><br>Shipped
+                        </p>
+                    </div>
+                    <div class="order-tracking">
+                        <span class="is-complete"></span>
+                        <p class="text-dark">Delivered</p>
+                    </div>
+                </div>
+            <% } else if (order[0].status==='delivered' ) { %>
+                <!-- Adjusted alignment -->
                 <div class="row justify-content-between">
                     <div class="order-tracking completed">
                         <span class="is-complete"></span>
@@ -52,33 +83,18 @@
                     </div>
                     <div class="order-tracking completed">
                         <span class="is-complete"></span>
-                        <p class="text-dark"><%= order[0].updated.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %><br>Shipped</p>
-                    </div>
-                    <div class="order-tracking">
-                        <span class="is-complete"></span>
-                        <p class="text-dark">Delivered</p>
-                    </div>
-                </div>
-            <% } else if (order[0].status === 'delivered') { %>
-                <div class="row justify-content-between">
-                    <div class="order-tracking completed">
-                        <span class="is-complete"></span>
-                        <p class="text-dark">Ordered</p>
-                    </div>
-                    <div class="order-tracking completed">
-                        <span class="is-complete"></span>
-                        <p class="text-dark">Processing</p>
-                    </div>
-                    <div class="order-tracking completed">
-                        <span class="is-complete"></span>
                         <p class="text-dark">Shipped</p>
                     </div>
                     <div class="order-tracking completed">
-                        <span class="is-complete"></span>
-                        <p class="text-dark"><%= order[0].updated.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %><br>Delivered</p>
+                        <span class="is-complete btn-block"></span>
+                        <p class=" bg-primary rounded px-3" style="color: aliceblue;">
+                            <%= order[0].updated.toLocaleString('en-US', { year: 'numeric' ,
+                                month: 'short' , day: 'numeric' }) %><br>Delivered
+                        </p>
                     </div>
                 </div>
-            <% } else if (order[0].status === 'Cancelled') { %>
+            <% } else if (order[0].status==='Cancelled' ) { %>
+                <!-- Adjusted alignment -->
                 <div class="row justify-content-between">
                     <div class="order-tracking completed cancelled">
                         <span class="is-complete"></span>
@@ -93,8 +109,11 @@
                         <p class="text-dark">Accepted</p>
                     </div>
                     <div class="order-tracking completed cancelledd">
-                        <span class="is-complete"></span>
-                        <p class="text-dark"><%= order[0].updated.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %><br>Cancelled</p>
+                        <span class="is-complete btn-block"></span>
+                        <p class=" bg-primary rounded px-3" style="color: aliceblue;">
+                            <%= order[0].updated.toLocaleString('en-US', { year: 'numeric' ,
+                                month: 'short' , day: 'numeric' }) %><br>Cancelled
+                        </p>
                     </div>
                 </div>
             <% } else { %>
@@ -102,44 +121,49 @@
             <% } %>
         </div>
     </div>
-</div>
 
-<h5 class="text-dark">Order ID: <%= order[0].orderId %></h5>
-<p class="text-dark">Delivery Address: <%= order[0].address[0].save_as %>,
-    <%= order[0].address[0].houseName %>,
-    <%= order[0].address[0].city %>,
-    <%= order[0].address[0].pincode %>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="text-dark">Product Name</th>
-            <th class="text-dark">Quantity</th>
-            <th class="text-dark">Price</th>
-            <th class="text-dark">Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% order[0].items.forEach(item => { %>
+    <h5 class="text-dark">Order ID: <%= order[0].orderId %>
+    </h5>
+    <p class="text-dark">Delivery Address: <%= order[0].address[0].save_as %>,
+        <%= order[0].address[0].houseName %>,
+        <%= order[0].address[0].city %>,
+        <%= order[0].address[0].pincode %>
+    </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td class="text-dark"><%= item.productId.name %></td>
-                <td class="text-dark"><%= item.quantity %></td>
-                <td class="text-dark"><%= item.price %></td>
-                <td class="text-dark"><%= item.quantity * item.price %></td>
+                <th class="text-dark">Product Name</th>
+                <th class="text-dark">Quantity</th>
+                <th class="text-dark">Price</th>
+                <th class="text-dark">Total</th>
             </tr>
-        <% }); %>
-        <!-- <tr>
-            <td class="text-dark"></td>
-            <td class="text-dark"></td>
-            <td class="text-dark">From Wallet</td>
-            <td class="text-dark"><%= order[0].wallet || 0 %></td>
-        </tr> -->
-        <tr>
-            <td class="text-dark"></td>
-            <td class="text-dark"></td>
-            <td class="text-dark">Total Amount paid </td>
-            <td class="text-dark"><%= order[0].amount %></td>
-        </tr>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <% order[0].items.forEach(item=> { %>
+                <tr>
+                    <td class="text-dark">
+                        <%= item.productId.name %>
+                    </td>
+                    <td class="text-dark">
+                        <%= item.quantity %>
+                    </td>
+                    <td class="text-dark">
+                        <%= item.price %>
+                    </td>
+                    <td class="text-dark">
+                        <%= item.quantity * item.price %>
+                    </td>
+                </tr>
+            <% }); %>
+            <tr>
+                <td class="text-dark"></td>
+                <td class="text-dark"></td>
+                <td class="text-dark">Total Amount paid </td>
+                <td class="text-dark">
+                    <%= order[0].amount %>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div> <!-- Closed the container -->
 <%- include ("footer.ejs") %>
