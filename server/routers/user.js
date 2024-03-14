@@ -22,6 +22,10 @@ userRouter.get('/contact', userController.contact);
 userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
 userRouter.get('/search',productController.search)
+userRouter.get('/addtofavourites/:id',logged,productController.addToFav)
+userRouter.get('/wishlist',logged,productController.viewFav)
+userRouter.get('/removefromfavorites/:id',logged,productController.removeFav)
+
 
 userRouter.get('/orders',logged,profileController.order)
 userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
@@ -35,6 +39,7 @@ userRouter.post('/addressupdated/:id', logged, profileController.addressPost)
 userRouter.get('/addAddress',logged , profileController.addAddress)
 userRouter.post('/addressPost',logged , profileController.addaddressPost)
 
+
 userRouter.get('/cart', logged, cartController.showcart)
 userRouter.post('/addtoCart/:id', logged, cartController.addcart);
 userRouter.post('/updateCartQuantity/:productId/:size', logged, cartController.updateCart)
@@ -43,6 +48,7 @@ userRouter.get('/deletcart/:id/:size', logged, cartController.deleteCart)
 
 userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
 userRouter.post('/order', logged, checkoutValid, checkoutController.order)
+userRouter.post('/create/orderId',logged, checkoutValid, checkoutController.upi)
 
 
 userRouter.get('/login', ifLogged, userController.login);

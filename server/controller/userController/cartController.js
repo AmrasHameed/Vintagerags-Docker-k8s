@@ -129,10 +129,8 @@ const updateCart = async (req, res) => {
         let updatedQuantity;
 
         if (action == "1") {
-            console.log("1");
             updatedQuantity = currentQuantity + 1;
         } else if (action == "-1") {
-            console.log("-1");
             updatedQuantity = currentQuantity - 1;
         } else {
             return res.status(400).json({ success: false, error: "Invalid action" });

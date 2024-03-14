@@ -92,8 +92,8 @@
               <button type="submit" class="btn btn-primary mr-2">
                   <span class="fas fa-shopping-cart"></span> Add to Cart
               </button>
-              <a href="/addtofavourites/<%= productOne._id %>" class="btn btn-primary wishlist-btn">
-                  <span class="fas fa-heart"></span> Add to Wishlist
+              <a id="addToWishlistBtn" class="btn btn-primary wishlist-btn" href="#">
+                <span class="fas fa-heart"></span> Add to Wishlist
               </a>
           </div>
         </form>
@@ -138,6 +138,31 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('addToWishlistBtn').addEventListener('click', function(event) {
+      event.preventDefault(); 
+    
+      var productId = '<%= productOne._id %>'; 
+      var selectedSize = document.querySelector('input[name="size"]:checked'); 
+    
+      if (!selectedSize) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please select a size.',
+        });
+        return;
+      }
+    
+      var sizeValue = selectedSize.value; 
+      var url = '/addtofavourites/<%= productOne._id %>'; 
+    
+      url += '?size=' + encodeURIComponent(sizeValue);
+  
+      window.location.href = url;
+    });
+    </script>
 
   <script>
     document.getElementById("addToCartForm").addEventListener("submit", function (event) {

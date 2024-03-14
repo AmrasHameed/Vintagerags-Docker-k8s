@@ -4,6 +4,12 @@ const productModel=require('../../model/productModel')
 const addressModel=require('../../model/addressModel')
 const orderModel=require('../../model/orderModel')
 const catModel=require('../../model/categModel')
+const Razorpay = require('razorpay');
+
+var instance = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
+});
 
 
 
@@ -74,11 +80,23 @@ const order=async(req,res)=>{
             path: 'items.productId',
             select: 'name'
         })
-        res.render('user/thankyou.ejs',{order:orderconfirmation,categories})
+        res.render('user/thankyou',{order:orderconfirmation,categories})
     }catch(error){
         console.log(error);
         res.render("user/serverError");
     }
 }
 
-module.exports={checkout,order}
+const upi = async (req, res) => {
+    console.log('body:', req.body);
+    var options = {
+        amount: req.body.amount,
+        currency: "INR",
+        receipt: "order_rcpt"
+    };
+    instance.orders.create(options, function (err, order) {
+        res.send({ orderId: order.id })
+    })
+}
+
+module.exports={checkout,order,upi}

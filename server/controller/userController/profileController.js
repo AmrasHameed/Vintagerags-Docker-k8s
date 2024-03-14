@@ -151,7 +151,7 @@ const deleteAddress=async(req,res)=>{
 
 const addressPost=async(req,res)=>{
     try{
-        const { name, mobile, housename, street, city, state, country, pincode, saveas } = req.body;
+        const { name, mobile,email, housename, street, city, state, country, pincode, saveas } = req.body;
         const addressId = req.params.id
         const userId = req.session.userId;
 
@@ -161,6 +161,7 @@ const addressPost=async(req,res)=>{
                 $elemMatch: {
                     '_id': { $ne: addressId },
                     'save_as': saveas,
+                    'email':email,
                     'name': name,
                     'mobile': mobile,
                     'housename': housename,
@@ -183,6 +184,7 @@ const addressPost=async(req,res)=>{
                 $set: {
                     'address.$.save_as': saveas,
                     'address.$.name': name,
+                    'address.$.email': email,
                     'address.$.mobile': mobile,
                     'address.$.housename': housename,
                     'address.$.street': street,
@@ -194,7 +196,7 @@ const addressPost=async(req,res)=>{
                 }
             }
         );
-
+        
         res.redirect('/address');
     }catch(error){
         console.log(error)
@@ -236,6 +238,7 @@ const addaddressPost=async(req,res)=>{
 
             if (existingAddress) {
                 if(req.session.checkoutSave){
+                    console.log("aaaaa")
                     return res.redirect(`/checkout`)
                 }
                 return res.redirect(`/address`)

@@ -153,9 +153,9 @@
           <div class="col-md-12">
             <div class="d-flex flex-column border p-3 mb-3 btn">
               <label class="flex-grow-1 d-flex align-items-center">
-                <input type="radio" name="paymentOption" onclick="handlePaymentMethodSelection()"
+                <input type="radio" name="paymentOption" value="upi" onclick="handlePaymentMethodSelection()"
                   class="h6 mb-0 align-self-start">
-                <span class="d-block ml-3 text-primary">Paypal</span>
+                <span class="d-block ml-3 text-primary">Online Payment</span>
               </label>
             </div>
           </div>
@@ -181,8 +181,8 @@
     }
   }
   document.getElementById('placeOrderBtn').addEventListener('click', function (event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    proceedToOrder(); // Call the proceedToOrder function
+    event.preventDefault(); 
+    proceedToOrder();
   });
 
   function proceedToOrder() {
@@ -219,7 +219,65 @@
         showCloseButton: true,
         showLoaderOnConfirm: false
       });
-    } else if (selectedPayment.value == "cashOnDelivery") {
+    }else if(selectedPayment.value=='upi'){
+      const amt = document.getElementById("total").textContent.trim();
+      const amount = amt.replace(/[^0-9.-]/g, ''); 
+      console.log(parseFloat(amount))
+      var options={
+            key: 'rzp_test_IjovpkTeb85bN5',
+            amount: parseFloat(amount) * 100,
+            currency: "INR",
+            name: "VintageRags",
+            description: "Test Transaction",
+            image: "VintageRags",
+            order_id: orderId,
+            handler: function (response) {
+              alert(response.razorpay_payment_id);
+
+              document.getElementById("orderform").method = "post";
+              document.getElementById("orderform").action = "/order";
+
+              document.getElementById("orderform").submit();
+            },
+
+            theme: {
+              color: "#4285F4",
+            },
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.on("payment.failed", function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.payment_id);
+          });
+          rzp1.open();
+
+          event.preventDefault();
+
+          var orderId;
+          $(document).ready(function () {
+            var settings = {
+              url: "/create/orderId",
+              method: "POST",
+              timeout: 0,
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: JSON.stringify({
+                amount: parseFloat(amount) * 100,
+              }),
+            };
+
+            $.ajax(settings).done(function (response) {
+              orderId = response.orderId;
+              console.log(orderId);
+              $("button").show();
+            });
+          });
+    }else if (selectedPayment.value == "cashOnDelivery") {
       console.log("Cash on Delivery selected");
       document.getElementById("orderform").action = "/order";
       document.getElementById("orderform").method = "post";
@@ -230,4 +288,5 @@
     }
   }
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <%- include ("footer.ejs") %>
