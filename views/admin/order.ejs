@@ -62,6 +62,8 @@
                                                 <label for="status"></label>
                                                 <% if(data.status==='Cancelled' ) {%>
                                                     <span>Cancelled</span>
+                                                    <% }else if(data.status=='returned'){ %>
+                                                        <span>Returned</span>
                                                     <% }else{ %>
                                                         <select name="status" id="status"
                                                         onchange="submitForm('<%= data._id %>')">

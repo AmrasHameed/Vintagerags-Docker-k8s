@@ -4,6 +4,7 @@ const productModel = require('../../model/productModel')
 const addressModel = require('../../model/addressModel')
 const orderModel = require('../../model/orderModel')
 const catModel = require('../../model/categModel')
+const walletModel=require('../../model/walletModel')
 const bcrypt = require('bcrypt') 
 const flash = require('express-flash')
 
@@ -27,6 +28,37 @@ const ordercancelling = async (req, res) => {
         const id = req.params.id
         const update = await orderModel.updateOne({ _id: id }, { status: "Cancelled", updated: new Date() })
         const result = await orderModel.findOne({ _id: id })
+
+        if(result.payment=='upi'||result.payment=='wallet'){
+            const userId=req.session.userId
+            const user = await userModel.findOne({ _id: userId })
+            console.log(    result.amount)
+            user.wallet += parseInt(result.amount)
+            await user.save()
+
+            const wallet = await walletModel.findOne({ userId: userId })
+            if (!wallet) {
+                const newWallet = new walletModel({
+                    userId: userId,
+                    history: [
+                        {
+                            transaction: "Credited",
+                            amount: result.amount,
+                            date: new Date()
+                        }
+                    ]
+                })
+                await newWallet.save();
+            } else {
+                wallet.history.push({
+                    transaction: "Credited",
+                    amount: result.amount,
+                    date: new Date()
+                })
+                await wallet.save();
+            }
+        }
+
         const items = result.items.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -55,9 +87,63 @@ const ordertracking = async (req, res) => {
             path: 'items.productId',
             select: 'name images'
         })
-        console.log('kkk', order, 'jjjj');
         res.render('user/ordertracking', { order: order, categories })
     } catch (error) {
+        console.log(error)
+        res.render('user/serverError')
+    }
+}
+
+const orderreturning=async(req,res)=>{
+    try{
+        const id = req.params.id
+        const update = await orderModel.updateOne({ _id: id }, { status: "returned", updated: new Date() })
+        const result = await orderModel.findOne({ _id: id })
+
+        const userId = req.session.userId
+        const user = await userModel.findOne({ _id: userId })
+        user.wallet += result.amount
+        await user.save()
+
+        const wallet = await walletModel.findOne({ userId: userId })
+        if (!wallet) {
+            const newWallet = new walletModel({
+                userId: userId,
+                history: [
+                    {
+                        transaction: "Credited",
+                        amount: result.amount,
+                        date: new Date()
+                    }
+                ]
+            })
+            await newWallet.save();
+        } else {
+            wallet.history.push({
+                transaction: "Credited",
+                amount: result.amount,
+                date: new Date()
+            })
+            await wallet.save();
+        }
+
+
+        const items = result.items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            size: item.size,
+
+        }))
+
+        for (const item of items) {
+            const product = await productModel.findOne({ _id: item.productId })
+
+            const size = product.stock.findIndex(size => size.size == item.size)
+            product.stock[size].quantity += item.quantity
+            await product.save()
+        }
+        res.redirect("/orders")
+    }catch(error){
         console.log(error)
         res.render('user/serverError')
     }
@@ -289,4 +375,4 @@ const addaddressPost=async(req,res)=>{
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword ,showaddress ,editAddress,deleteAddress,addressPost,addAddress,addaddressPost}
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword ,showaddress ,editAddress,deleteAddress,addressPost,addAddress,addaddressPost,orderreturning}

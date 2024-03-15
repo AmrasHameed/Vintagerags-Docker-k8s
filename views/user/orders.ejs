@@ -11,7 +11,7 @@
                     <h5>Order ID: <%= order.orderId %></h5>
                 </div>
                 <div class="card-body">
-                    <p>Amount: <span class="text-black font-weight-bold"><%= order.amount %></span></p>
+                    <p>Amount: <span class="text-black font-weight-bold">₹<%= order.amount %></span></p>
                     <p>Status: <span class="text-black font-weight-bold"><%= order.status %></span></p>
                     <% if (order.address) { %>
                         <% order.address.forEach(address => { %>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="card-footer">
                     <a href="/order-tracking/<%= order._id %>"> Order Details</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <% if (order.status !== 'Cancelled' && order.status !== 'delivered') { %>
+                    <% if (order.status !== 'Cancelled' && order.status !== 'delivered' && order.status !== 'returned') { %>
                         <a onclick="confirm('/cancelorder/<%= order._id %>')" style="cursor: pointer; color: red; font-weight: 200;"> Cancel Order</a>
                     <% } %>
                     <% if (order.status === 'delivered' && new Date(order.updated.getTime() + 5 * 24 * 60 * 60 * 1000) >= new Date()) { %>

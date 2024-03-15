@@ -29,6 +29,7 @@ userRouter.get('/removefromfavorites/:id',logged,productController.removeFav)
 
 userRouter.get('/orders',logged,profileController.order)
 userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
+userRouter.get('/returnorder/:id',logged, profileController.orderreturning)
 userRouter.get('/order-tracking/:id', logged, profileController.ordertracking)
 userRouter.get('/resetpassword',logged,profileController.resetPassword)
 userRouter.post('/passwordUpdating',logged,profileController.updatePassword)
@@ -49,6 +50,7 @@ userRouter.get('/deletcart/:id/:size', logged, cartController.deleteCart)
 userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
 userRouter.post('/order', logged, checkoutValid, checkoutController.order)
 userRouter.post('/create/orderId',logged, checkoutValid, checkoutController.upi)
+userRouter.post('/wallettransaction',logged,checkoutValid, checkoutController.wallet)
 
 
 userRouter.get('/login', ifLogged, userController.login);
