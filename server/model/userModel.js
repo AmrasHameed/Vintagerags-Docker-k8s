@@ -28,10 +28,14 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             required: true,
             default: false
-        },wallet:{
+        },
+        wallet:{
             type:Number,
             default:0
-        }
+        },
+        usedCoupons:[{
+            type:String
+        }]
     }
 )
 

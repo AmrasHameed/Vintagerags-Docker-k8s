@@ -6,6 +6,7 @@ const adminController = require('../controller/adminController/adminController')
 const productController = require('../controller/adminController/productController')
 const categoryController = require('../controller/adminController/categoryController')
 const orderController=require('../controller/adminController/orderController')
+const couponController=require('../controller/adminController/couponController')
 const sessions = require('../../middleware/adminAuth')
 const multer = require('multer')
 
@@ -45,6 +46,10 @@ adminRouter.post('/updateCategory/:id', sessions.adAuth, categoryController.upda
 
 adminRouter.get('/orders',sessions.adAuth,orderController.order)
 adminRouter.post('/updateOrderStatus',sessions.adAuth, orderController.orderstatus)
+
+
+adminRouter.get('/coupons', sessions.adAuth, couponController.couponlist)
+adminRouter.get('/newcoupon',sessions.adAuth,couponController.addcouponpage)
 
 adminRouter.get('/adLogout', sessions.adAuth, adminController.adLogout)
 

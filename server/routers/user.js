@@ -51,6 +51,8 @@ userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
 userRouter.post('/order', logged, checkoutValid, checkoutController.order)
 userRouter.post('/create/orderId',logged, checkoutValid, checkoutController.upi)
 userRouter.post('/wallettransaction',logged,checkoutValid, checkoutController.wallet)
+userRouter.post("/applyCoupon",logged,checkoutValid,checkoutController.applyCoupon)
+userRouter.post("/revokeCoupon",logged,checkoutValid,checkoutController.revokeCoupon)
 
 
 userRouter.get('/login', ifLogged, userController.login);
