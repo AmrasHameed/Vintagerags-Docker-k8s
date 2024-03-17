@@ -62,55 +62,64 @@
 </head>
 
 <body>
-    <div class="container form-container">
-        <h1 class="mb-4">Add Coupons</h1>
-        <% if(couponExists){%>
-            <div style="color: red; font-size: 16px; font-weight: bold;">
-                <%= couponExists%>
-            </div>
-            <%}%>
-                <form id="addCouponForm" action="/admin/add_coupon" method="post" onsubmit="return validateForm()">
-                    <div class="mb-3">
-                        <label for="couponCode" class="form-label">Coupon Code:</label>
-                        <input type="text" class="form-control" id="couponCode" name="couponCode" required>
-                        <span id="couponCodeError" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="couponType" class="form-label">Coupon Type:</label>
-                        <select class="form-select" id="couponType" name="couponType" onchange="updateMaxRedeem()"
-                            required>
-                            <option value="percentageDiscount">Percentage Discount</option>
-                            <option value="flatDiscount">Flat Discount</option>
-                        </select>
-                    </div>
+    <div class="main-panel">
 
-                    <div class="mb-3">
-                        <label for="minimumPrice" class="form-label">Minimum Price:</label>
-                        <input type="number" class="form-control" id="minimumPrice" name="minimumPrice" required>
-                        <span id="minimumPriceError" class="text-danger"></span>
-                    </div>
+        <div class="container form-container">
+            <h1 class="mb-4">Update Coupon</h1>
 
-                    <div class="mb-3">
-                        <label for="discount" class="form-label">Discount:</label>
-                        <input type="number" class="form-control" id="discount" name="discount"
-                            oninput="updateMaxRedeem()" required>
-                        <span id="discountError" class="text-danger"></span>
-                    </div>
+            <form action="/admin/updateCoupon" method="post">
+                <div class="mb-3">
+                    <label for="couponCode" class="form-label">Coupon Code:</label>
+                    <input type="text" class="form-control" id="couponCode" name="couponCode"
+                        value="<%=coupon.couponCode%>" required>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="maxRedeem" class="form-label">Max Redeemable Amount:</label>
-                        <input type="number" class="form-control" id="maxRedeem" name="maxRedeem" required>
-                        <span id="maxRedeemError" class="text-danger"></span>
-                    </div>
+                <div class="mb-3">
+                    <label for="couponType" class="form-label">Coupon Type:</label>
+                    <select class="form-select" id="couponType" name="couponType" value="<%=coupon.type%>"
+                        onchange="updateMaxRedeem()" required>
+                        <option value="flatDiscount">Flat Discount</option>
+                        <option value="percentageDiscount">Percentage Discount</option>
+                    </select>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="expiry" class="form-label">Expiry:</label>
-                        <input type="date" class="form-control" id="expiry" name="expiry" required>
-                        <span id="expiryError" class="text-danger"></span>
-                    </div>
+                <div class="mb-3">
+                    <label for="minimumPrice" class="form-label">minimumPrice:</label>
+                    <input type="number" class="form-control" id="minimumPrice" name="minimumPrice"
+                        value="<%=coupon.minimumPrice%>" required>
 
-                    <button type="submit" class="btn btn-primary">Add Coupon</button>
-                </form>
+                </div>
+
+                <div class="mb-3">
+                    <label for="discount" class="form-label">Discount:</label>
+                    <input type="number" class="form-control" id="discount" name="discount" oninput="updateMaxRedeem()"
+                        value="<%=coupon.discount%>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="maxRedeem" class="form-label">Max Redeemeable Amount:</label>
+                    <input type="number" class="form-control" id="maxRedeem" name="maxRedeem"
+                        value="<%=coupon.maxRedeem%>" required>
+                </div>
+
+
+
+                <div class="mb-3">
+                    <label for="expiry" class="form-label">Expiry:</label>
+                    <input type="date" class="form-control" id="expiry" name="expiry" value="<%= new Date(coupon.expiry).toISOString().slice(0, 10) %>" required>
+                </div>
+                
+                
+                <input type="hidden" id="couponId" name="couponId" value="<%= coupon._id %>">
+
+
+                <button type="submit" class="btn btn-primary">Update Coupon</button>
+            </form>
+        </div>
+
+
+
+
     </div>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -142,7 +151,7 @@
                 return false;
             }
 
-            if (isNaN(discount) || parseFloat(discount) <= 0 ) {
+            if (isNaN(discount) || parseFloat(discount) <= 0) {
                 discountError.innerHTML = 'Discount must be a positive number less than or equal to 100.';
                 return false;
             }

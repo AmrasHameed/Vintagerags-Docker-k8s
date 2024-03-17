@@ -157,9 +157,11 @@ const addToFav = async (req, res) => {
                 item: [{ productId: pid, size: size }]
             });
         } else {
-            const isProductInFavorites = fav.item.some(item => item.productId.toString() === pid);
-            if (!isProductInFavorites) {
+            const existingProductIndex = fav.item.findIndex(item => item.productId.toString() === pid && item.size !== size);
+            if (existingProductIndex === -1) {
                 fav.item.push({ productId: pid, size: size });
+            } else {
+                fav.item[existingProductIndex].size = size;
             }
         }
 
@@ -199,7 +201,7 @@ const removeFav = async (req, res) => {
         res.redirect('/wishlist')
     } catch (error) {
         console.log(error);
-        res.render('user/serverError'); 
+        res.render('user/serverError');
     }
 }
 module.exports = { shop, shopSingle, search, addToFav, viewFav, removeFav }

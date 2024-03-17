@@ -50,7 +50,13 @@ adminRouter.post('/updateOrderStatus',sessions.adAuth, orderController.orderstat
 
 adminRouter.get('/coupons', sessions.adAuth, couponController.couponlist)
 adminRouter.get('/newcoupon',sessions.adAuth,couponController.addcouponpage)
+adminRouter.post('/add_coupon',sessions.adAuth,couponController.createCoupon)
+adminRouter.get('/unlistCoupon/:id',sessions.adAuth,couponController.unlistCoupon)
+adminRouter.get('/editCouponGet/:id',sessions.adAuth,couponController.editCouponPage)
+adminRouter.post('/updateCoupon',sessions.adAuth,couponController.updateCoupon)
 
+
+adminRouter.post('/downloadsales',sessions.adAuth,adminController.downloadsales)
 adminRouter.get('/adLogout', sessions.adAuth, adminController.adLogout)
 
 module.exports = adminRouter
