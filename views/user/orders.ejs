@@ -33,6 +33,9 @@
                                         <h5 class="card-title">Product Name: <%= item.productId.name %></h5>
                                         <p class="card-text">Quantity: <%= item.quantity %></p>
                                     </div>
+                                    <div class="card-footer" style="text-align: center;">
+                                        <a onclick="confirm('/itemCancel/<%= order._id %>/<%= item.productId %>')"  class="btn btn-primary" style="font-size: 16px; color: white;"> Cancel Product</a>
+                                    </div>
                                 </div>
                             </div>
                         <% }); %>

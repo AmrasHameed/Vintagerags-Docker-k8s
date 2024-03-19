@@ -5,6 +5,7 @@ const addressModel = require('../../model/addressModel')
 const orderModel = require('../../model/orderModel')
 const catModel = require('../../model/categModel')
 const walletModel=require('../../model/walletModel')
+const mongoose=require('mongoose')
 const bcrypt = require('bcrypt') 
 const flash = require('express-flash')
 
@@ -212,8 +213,18 @@ const editAddress=async(req,res)=>{
         const userId = req.session.userId
         const categories=await catModel.find()
         const id = req.params.id
-        const address = await addressModel.findOne({ userId: userId, 'address._id': id })
-        res.render('user/editAddress', { adress: address ,categories})
+        const address = await addressModel.aggregate([
+            {
+                $match: { userId: new mongoose.Types.ObjectId(userId) }
+            },
+            {
+                $unwind: '$address'
+            },
+            {
+                $match: { 'address._id': new mongoose.Types.ObjectId(id) }
+            }
+        ]);
+        res.render('user/editAddress', { adress:address[0],categories})
     }catch(error){
         console.log(error)
         res.render('user/serverError')

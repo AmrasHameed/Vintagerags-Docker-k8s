@@ -5,20 +5,20 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <h3 class="text-center mb-4">Edit Address</h3>
-                <form id="addressForm" action="/addressUpdated/<%= adress.address[0]._id %>" method="post">
+                <form id="addressForm" action="/addressUpdated/<%= adress.address._id %>" method="post">
                     <div id="user-details" class="border rounded p-4">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name" class="font-weight-bold mb-2">Name:</label>
-                                    <input type="text" id="name" name="name" class="form-control" required value="<%= adress.address[0].name %>">
+                                    <input type="text" id="name" name="name" class="form-control" required value="<%= adress.address.name %>">
                                     <span id="nameError" class="error-message text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="mobile" class="font-weight-bold mb-2">Mobile No:</label>
-                                    <input type="tel" id="mobile" name="mobile" class="form-control" required value="<%= adress.address[0].mobile %>">
+                                    <input type="tel" id="mobile" name="mobile" class="form-control" required value="<%= adress.address.mobile %>">
                                     <span id="mobileError" class="error-message text-danger"></span>
                                 </div>
                             </div>
@@ -27,14 +27,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email" class="font-weight-bold mb-2">E-mail:</label>
-                                    <input type="email" id="email" name="email" class="form-control" required value="<%= adress.address[0].email %>" >
+                                    <input type="email" id="email" name="email" class="form-control" required value="<%= adress.address.email %>" >
                                     <span id="emailError" class="error-message text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="housename" class="font-weight-bold mb-2">House Name:</label>
-                                    <input type="text" id="housename" name="housename" class="form-control" required value="<%= adress.address[0].housename %>">
+                                    <input type="text" id="housename" name="housename" class="form-control" required value="<%= adress.address.housename %>">
                                     <span id="housenameError" class="error-message text-danger"></span>
                                 </div>
                             </div>
@@ -43,14 +43,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="street" class="font-weight-bold mb-2">Street:</label>
-                                    <input type="text" id="street" name="street" class="form-control" required value="<%= adress.address[0].street %>">
+                                    <input type="text" id="street" name="street" class="form-control" required value="<%= adress.address.street %>">
                                     <span id="streetError" class="error-message text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="city" class="font-weight-bold mb-2">City:</label>
-                                    <input type="text" id="city" name="city" class="form-control" required value="<%= adress.address[0].city %>">
+                                    <input type="text" id="city" name="city" class="form-control" required value="<%= adress.address.city %>">
                                     <span id="cityError" class="error-message text-danger"></span>
                                 </div>
                             </div>
@@ -59,14 +59,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="state" class="font-weight-bold mb-2">State:</label>
-                                    <input type="text" id="state" name="state" class="form-control" required value="<%= adress.address[0].state %>">
+                                    <input type="text" id="state" name="state" class="form-control" required value="<%= adress.address.state %>">
                                     <span id="stateError" class="error-message text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="country" class="font-weight-bold mb-2">Country:</label>
-                                    <input type="text" id="country" name="country" class="form-control" required value="<%= adress.address[0].country %>">
+                                    <input type="text" id="country" name="country" class="form-control" required value="<%= adress.address.country %>">
                                     <span id="countryError" class="error-message text-danger"></span>
                                 </div>
                             </div>
@@ -75,14 +75,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="pincode" class="font-weight-bold mb-2">Pincode:</label>
-                                    <input type="text" id="pincode" pattern="\d{6}" title="Please enter a 6-digit PIN code" name="pincode" class="form-control" required  value="<%= adress.address[0].pincode %>">
+                                    <input type="text" id="pincode" pattern="\d{6}" title="Please enter a 6-digit PIN code" name="pincode" class="form-control" required  value="<%= adress.address.pincode %>">
                                     <span id="pincodeError" class="error-message text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="saveas" class="font-weight-bold mb-2">Save Name:</label>
-                                    <input type="text" id="saveas" name="saveas" class="form-control" placeholder="eg: Home Address" value="<%= adress.address[0].save_as %>">
+                                    <input type="text" id="saveas" name="saveas" class="form-control" placeholder="eg: Home Address" value="<%= adress.address.save_as %>">
                                     <span id="saveasError" class="error-message text-danger"></span>
                                 </div>
                             </div>

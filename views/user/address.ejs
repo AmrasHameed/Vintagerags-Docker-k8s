@@ -15,8 +15,8 @@
                                     <a href="/editAddress/<%= address._id %>">
                                         <i class="fas fa-edit mr-3" style="font-size: 1.5rem;"></i>
                                     </a>
-                                    <a href="/deleteAddress/<%= address._id %>">
-                                        <i class="fas fa-trash-alt text-danger" style="font-size: 1.5rem;"></i>
+                                    <a onclick="delAddress('<%= address._id %>' )">
+                                    <i class="fas fa-trash-alt text-danger" style="font-size: 1.5rem;" ></i>
                                     </a>
                                 </div>
                             </div>
@@ -42,4 +42,25 @@
     </div>
 </section>
 <br><br>
+<script>
+    function delAddress(id ){
+    Swal.fire({
+            title: "Are you sure?",
+            text: "Are you sure you want to proceed?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm",
+            cancelButtonText: "Cancel",
+            dangerMode: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/deleteAddress/"+id;
+            } else {
+                console.log("User canceled");
+            }
+        });
+    }
+</script>
 <%- include ("footer.ejs") %>
