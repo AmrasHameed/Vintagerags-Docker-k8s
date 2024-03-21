@@ -5,7 +5,7 @@ const addressModel = require('../../model/addressModel')
 const orderModel = require('../../model/orderModel')
 const catModel = require('../../model/categModel')
 const walletModel = require('../../model/walletModel')
-const couponModel=require('../../model/couponModel')
+const couponModel = require('../../model/couponModel')
 const Razorpay = require('razorpay');
 
 var instance = new Razorpay({
@@ -37,12 +37,12 @@ const checkout = async (req, res) => {
     if (data.item.length == 0) {
       return res.redirect('/cart')
     }
-    const user= await userModel.findById(userId)
+    const user = await userModel.findById(userId)
     const availableCoupons = await couponModel.find({
       couponCode: { $nin: user.usedCoupons },
       status: true,
     });
-    res.render('user/checkout', { data: data, address: address,availableCoupons, categories })
+    res.render('user/checkout', { data: data, address: address, availableCoupons, categories })
   } catch (error) {
     console.log(error);
     res.render("user/serverError");
@@ -54,8 +54,8 @@ const order = async (req, res) => {
     const categories = await catModel.find()
     const { address, pay } = req.body
     let wallet = parseInt(req.body.wallet)
-    let amount = req.body.amount;
-    console.log(typeof amount,typeof wallet); // Log type of amount
+    let amount = parseInt(req.body.amount);
+    console.log(typeof amount, typeof wallet); // Log type of amount
     const userId = req.session.userId;
     const cart = await cartModel.findOne({ userId: userId })
     const useraddress = await addressModel.findOne({ userId: userId })
@@ -70,6 +70,7 @@ const order = async (req, res) => {
       const product = await productModel.findOne({ _id: item.productId })
       const size = product.stock.findIndex(size => size.size == item.size)
       product.stock[size].quantity -= item.quantity
+      product.totalstock-=item.quantity;
       await product.save()
     }
     const order = new orderModel({
@@ -226,4 +227,4 @@ const revokeCoupon = async (req, res) => {
 };
 
 
-module.exports = { checkout, order, upi, wallet,applyCoupon,revokeCoupon }
+module.exports = { checkout, order, upi, wallet, applyCoupon, revokeCoupon }

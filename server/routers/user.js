@@ -28,6 +28,7 @@ userRouter.get('/removefromfavorites/:id',logged,productController.removeFav)
 
 
 userRouter.get('/orders',logged,profileController.order)
+userRouter.get('/itemCancel/:orderId/:productId',logged,profileController.itemCancel)
 userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
 userRouter.get('/returnorder/:id',logged, profileController.orderreturning)
 userRouter.get('/order-tracking/:id', logged, profileController.ordertracking)

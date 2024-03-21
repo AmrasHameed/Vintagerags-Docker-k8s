@@ -133,6 +133,7 @@
         <thead>
             <tr>
                 <th class="text-dark">Product Name</th>
+                <th class="text-dark">Size</th>
                 <th class="text-dark">Quantity</th>
                 <th class="text-dark">Price</th>
                 <th class="text-dark">Total</th>
@@ -144,6 +145,9 @@
                 <tr>
                     <td class="text-dark">
                         <%= item.productId.name %>
+                    </td>
+                    <td class="text-dark">
+                        <%= item.size %>
                     </td>
                     <td class="text-dark">
                         <%= item.quantity %>
@@ -162,7 +166,8 @@
             <tr>
                 <td class="text-dark"></td>
                 <td class="text-dark"></td>
-                <td class="text-dark">Total Amount paid </td>
+                <td class="text-dark"></td>
+                <td class="text-dark">Total Amount </td>
                 <td class="text-dark">
                     <%= order[0].amount %>
                 </td>
