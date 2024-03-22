@@ -8,6 +8,7 @@ const walletModel = require('../../model/walletModel')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
+const Razorpay = require('razorpay')
 
 const order = async (req, res) => {
     try {
@@ -119,7 +120,6 @@ const itemCancel = async (req, res) => {
             order.amount -= product.price;
             order.items.pull({productId:productId,size: product.size})
             order.updated = new Date();
-            await order.save();
         }
 
         await order.save();
@@ -461,4 +461,56 @@ const addaddressPost = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, orderreturning, itemCancel }
+const wallet=async(req,res)=>{
+    try{
+        const userId=req.session.userId;
+        const categories = await catModel.find()
+        const user=await userModel.findOne({ _id: userId})
+        const wallet = await walletModel.findOne({ userId: userId })
+        res.render('user/wallet', { wallet: wallet, user: user ,categories})
+    }catch(error){
+        console.log(error)
+        res.render('user/serverError')
+    }
+}
+
+const instance = new Razorpay({
+    key_id: process.env.KEY_ID,
+    key_secret: process.env.KEY_SECRET,
+  });
+
+  const walletupi = async (req, res) => {
+    console.log(req.body);
+    var options = {
+        amount: 500,
+        currency: "INR",
+        receipt: "order_rcpt"
+    };
+    instance.orders.create(options, function (err, order) {
+        res.send({ orderId: order.id })
+    })
+}
+  
+const walletTopup = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const user = await userModel.findOne({ _id: userId })
+        const Amount = parseFloat(req.body.Amount)
+        const wallet = await walletModel.findOne({ userId: userId });
+        user.wallet += Amount;
+        wallet.history.push({
+            transaction: "Credited",
+            amount: Amount,
+            date: new Date()
+        });
+
+        await wallet.save();
+        await user.save();
+        res.redirect("/wallet")
+    } catch (error) {
+        console.error('Error handling Razorpay callback:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, orderreturning, itemCancel ,wallet,walletupi,walletTopup}

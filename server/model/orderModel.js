@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const shortid = require('shortid')
 const Schema = mongoose.Schema;
 
-// mongoose.connect('mongodb://127.0.0.1/stepEras')
-
 const schema = new mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
@@ -40,10 +38,12 @@ const schema = new mongoose.Schema({
         type: String,
         default: "pending",
         required: true
-    }, address: {
+    }, 
+    address: {
         type: Array,
         required: true
-    },amount:{
+    },
+    amount:{
         type:Number,
         required:true
     },

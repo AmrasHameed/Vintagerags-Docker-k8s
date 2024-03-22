@@ -1,298 +1,331 @@
 <%-include('adminHead.ejs') %>
+
   <!--  Header End -->
   <div class="container-fluid">
     <!--  Row 1 -->
-      <form action="/admin/downloadsales" method="post" class="mb-3">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="startDate" class="form-label">Start Date:</label>
-                <input type="date" id="startDate" name="startDate" class="form-control" placeholder="Start Date">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="endDate" class="form-label">End Date:</label>
-                <input type="date" id="endDate" name="endDate" class="form-control" placeholder="End Date">
-            </div>
-            <div class="col-md-4 mt-3">
-                <button type="submit" class="btn btn-primary btn-block mt-2">
-                    <i class="mdi mdi-email btn-icon-prepend"></i> Download Report
-                </button>
-            </div>
+    <form action="/admin/downloadsales" method="post" class="mb-3">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="startDate" class="form-label">Start Date:</label>
+          <input type="date" id="startDate" name="startDate" class="form-control" placeholder="Start Date">
         </div>
+        <div class="col-md-4 mb-3">
+          <label for="endDate" class="form-label">End Date:</label>
+          <input type="date" id="endDate" name="endDate" class="form-control" placeholder="End Date">
+        </div>
+        <div class="col-md-4 mt-3">
+          <button type="submit" class="btn btn-primary btn-block mt-2">
+            <i class="mdi mdi-email btn-icon-prepend"></i> Download Report
+          </button>
+        </div>
+      </div>
     </form>
     <% if(expressFlash.derror){%>
-      <div class="alter text-danger text-start"><%= expressFlash.derror%></div>
-    <%}%>
-    
-  
-    <div class="row">
-      <div class="col-lg-8 d-flex align-items-strech">
-        <div class="card w-100">
-          <div class="card-body">
-            <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
-              <div class="mb-3 mb-sm-0">
-                <h5 class="card-title fw-semibold">Sales Overview</h5>
-              </div>
-              <div>
-                <select class="form-select">
-                  <option value="1">March 2023</option>
-                  <option value="2">April 2023</option>
-                  <option value="3">May 2023</option>
-                  <option value="4">June 2023</option>
-                </select>
+      <div class="alter text-danger text-start">
+        <%= expressFlash.derror%>
+      </div>
+      <%}%>
+
+
+        <div class="row my-3">
+          <div class="col-sm-12">
+            <div class="flot-chart-wrapper">
+              <label for="selectType">Select Type:</label>
+              <select id="selectType" onchange="updateChart(this)">
+                <option value="" disabled selected>Select</option>
+                <option value="month">Monthly</option>
+                <option value="year">Yearly</option>
+              </select>
+              <div id="flotChart" class="flot-chart">
+
+
+                <canvas id="chart"></canvas>
+
               </div>
             </div>
-            <div id="chart"></div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-4">
+        <div class="row my-3">
+          <div class="col-sm-12">
+            <div class="flot-chart-wrapper">
+              <div id="flotChart" class="flot-chart">
+
+
+                <canvas id="chart2"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
-          <div class="col-lg-12">
-            <!-- Yearly Breakup -->
-            <div class="card overflow-hidden">
+          <div class="col-lg-4 d-flex align-items-stretch">
+            <div class="card w-100">
               <div class="card-body p-4">
-                <h5 class="card-title mb-9 fw-semibold">Yearly Breakup</h5>
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <h4 class="fw-semibold mb-3">$36,358</h4>
-                    <div class="d-flex align-items-center mb-3">
-                      <span
-                        class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
-                        <i class="ti ti-arrow-up-left text-success"></i>
-                      </span>
-                      <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                      <p class="fs-3 mb-0">last year</p>
+                <div class="mb-4">
+                  <h5 class="card-title fw-semibold">Recent Transactions</h5>
+                </div>
+                <ul class="timeline-widget mb-0 position-relative mb-n5">
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">09:30</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
+                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
                     </div>
-                    <div class="d-flex align-items-center">
-                      <div class="me-4">
-                        <span class="round-8 bg-primary rounded-circle me-2 d-inline-block"></span>
-                        <span class="fs-2">2023</span>
-                      </div>
-                      <div>
-                        <span class="round-8 bg-light-primary rounded-circle me-2 d-inline-block"></span>
-                        <span class="fs-2">2023</span>
-                      </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment received from John Doe of $385.90</div>
+                  </li>
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">10:00 am</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-info flex-shrink-0 my-8"></span>
+                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
                     </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="d-flex justify-content-center">
-                      <div id="breakup"></div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
+                        href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
                     </div>
-                  </div>
+                  </li>
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
+                    </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment was made of $64.95 to Michael</div>
+                  </li>
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-warning flex-shrink-0 my-8"></span>
+                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
+                    </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
+                        href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
+                    </div>
+                  </li>
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-danger flex-shrink-0 my-8"></span>
+                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
+                    </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New arrival recorded
+                    </div>
+                  </li>
+                  <li class="timeline-item d-flex position-relative overflow-hidden">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+                    </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment Done</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-semibold mb-4">Recent Transactions</h5>
+                <div class="table-responsive">
+                  <table class="table text-nowrap mb-0 align-middle">
+                    <thead class="text-dark fs-4">
+                      <tr>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Id</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Assigned</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Name</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Priority</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Budget</h6>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">1</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-1">Sunil Joshi</h6>
+                          <span class="fw-normal">Web Designer</span>
+                        </td>
+                        <td class="border-bottom-0">
+                          <p class="mb-0 fw-normal">Elite Admin</p>
+                        </td>
+                        <td class="border-bottom-0">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-3 fw-semibold">Low</span>
+                          </div>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0 fs-4">$3.9</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">2</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-1">Andrew McDownland</h6>
+                          <span class="fw-normal">Project Manager</span>
+                        </td>
+                        <td class="border-bottom-0">
+                          <p class="mb-0 fw-normal">Real Homes WP Theme</p>
+                        </td>
+                        <td class="border-bottom-0">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary rounded-3 fw-semibold">Medium</span>
+                          </div>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0 fs-4">$24.5k</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">3</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-1">Christopher Jamil</h6>
+                          <span class="fw-normal">Project Manager</span>
+                        </td>
+                        <td class="border-bottom-0">
+                          <p class="mb-0 fw-normal">MedicalPro WP Theme</p>
+                        </td>
+                        <td class="border-bottom-0">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-3 fw-semibold">High</span>
+                          </div>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0 fs-4">$12.8k</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">4</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-1">Nirav Joshi</h6>
+                          <span class="fw-normal">Frontend Engineer</span>
+                        </td>
+                        <td class="border-bottom-0">
+                          <p class="mb-0 fw-normal">Hosting Press HTML</p>
+                        </td>
+                        <td class="border-bottom-0">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-success rounded-3 fw-semibold">Critical</span>
+                          </div>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0 fs-4">$2.4k</h6>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-12">
-            <!-- Monthly Earnings -->
-            <div class="card">
-              <div class="card-body">
-                <div class="row alig n-items-start">
-                  <div class="col-8">
-                    <h5 class="card-title mb-9 fw-semibold"> Monthly Earnings </h5>
-                    <h4 class="fw-semibold mb-3">$6,820</h4>
-                    <div class="d-flex align-items-center pb-1">
-                      <span
-                        class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
-                        <i class="ti ti-arrow-down-right text-danger"></i>
-                      </span>
-                      <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                      <p class="fs-3 mb-0">last year</p>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="d-flex justify-content-end">
-                      <div
-                        class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
-                        <i class="ti ti-currency-dollar fs-6"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="earning"></div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-4 d-flex align-items-stretch">
-        <div class="card w-100">
-          <div class="card-body p-4">
-            <div class="mb-4">
-              <h5 class="card-title fw-semibold">Recent Transactions</h5>
-            </div>
-            <ul class="timeline-widget mb-0 position-relative mb-n5">
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">09:30</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
-                  <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1">Payment received from John Doe of $385.90</div>
-              </li>
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">10:00 am</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-info flex-shrink-0 my-8"></span>
-                  <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                    href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
-                </div>
-              </li>
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                  <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1">Payment was made of $64.95 to Michael</div>
-              </li>
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-warning flex-shrink-0 my-8"></span>
-                  <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                    href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
-                </div>
-              </li>
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-danger flex-shrink-0 my-8"></span>
-                  <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New arrival recorded
-                </div>
-              </li>
-              <li class="timeline-item d-flex position-relative overflow-hidden">
-                <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                  <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                </div>
-                <div class="timeline-desc fs-3 text-dark mt-n1">Payment Done</div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-8 d-flex align-items-stretch">
-        <div class="card w-100">
-          <div class="card-body p-4">
-            <h5 class="card-title fw-semibold mb-4">Recent Transactions</h5>
-            <div class="table-responsive">
-              <table class="table text-nowrap mb-0 align-middle">
-                <thead class="text-dark fs-4">
-                  <tr>
-                    <th class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">Id</h6>
-                    </th>
-                    <th class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">Assigned</h6>
-                    </th>
-                    <th class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">Name</h6>
-                    </th>
-                    <th class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">Priority</h6>
-                    </th>
-                    <th class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">Budget</h6>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">1</h6>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-1">Sunil Joshi</h6>
-                      <span class="fw-normal">Web Designer</span>
-                    </td>
-                    <td class="border-bottom-0">
-                      <p class="mb-0 fw-normal">Elite Admin</p>
-                    </td>
-                    <td class="border-bottom-0">
-                      <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-primary rounded-3 fw-semibold">Low</span>
-                      </div>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0 fs-4">$3.9</h6>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">2</h6>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-1">Andrew McDownland</h6>
-                      <span class="fw-normal">Project Manager</span>
-                    </td>
-                    <td class="border-bottom-0">
-                      <p class="mb-0 fw-normal">Real Homes WP Theme</p>
-                    </td>
-                    <td class="border-bottom-0">
-                      <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-secondary rounded-3 fw-semibold">Medium</span>
-                      </div>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0 fs-4">$24.5k</h6>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">3</h6>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-1">Christopher Jamil</h6>
-                      <span class="fw-normal">Project Manager</span>
-                    </td>
-                    <td class="border-bottom-0">
-                      <p class="mb-0 fw-normal">MedicalPro WP Theme</p>
-                    </td>
-                    <td class="border-bottom-0">
-                      <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-danger rounded-3 fw-semibold">High</span>
-                      </div>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0 fs-4">$12.8k</h6>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0">4</h6>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-1">Nirav Joshi</h6>
-                      <span class="fw-normal">Frontend Engineer</span>
-                    </td>
-                    <td class="border-bottom-0">
-                      <p class="mb-0 fw-normal">Hosting Press HTML</p>
-                    </td>
-                    <td class="border-bottom-0">
-                      <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-success rounded-3 fw-semibold">Critical</span>
-                      </div>
-                    </td>
-                    <td class="border-bottom-0">
-                      <h6 class="fw-semibold mb-0 fs-4">$2.4k</h6>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
   </div>
+  <script>
+
+    document.getElementById('startDate').setAttribute('placeholder', 'Start Date');
+    document.getElementById('endDate').setAttribute('placeholder', 'End Date');
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function getMonthName(month) {
+      const monthNames = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ];
+      return monthNames[month - 1];
+    }
+
+    async function updateChart(select) {
+      const selected = select.value;
+      console.log(selected);
+      const response = await fetch('/admin/chartData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          selected: selected
+        })
+      });
+      const data = await response.json();
+      chart(data, selected);
+    }
+
+    function chart(data, selected) {
+      console.log("hghhgh", data);
+      data.sales.sort((a, b) => (a._id.month || a._id.year) - (b._id.month || b._id.year));
+      data.order.sort((a, b) => (a._id.month || a._id.year) - (b._id.month || b._id.year));
+
+      if (window.stackedBar) {
+        window.stackedBar.destroy();
+      }
+      if (window.stackedBar2) {
+        window.stackedBar2.destroy();
+      }
+
+      const ctx = document.getElementById('chart').getContext('2d');
+      const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.sales.map(entry => selected == 'month' ? getMonthName(entry._id.month) : entry._id.year),
+          datasets: [{
+            label: 'Sales Report',
+            data: data.sales.map(entry => entry.totalAmount),
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)', 
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      var ctl2 = document.getElementById('chart2').getContext('2d');
+      window.stackedBar2 = new Chart(ctl2, {
+        type: 'bar', 
+        data: {
+          labels: data.order.map(entry => selected == 'month' ? getMonthName(entry._id.month) : entry._id.year),
+          datasets: [{
+            label: 'Order Report',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)', 
+            borderColor:     'rgba(54, 162, 235, 20)', 
+            borderWidth: 1,
+            data: data.order.map(entry => entry.count)
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+  </script>
   <%-include('adminFooter.ejs') %>

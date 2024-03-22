@@ -51,29 +51,35 @@
               </div>
             </div>
           </div>
-          <div class="row mb-5">
-
-            <% products.forEach(product=> { %>
-              <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div class="block-4 text-center border">
-                  <figure class="block-4-image imgsize">
-                    <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>"
-                        alt="<%= product.name %>" class="img-fluid"></a>
-                  </figure>
-                  <div class="block-4-text p-4 descript">
-                    <h3><a href="/shopSingle/<%= product._id %>">
-                        <%= product.name %>
-                      </a></h3>
-                    <p class="mb-0">
-                      <%= product.description %>
-                    </p>
-                    <p class="text-primary font-weight-bold">₹<%= product.price %>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <% }); %>
-          </div>
+          <% if (products.length > 0) { %>
+            <div class="row mb-5">
+                <% products.forEach(product => { %>
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="block-4 text-center border">
+                            <figure class="block-4-image imgsize">
+                                <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>"
+                                        alt="<%= product.name %>" class="img-fluid"></a>
+                            </figure>
+                            <div class="block-4-text p-4 descript">
+                                <h3><a href="/shopSingle/<%= product._id %>">
+                                        <%= product.name %>
+                                    </a></h3>
+                                <p class="mb-0">
+                                    <%= product.description %>
+                                </p>
+                                <p class="text-primary font-weight-bold">₹<%= product.price %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="alert alert-warning" role="alert">
+                No products found.
+            </div>
+        <% } %>
+        
           <div class="row" data-aos="fade-up">
             <div class="col-md-12 text-center">
                 <div class="site-block-27">

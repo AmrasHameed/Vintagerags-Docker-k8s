@@ -15,37 +15,49 @@ const shop = async (req, res) => {
         const perPage = 3;
         const categoryId = req.query.category;
         const sortBy = req.query.sortBy;
+        const searchQuery = req.query.search; // New line to get search query
         const page = parseInt(req.query.page) || 1;
+
         if (sortBy) {
             if (req.session.filterCat) {
                 products = await getProductsWithSorting({ category: new mongoose.Types.ObjectId(req.session.filterCat), status: true }, sortBy);
             } else {
                 products = await getProductsWithSorting({ status: true }, sortBy);
             }
+        } else if (searchQuery) { 
+            const searchRegex = new RegExp(searchQuery, 'i'); 
+            let searchCriteria = { name: searchRegex, status: true };
+
+            if (req.session.filterCat) {
+                searchCriteria.category = new mongoose.Types.ObjectId(req.session.filterCat);
+            }
+
+            products = await productModel.find(searchCriteria).exec();
         } else {
             if (categoryId) {
                 products = await productModel.find({ category: categoryId, status: true }).exec();
                 req.session.filterCat = categoryId;
             } else {
-                delete req.session.filterCat
+                delete req.session.filterCat;
                 products = await productModel.find({ status: true }).exec();
             }
         }
+
         const totalPages = Math.ceil(products.length / perPage);
         const startIndex = (page - 1) * perPage;
         const endIndex = page * perPage;
         const productsPaginated = products.slice(startIndex, endIndex);
 
-
         const categoryCounts = await getCategoryCounts();
         const categories = await catModel.find();
 
-        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId });
+        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId }); 
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
     }
 }
+
 
 const getProductsWithSorting = async (filter, sortBy) => {
     const aggregationPipeline = [
@@ -123,26 +135,6 @@ const shopSingle = async (req, res) => {
 }
 
 
-const search = async (req, res) => {
-    try {
-        const sortBy = req.query.sortBy;
-        const search = req.query.search;
-        const categoryId = req.query.category;
-        const perPage = 3;
-        const categories = await catModel.find()
-        const products = await productModel.find({ name: { $regex: new RegExp(`^${search}`, 'i') } });
-        const page = parseInt(req.query.page) || 1;
-        const totalPages = Math.ceil(products.length / perPage);
-        const startIndex = (page - 1) * perPage;
-        const endIndex = page * perPage;
-        const productsPaginated = products.slice(startIndex, endIndex);
-        const categoryCounts = await getCategoryCounts();
-        res.render('user/shop', { products: productsPaginated, categories, currentPage: page, totalPages, categoryCounts, sortBy, categoryId })
-    } catch (error) {
-        console.log(error);
-        res.render('user/serverError');
-    }
-}
 
 const addToFav = async (req, res) => {
     try {
@@ -204,4 +196,4 @@ const removeFav = async (req, res) => {
         res.render('user/serverError');
     }
 }
-module.exports = { shop, shopSingle, search, addToFav, viewFav, removeFav }
+module.exports = { shop, shopSingle, addToFav, viewFav, removeFav }

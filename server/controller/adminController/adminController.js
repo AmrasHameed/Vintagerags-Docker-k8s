@@ -1,9 +1,9 @@
 const adminModel = require('../../model/userModel')
-const orderModel=require('../../model/orderModel')
-const fs=require('fs')
-const os=require('os')
-const path=require('path')
-const puppeteer=require('puppeteer')
+const orderModel = require('../../model/orderModel')
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
+const puppeteer = require('puppeteer')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
 
@@ -38,9 +38,11 @@ const loginPost = async (req, res) => {
 const adminPanel = (req, res) => {
     try {
 
-        res.render('admin/adminPanel',{expressFlash:{
-            derror:req.flash('derror')
-          }})
+        res.render('admin/adminPanel', {
+            expressFlash: {
+                derror: req.flash('derror')
+            }
+        })
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -72,7 +74,7 @@ const unblock = async (req, res) => {
         const id = req.params.id;
         const user = await adminModel.findById(id);
         user.blocked = !user.blocked;
-        req.session.isAuth=false;
+        req.session.isAuth = false;
         await user.save();
         res.redirect('/admin/users')
     } catch (err) {
@@ -81,25 +83,25 @@ const unblock = async (req, res) => {
     }
 }
 
-const search=async(req,res)=>{
-    try{
-        const searchName=req.body.search;
-        const data=await adminModel.find({
+const search = async (req, res) => {
+    try {
+        const searchName = req.body.search;
+        const data = await adminModel.find({
             username: { $regex: new RegExp(`^${searchName}`, `i`) },
-          });
-          req.session.searchUser=data;
-          res.redirect('/admin/searchView')
-    }catch(err){
+        });
+        req.session.searchUser = data;
+        res.redirect('/admin/searchView')
+    } catch (err) {
         console.log(err);
         res.render("user/serverError");
     }
 }
 
-const searchView=async(req,res)=>{
-    try{
-        const user=req.session.searchUser;
+const searchView = async (req, res) => {
+    try {
+        const user = req.session.searchUser;
         res.render('admin/users', { users: user })
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.render("user/serverError");
     }
@@ -109,31 +111,106 @@ const isFutureDate = (selectedDate) => {
     try {
         const selectedDateTime = new Date(selectedDate);
         const currentDate = new Date();
-        return selectedDateTime > currentDate;
-        
+        return selectedDateTime >= currentDate;
+
     } catch (error) {
         console.log(error);
-        res.render("users/serverError") 
+        res.render("users/serverError")
     }
+}
+
+const chartData = async (req, res) => {
+    try {
+        const selected = req.body.selected
+        console.log(selected);
+        if (selected == 'month') {
+            const orderByMonth = await orderModel.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            month: { $month: '$createdAt' },
+                        },
+                        count: { $sum: 1 },
+                    }
+                }
+            ])
+            const salesByMonth = await orderModel.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            month: { $month: '$createdAt' },
+                        },
+                        
+                        totalAmount: { $sum: '$amount' },
+
+                    }
+                }
+            ])
+            console.log('order2', orderByMonth);
+            console.log('sales2', salesByMonth);
+            const responseData = {
+                order: orderByMonth,
+                sales: salesByMonth
+            };
+
+
+            res.status(200).json(responseData);
+        }
+        else if (selected == 'year') {
+            const orderByYear = await orderModel.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            year: { $year: '$createdAt' },
+                        },
+                        count: { $sum: 1 },
+                    }
+                }
+            ])
+            const salesByYear = await orderModel.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            year: { $year: '$createdAt' },
+                        },
+                        totalAmount: { $sum: '$amount' },
+                    }
+                }
+            ])
+            console.log('order1', orderByYear);
+            console.log('sales1', salesByYear);
+            const responseData = {
+                order: orderByYear,
+                sales: salesByYear,
+            }
+            res.status(200).json(responseData);
+        }
+
+    }
+    catch (err) {
+        console.log(err);
+        res.send("Error Occured")
+    }
+
 }
 
 const downloadsales = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
-  
-        let sdate=isFutureDate(startDate)
-        let edate=isFutureDate(endDate)
-  
-        if(sdate){
-          req.flash('derror','invalid date')
-          return res.redirect('/admin/adminPanel')
+        console.log(startDate, endDate);
+        let sdate = isFutureDate(startDate)
+        let edate = isFutureDate(endDate)
+
+        if (sdate) {
+            req.flash('derror', 'invalid date')
+            return res.redirect('/admin/adminPanel')
         }
-        if(edate){
-          req.flash('derror','invalid date')
-          return res.redirect('/admin/adminPanel')
-  
+        if (edate) {
+            req.flash('derror', 'invalid date')
+            return res.redirect('/admin/adminPanel')
+
         }
-  
+
         const salesData = await orderModel.aggregate([
             {
                 $match: {
@@ -141,25 +218,24 @@ const downloadsales = async (req, res) => {
                         $gte: new Date(startDate),
                         $lt: new Date(endDate),
                     },
-                },
-            },
-            {
-                $addFields: {
-                    amountAsNumber: { $toDouble: '$amount' },
+                    status: {
+                        $nin: ["Cancelled", "returned"]
+                    }
                 },
             },
             {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: '$amountAsNumber' },
+                    totalAmount: { $sum: '$amount' }, 
                 },
             },
         ]);
         
-        
-        console.log("ithu sales",salesData);
-  
+
+
+        console.log("ithu sales", salesData);
+
         const products = await orderModel.aggregate([
             {
                 $match: {
@@ -200,7 +276,7 @@ const downloadsales = async (req, res) => {
                 $sort: { totalSold: -1 },
             },
         ]);
-        console.log("ithu products",products);
+        console.log("ithu products", products);
         const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -229,15 +305,15 @@ const downloadsales = async (req, res) => {
                   </thead>
                   <tbody>
                       ${products
-                          .map(
-                              (item, index) => `
+                .map(
+                    (item, index) => `
                               <tr>
                                   <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
                                   <td style="border: 1px solid #000; padding: 8px;">${item.productName}</td>
                                   <td style="border: 1px solid #000; padding: 8px;">${item.totalSold}</td>
                               </tr>`
-                          )
-                          .join("")}
+                )
+                .join("")}
                       <tr>
                           <td style="border: 1px solid #000; padding: 8px;"></td>
                           <td style="border: 1px solid #000; padding: 8px;">Total No of Orders</td>
@@ -254,24 +330,23 @@ const downloadsales = async (req, res) => {
       </body>
       </html>
   `;
-  
-  
+
+
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.setContent(htmlContent);
-  
-        // Generate PDF
+
         const pdfBuffer = await page.pdf();
-  
+
         await browser.close();
-  
+
         const downloadsPath = path.join(os.homedir(), 'Downloads');
         const pdfFilePath = path.join(downloadsPath, 'sales.pdf');
-  
-        // Save the PDF file locally
+
+
         fs.writeFileSync(pdfFilePath, pdfBuffer);
-  
-        // Send the PDF as a response
+
+
         res.setHeader('Content-Length', pdfBuffer.length);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename=sales.pdf');
@@ -279,10 +354,10 @@ const downloadsales = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.render("user/serverError");
-      }
-  };
-  
+    }
+};
 
 
 
-module.exports = { login, loginPost, adminPanel, adLogout, user, unblock ,search,searchView,downloadsales}
+
+module.exports = { login, loginPost, adminPanel, adLogout, user, unblock, search, searchView, downloadsales, chartData }

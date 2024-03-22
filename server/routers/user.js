@@ -21,7 +21,6 @@ userRouter.get('/contact', userController.contact);
 
 userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
-userRouter.get('/search',productController.search)
 userRouter.get('/addtofavourites/:id',logged,productController.addToFav)
 userRouter.get('/wishlist',logged,productController.viewFav)
 userRouter.get('/removefromfavorites/:id',logged,productController.removeFav)
@@ -40,6 +39,11 @@ userRouter.get('/deleteAddress/:id',logged, profileController.deleteAddress)
 userRouter.post('/addressupdated/:id', logged, profileController.addressPost)
 userRouter.get('/addAddress',logged , profileController.addAddress)
 userRouter.post('/addressPost',logged , profileController.addaddressPost)
+userRouter.get('/wallet',logged , profileController.wallet)
+userRouter.post('/walletcreate/orderId', profileController.walletupi)
+userRouter.post('/walletTopup', profileController.walletTopup)
+
+
 
 
 userRouter.get('/cart', logged, cartController.showcart)

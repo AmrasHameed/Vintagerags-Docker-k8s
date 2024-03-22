@@ -56,7 +56,9 @@ adminRouter.get('/editCouponGet/:id',sessions.adAuth,couponController.editCoupon
 adminRouter.post('/updateCoupon',sessions.adAuth,couponController.updateCoupon)
 
 
+adminRouter.post('/chartData',sessions.adAuth,adminController.chartData)
 adminRouter.post('/downloadsales',sessions.adAuth,adminController.downloadsales)
+
 adminRouter.get('/adLogout', sessions.adAuth, adminController.adLogout)
 
 module.exports = adminRouter
