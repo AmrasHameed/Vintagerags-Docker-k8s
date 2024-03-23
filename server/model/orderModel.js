@@ -58,7 +58,16 @@ const schema = new mongoose.Schema({
     updated: {
         type: Date,
         required: true
-    }
+    },
+    return:[{
+        reason: {
+        type: String,
+        },
+        status: {
+        type: Boolean,
+        default:false
+        }
+    }]
 })
 
 

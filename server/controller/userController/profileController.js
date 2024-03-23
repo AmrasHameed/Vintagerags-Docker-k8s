@@ -46,7 +46,8 @@ const ordercancelling = async (req, res) => {
                         {
                             transaction: "Credited",
                             amount: result.amount,
-                            date: new Date()
+                            date: new Date(),
+                            reason:"Order Cancelled"
                         }
                     ]
                 })
@@ -55,7 +56,8 @@ const ordercancelling = async (req, res) => {
                 wallet.history.push({
                     transaction: "Credited",
                     amount: result.amount,
-                    date: new Date()
+                    date: new Date(),
+                    reason:"Order Cancelled"
                 })
                 await wallet.save();
             }
@@ -135,11 +137,11 @@ const itemCancel = async (req, res) => {
                 if (!wallet) {
                     const newWallet = new walletModel({
                         userId: userId,
-                        history: [{ transaction: "Credited", amount: product.price, date: new Date() }]
+                        history: [{ transaction: "Credited", amount: product.price, date: new Date(),reason:"Item Cancelled" }]
                     });
                     await newWallet.save();
                 } else {
-                    wallet.history.push({ transaction: "Credited", amount: product.price, date: new Date() });
+                    wallet.history.push({ transaction: "Credited", amount: product.price, date: new Date() ,reason:"Item Cancelled" });
                     await wallet.save();
                 }
             }
@@ -188,7 +190,8 @@ const orderreturning = async (req, res) => {
                     {
                         transaction: "Credited",
                         amount: result.amount,
-                        date: new Date()
+                        date: new Date(),
+                        reason:"Order Returned"
                     }
                 ]
             })
@@ -197,7 +200,8 @@ const orderreturning = async (req, res) => {
             wallet.history.push({
                 transaction: "Credited",
                 amount: result.amount,
-                date: new Date()
+                date: new Date(),
+                reason:"Order Returned"
             })
             await wallet.save();
         }
@@ -220,6 +224,24 @@ const orderreturning = async (req, res) => {
         }
         res.redirect("/orders")
     } catch (error) {
+        console.log(error)
+        res.render('user/serverError')
+    }
+}
+
+const returnReason=async(req,res)=>{
+    try{
+        const itemId = req.body.itemId; 
+        const reason = req.body.reason; 
+        const update = await orderModel.updateOne(
+            { _id:itemId }, 
+            { $set: { 'return.reason': reason,'return.status': false, updated: new Date() } },
+            { upsert: true } 
+        );
+        
+          
+        res.status(200).json({ message: 'Order return request processed successfully' });    
+    }catch(error){
         console.log(error)
         res.render('user/serverError')
     }
@@ -501,7 +523,8 @@ const walletTopup = async (req, res) => {
         wallet.history.push({
             transaction: "Credited",
             amount: Amount,
-            date: new Date()
+            date: new Date(),
+            reason:"Wallet Topup"
         });
 
         await wallet.save();
@@ -513,4 +536,4 @@ const walletTopup = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, orderreturning, itemCancel ,wallet,walletupi,walletTopup}
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, orderreturning,returnReason, itemCancel ,wallet,walletupi,walletTopup}

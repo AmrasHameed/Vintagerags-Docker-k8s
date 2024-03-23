@@ -47,7 +47,7 @@ const addcart = async (req, res) => {
         const pid = req.params.id;
         const product = await productModel.findOne({ _id: pid });
         const userId = req.session.userId;
-        const price = product.price;
+        const price = product.discountPrice;
         const stock = await productModel.findOne({
             _id: pid,
             "stock.size": selectedSize,

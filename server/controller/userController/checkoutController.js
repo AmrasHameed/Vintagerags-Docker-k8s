@@ -90,7 +90,8 @@ const order = async (req, res) => {
       userWallet.history.push({
         transaction: "Debited",
         amount: wallet,
-        date: new Date()
+        date: new Date(),
+        reason:"Product Purchased"
       })
       await userWallet.save();
       const user = await userModel.findOne({ _id: userId })

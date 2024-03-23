@@ -24,7 +24,11 @@
                         <h5 class="card-title text-<%= entry.transaction === 'Credited' ? 'success' : 'danger'; %>">
                             <%= entry.transaction %>
                         </h5>
+
+                        <p class="card-text">Reason: <%= entry.reason %></p>
+
                         <p class="card-text">Amount: <%= entry.amount %></p>
+
                         <p class="card-text">Date: <%= new Date(entry.date).toLocaleString() %></p>
                     </div>
                 </div>

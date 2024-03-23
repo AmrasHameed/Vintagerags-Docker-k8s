@@ -19,6 +19,9 @@ const schema = new mongoose.Schema({
             type: Date,
             required: true,
         },
+        reason: {
+            type: String
+        }
     },
     ],
 

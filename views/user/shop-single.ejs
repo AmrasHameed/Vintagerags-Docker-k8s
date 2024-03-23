@@ -55,10 +55,10 @@
             </span>
           </span>
           <hr>
-          <p><strong class="rateMain">₹<%= productOne.price %></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+          <p><strong class="rateMain">₹<%= productOne.discountPrice %></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
               class="rate">MRP.</span>&nbsp;&nbsp;&nbsp;<span class="rate"
-              style="text-decoration: line-through;color: #857b79;">₹<%= productOne.price+(productOne.price*10/100) %>
-                </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="rateOff">(10% OFF)</span><br><span style="font-weight: 300;color: rgb(11, 215, 157);">inclusive of all taxes</span></p>
+              style="text-decoration: line-through;color: #857b79;">₹<%= productOne.price%>
+                </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="rateOff">(<%= productOne.discount%>% OFF)</span><br><span style="font-weight: 300;color: rgb(11, 215, 157);">inclusive of all taxes</span></p>
           <form id="addToCartForm" onsubmit="return addToCart(event);" method="post"
             action="/addtoCart/<%= productOne._id %>">
 
@@ -126,7 +126,12 @@
                       <p class="mb-0">
                         <%= product.description %>
                       </p>
-                      <p class="text-primary font-weight-bold">₹<%= product.price %>
+                      <p class="text-primary font-weight-bold my-0" style="line-height: 2; font-size: 18px;">
+                        <span style="text-decoration: line-through;"><%= product.price %></span>&nbsp;
+                        ₹<%= product.discountPrice %>
+                      </p>
+                      <p class="text-primary my-0" style="line-height: 0.5;">
+                        <%= product.discount %>% OFF
                       </p>
                     </div>
                   </div>
