@@ -39,6 +39,8 @@
                                                     <th>Name</th>
                                                     <th>Category</th>
                                                     <th>Price</th>
+                                                    <th>Discount(%)</th>
+                                                    <th>DiscountPrice</th>
                                                     <th>Stock</th>
                                                     <th>Image</th>
                                                     <th>Status</th>
@@ -59,6 +61,12 @@
                                                         </td>
                                                         <td>
                                                             <%= row.price %>
+                                                        </td>
+                                                        <td>
+                                                            <%= row.discount %>%
+                                                        </td>
+                                                        <td>
+                                                            <%= row.discountPrice %>
                                                         </td>
                                                         <td>
                                                             <%= row.totalstock %>

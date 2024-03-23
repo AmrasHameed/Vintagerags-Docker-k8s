@@ -9,6 +9,10 @@ const catSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    discount:{
+        type:Number,
+        required:true,
+    },
     types: {
         type: Array,
         default: ['All']

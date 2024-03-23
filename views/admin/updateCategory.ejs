@@ -23,6 +23,11 @@
         <textarea class="form-control" id="description" name="description" required><%= category.description %></textarea>
         <div id="descriptionError" class="text-danger"></div>
       </div>
+      <div class="form-group ">
+        <label for="price">Discount:   (in Percentage)</label>
+        <input type="number" class="form-control" id="discount" name="discount" min="0" value="<%=category.discount%>" required>
+        <div id="discountError" class="text-danger"></div>
+      </div>
       <% if(catError){%>
         <div style="color: red; font-size: 16px; font-weight: bold;">
             <%= catError%>

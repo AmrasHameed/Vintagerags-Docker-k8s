@@ -32,11 +32,24 @@ const addProduct = async (req, res) => {
 
 const addProductPost = async (req, res) => {
     try {
+        const category= req.body.category;
+        const categories=await categoryModel.findById(category)
+        const categoryDiscount=categories.discount;
+        console.log(req.body.category,categories,categoryDiscount);
+        const price = req.body.price;
+        let discount=req.body.discount;
+        if(categoryDiscount>discount){
+            discount=categoryDiscount;
+        }
+        const discountPrice = price - (price * (discount / 100));
+
         const product = new productModel({
             name: req.body.name,
-            category: req.body.category,
+            category: category,
             description: req.body.description,
-            price: req.body.price,
+            price: price,
+            discount:discount,
+            discountPrice:discountPrice,
             stock:[{
                 size:'XS',
                 quantity:req.body.s1,
@@ -96,10 +109,22 @@ const updateProduct = async (req, res) => {
 const updateProductPost = async (req, res) => {
     try {
         const id = req.params.id;
+
         const product = await productModel.findOne({ _id: id })
+        const category=product.category;
+        const categories=await categoryModel.findById(category)
+        const categoryDiscount=categories.discount;
+        const price = req.body.price;
+        let discount=req.body.discount;
+        if(categoryDiscount>discount){
+            discount=categoryDiscount;
+        }
+        const discountPrice = price - (price * (discount / 100));
         product.name = req.body.name
         product.description = req.body.description
-        product.price = req.body.price
+        product.price = price
+        product.discount=discount
+        product.discountPrice=discountPrice
         product.stock = [
             {size:'XS',quantity:req.body.s1},
             {size:'S',quantity:req.body.s2},

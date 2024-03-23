@@ -111,8 +111,14 @@
                     <p class="mb-0">
                       <%= product.description %>
                     </p>
-                    <p class="text-primary font-weight-bold">₹<%= product.price %>
+                    <p class="text-primary font-weight-bold my-0" style="line-height: 2; font-size: 18px;">
+                      <span style="text-decoration: line-through;"><%= product.price %></span>&nbsp;
+                      ₹<%= product.discountPrice %>
                     </p>
+                    <p class="text-primary my-0" style="line-height: 0.5;">
+                      <%= product.discount %>% OFF
+                    </p>
+                    
                   </div>
                 </div>
               </a>
