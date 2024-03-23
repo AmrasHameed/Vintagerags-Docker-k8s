@@ -122,7 +122,6 @@ const isFutureDate = (selectedDate) => {
 const chartData = async (req, res) => {
     try {
         const selected = req.body.selected
-        console.log(selected);
         if (selected == 'month') {
             const orderByMonth = await orderModel.aggregate([
                 {
@@ -146,8 +145,6 @@ const chartData = async (req, res) => {
                     }
                 }
             ])
-            console.log('order2', orderByMonth);
-            console.log('sales2', salesByMonth);
             const responseData = {
                 order: orderByMonth,
                 sales: salesByMonth
@@ -177,8 +174,6 @@ const chartData = async (req, res) => {
                     }
                 }
             ])
-            console.log('order1', orderByYear);
-            console.log('sales1', salesByYear);
             const responseData = {
                 order: orderByYear,
                 sales: salesByYear,
