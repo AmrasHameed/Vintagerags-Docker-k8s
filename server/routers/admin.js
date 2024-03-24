@@ -46,6 +46,8 @@ adminRouter.post('/updateCategory/:id', sessions.adAuth, categoryController.upda
 
 adminRouter.get('/orders',sessions.adAuth,orderController.order)
 adminRouter.post('/updateOrderStatus',sessions.adAuth, orderController.orderstatus)
+adminRouter.get('/orderReturn',sessions.adAuth,orderController.orderReturn)
+adminRouter.get('/returnApprove/:id',sessions.adAuth,orderController.returnApprove)
 
 
 adminRouter.get('/coupons', sessions.adAuth, couponController.couponlist)
@@ -58,6 +60,7 @@ adminRouter.post('/updateCoupon',sessions.adAuth,couponController.updateCoupon)
 
 adminRouter.post('/chartData',sessions.adAuth,adminController.chartData)
 adminRouter.post('/downloadsales',sessions.adAuth,adminController.downloadsales)
+
 
 adminRouter.get('/adLogout', sessions.adAuth, adminController.adLogout)
 

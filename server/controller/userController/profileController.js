@@ -171,63 +171,6 @@ const itemCancel = async (req, res) => {
 };
 
 
-const orderreturning = async (req, res) => {
-    try {
-        const id = req.params.id
-        const update = await orderModel.updateOne({ _id: id }, { status: "returned", updated: new Date() })
-        const result = await orderModel.findOne({ _id: id })
-
-        const userId = req.session.userId
-        const user = await userModel.findOne({ _id: userId })
-        user.wallet += result.amount
-        await user.save()
-
-        const wallet = await walletModel.findOne({ userId: userId })
-        if (!wallet) {
-            const newWallet = new walletModel({
-                userId: userId,
-                history: [
-                    {
-                        transaction: "Credited",
-                        amount: result.amount,
-                        date: new Date(),
-                        reason:"Order Returned"
-                    }
-                ]
-            })
-            await newWallet.save();
-        } else {
-            wallet.history.push({
-                transaction: "Credited",
-                amount: result.amount,
-                date: new Date(),
-                reason:"Order Returned"
-            })
-            await wallet.save();
-        }
-
-
-        const items = result.items.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            size: item.size,
-
-        }))
-
-        for (const item of items) {
-            const product = await productModel.findOne({ _id: item.productId })
-
-            const size = product.stock.findIndex(size => size.size == item.size)
-            product.stock[size].quantity += item.quantity
-            product.totalstock+=item.quantity
-            await product.save()
-        }
-        res.redirect("/orders")
-    } catch (error) {
-        console.log(error)
-        res.render('user/serverError')
-    }
-}
 
 const returnReason=async(req,res)=>{
     try{
@@ -237,9 +180,7 @@ const returnReason=async(req,res)=>{
             { _id:itemId }, 
             { $set: { 'return.reason': reason,'return.status': false, updated: new Date() } },
             { upsert: true } 
-        );
-        
-          
+        );  
         res.status(200).json({ message: 'Order return request processed successfully' });    
     }catch(error){
         console.log(error)
@@ -536,4 +477,4 @@ const walletTopup = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, orderreturning,returnReason, itemCancel ,wallet,walletupi,walletTopup}
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel ,wallet,walletupi,walletTopup}
