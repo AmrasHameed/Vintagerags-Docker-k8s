@@ -41,12 +41,18 @@
                                             
                                     </td>
                                     <td>
-                                        <% if(data.return[0].status==true){ %>
-                                            <span class="text-success">Approved</span>
+                                        <% if(data.return[0].status=='Pending'){ %>
+                                            <div class="equal-btns">
+                                            <a href="/admin/returnApprove/<%= data._id %>"
+                                                class="btn btn-outline-success " >Approve</a>
+                                                <a href="/admin/returnReject/<%= data._id %>"
+                                                    class="btn btn-outline-danger"> Reject </a>
+                                                </div>
+                                            <% }else if(data.return[0].status=='Accepted'){ %>
+                                                <span class="text-success"> <%= data.return[0].status %> </span>
                                             <% }else{ %>
-                                        <a href="/admin/returnApprove/<%= data._id %>"
-                                            class="btn btn-success">Approve</a>
-                                            <% } %>
+                                                <span class="text-danger"> <%= data.return[0].status %> </span>
+                                                <% } %>
                                     </td>
                                     
                                 </tr>

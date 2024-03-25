@@ -48,6 +48,8 @@ adminRouter.get('/orders',sessions.adAuth,orderController.order)
 adminRouter.post('/updateOrderStatus',sessions.adAuth, orderController.orderstatus)
 adminRouter.get('/orderReturn',sessions.adAuth,orderController.orderReturn)
 adminRouter.get('/returnApprove/:id',sessions.adAuth,orderController.returnApprove)
+adminRouter.get('/returnReject/:id',sessions.adAuth,orderController.returnReject)
+
 
 
 adminRouter.get('/coupons', sessions.adAuth, couponController.couponlist)

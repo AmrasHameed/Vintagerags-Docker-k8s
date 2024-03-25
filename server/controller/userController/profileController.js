@@ -178,7 +178,7 @@ const returnReason=async(req,res)=>{
         const reason = req.body.reason; 
         const update = await orderModel.updateOne(
             { _id:itemId }, 
-            { $set: { 'return.reason': reason,'return.status': false, updated: new Date() } },
+            { $set: { 'return.reason': reason,'return.status': "Pending", updated: new Date() } },
             { upsert: true } 
         );  
         res.status(200).json({ message: 'Order return request processed successfully' });    

@@ -44,7 +44,7 @@ const orderReturn=async(req,res)=>{
 const returnApprove=async(req,res)=>{
     try{
         const orderId=req.params.id;
-        const update = await orderModel.updateOne({ _id: orderId }, { status: "returned", updated: new Date() ,'return.status':true})
+        const update = await orderModel.updateOne({ _id: orderId }, { status: "returned", updated: new Date() ,'return.status':'Accepted'})
         const order=await orderModel.findOne({_id:orderId})
         const userId=order.userId;
         const user=await userModel.findOne({ _id: userId })
@@ -97,4 +97,15 @@ const returnApprove=async(req,res)=>{
     }
 }
 
-module.exports={order,orderstatus,orderReturn,returnApprove}
+const returnReject=async(req,res)=>{
+    try{
+        const orderId=req.params.id;
+        const update = await orderModel.updateOne({ _id: orderId }, {'return.status':'Rejected'})
+        res.redirect('/admin/orderReturn');
+    }catch(error){
+        console.log(error);
+        res.render("user/serverError");
+    }
+}
+
+module.exports={order,orderstatus,orderReturn,returnApprove,returnReject}

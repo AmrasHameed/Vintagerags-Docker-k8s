@@ -84,13 +84,9 @@
                                     style="cursor: pointer; color: red; font-weight: 200;"> Cancel Order</a>
                                 <% } %>
                                     <% if( order.return && order.return.length> 0 &&
-                                        order.return[0].status === false) {%>
+                                        order.return[0].status ) {%>
                                         <span style="color: black;">Return Status: <span
-                                                style="color:red;">Pending</span></span>
-                                        <%}else if (order.return && order.return.length> 0 &&
-                                            order.return[0].status === true) {%>
-                                            <span style="color: black;">Return Status: <span
-                                                    style="color:green;">Successfull</span></span>
+                                                class="text-primary"><%= order.return[0].status %></span></span>
                                             <%}else if (order.status==='delivered' && new Date(order.updated.getTime() +
                                                 5 * 24 * 60 * 60 * 1000)>= new Date()) {%>
                                                 <a onclick="confirmm('<%= order._id %>')" style="cursor: pointer;">

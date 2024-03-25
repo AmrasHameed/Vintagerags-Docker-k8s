@@ -1,5 +1,6 @@
 const adminModel = require('../../model/userModel');
 const CatModel = require('../../model/categModel');
+const productModel = require('../../model/productModel');
 
 const category = async (req, res) => {
     try {
@@ -73,24 +74,40 @@ const updateCategory = async (req, res) => {
 const updateCategoryPost = async (req, res) => {
     try {
         const id = req.params.id;
+        const product=await productModel.find({category:id})
         const category = await CatModel.findById(id);
-        const catName=req.body.name;
-        const catExist = await CatModel.findOne({ name: { $regex: new RegExp("^" + catName + "$", "i") } });
-        if (catExist) {
-            console.log("Already Exist");
-            req.flash('catError', 'Category Already Exists');
-            return res.redirect('/admin/updateCategory/'+id);
-        } 
-        category.description = req.body.description
-        category.discount=req.body.discount;
-        category.name = req.body.name
+        const catName = req.body.name;
+        const isNameModified = catName !== category.name; 
+
+        if (isNameModified) {
+            const catExist = await CatModel.findOne({ name: { $regex: new RegExp("^" + catName + "$", "i") } });
+            if (catExist) {
+                console.log("Already Exist");
+                req.flash('catError', 'Category Already Exists');
+                return res.redirect('/admin/updateCategory/' + id);
+            }
+        }
+
+        category.description = req.body.description;
+        category.discount = req.body.discount;
+        category.name = catName; 
         await category.save();
-        req.flash('updateSuccess', "Category Updated Successfully")
-        res.redirect('/admin/categories')
+        const categoryDiscount=category.discount;
+        product.forEach(async (element) => {
+            if (categoryDiscount > element.discount) {
+                element.discount = categoryDiscount;
+            }
+            element.discountPrice = element.price - (element.price * (element.discount / 100));
+            await element.save();
+        });
+        console.log(categoryDiscount);
+        req.flash('updateSuccess', "Category Updated Successfully");
+        res.redirect('/admin/categories');
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
     }
 }
+
 
 module.exports = { category, addCategory, addCategoryPost, unlist, updateCategory, updateCategoryPost };
