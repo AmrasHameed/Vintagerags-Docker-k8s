@@ -78,6 +78,15 @@
 </footer>
 </div>
 <script>
+  document.getElementById('categorySelect').addEventListener('change', function() {
+    const selectedCategoryId = this.value;
+    if (selectedCategoryId) {
+        window.location.href = '/shop?category=' + selectedCategoryId;
+    }
+});
+
+</script>
+<script>
 
   const slides = document.querySelectorAll('.slide');
   let currentSlide = 0;

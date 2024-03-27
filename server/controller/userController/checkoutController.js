@@ -101,11 +101,8 @@ const order = async (req, res) => {
     }
     const savedOrder = await order.save()
     await cart.save()
-    const orderconfirmation = await orderModel.findOne({ orderId: savedOrder.orderId }).populate({
-      path: 'items.productId',
-      select: 'name'
-    })
-    res.render('user/thankyou', { order: orderconfirmation, categories })
+    req.session.orderId=savedOrder.orderId;
+    res.redirect('/confirmPage')
   } catch (error) {
     console.log(error);
     res.render("user/serverError");
@@ -152,7 +149,6 @@ const applyCoupon = async (req, res) => {
       const user = await userModel.findById(userId);
 
       if (user && user.usedCoupons.includes(couponCode)) {
-        console.log("nvjksadnjkghakjvajkvnasdmvbasfhvb");
         res.json({ success: false, message: "Already Redeemed" });
       } else if (
         coupon.expiry > new Date() &&
@@ -171,9 +167,6 @@ const applyCoupon = async (req, res) => {
           dicprice = coupon.discount;
           price = subtotal - dicprice;
         }
-
-        console.log("ithu priceaahmu", price, dicprice);
-
         await userModel.findByIdAndUpdate(
           userId,
           { $addToSet: { usedCoupons: couponCode } },
@@ -223,9 +216,24 @@ const revokeCoupon = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.render("users/serverError")
+    res.render("user/serverError")
   }
 };
 
+const confirmPage=async(req,res)=>{
+  try{
+    const categories=await catModel.find()
+    // if(req.session.orderId){
+      const orderconfirmation = await orderModel.findOne({ orderId: req.session.orderId}).populate({
+        path: 'items.productId',
+        select: 'name'
+      })
+    // }
+    res.render('user/thankyou', { order: orderconfirmation,categories})
+  }catch(error){
+    console.log(error);
+    res.render("user/serverError")
+  }
+}
 
-module.exports = { checkout, order, upi, wallet, applyCoupon, revokeCoupon }
+module.exports = { checkout, order, upi, wallet, applyCoupon, revokeCoupon ,confirmPage}

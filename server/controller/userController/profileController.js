@@ -9,6 +9,10 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
 const Razorpay = require('razorpay')
+const fs = require('fs');
+const path = require('path');
+const easyinvoice=require('easyinvoice')
+
 
 const order = async (req, res) => {
     try {
@@ -88,7 +92,7 @@ const ordertracking = async (req, res) => {
     try {
         const id = req.params.id
         const categories = await catModel.find()
-        const order = await orderModel.find({ _id: id }).populate({
+        const order = await orderModel.findOne({ _id: id }).populate({
             path: 'items.productId',
             select: 'name images'
         })
@@ -98,6 +102,72 @@ const ordertracking = async (req, res) => {
         res.render('user/serverError')
     }
 }
+
+const downloadInvoice=async(req,res)=>{
+    try{
+        const orderId = req.params.id;
+        const order = await orderModel.findOne({ orderId: orderId }).populate({
+            path: 'items.productId',
+            select: 'name',
+        });
+
+
+        const pdfBuffer = await generateInvoice(order);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderId}.pdf`);
+        res.send(pdfBuffer);
+    }catch(error){
+        console.log(error)
+        res.render('user/serverError')
+    }
+}
+
+const generateInvoice = async (order) => {
+    try {
+        let totalAmount = order.amount;        
+        const data = {  
+            documentTitle: 'Invoice',
+            currency: 'INR',
+            marginTop: 25,
+            marginRight: 25,
+            marginLeft: 25,
+            marginBottom: 25,
+            images:{
+                logo:"https://i.ibb.co/6sgJyMz/logo.png",
+                background: "https://public.budgetinvoice.com/img/watermark-draft.jpg"
+            },
+            sender: {
+                company: 'VintageRags',
+                address: '13th Cross, Madiwala, Banglore, India',
+                zip: '651323',
+                city: 'Banglore',
+                country: 'INDIA',
+                phone: '9605912125',
+                email: 'vintageragsonline@gmail.com',
+                website: 'www.vintagerags.com',
+            },
+            invoiceNumber: `INV-${order.orderId}`,
+            invoiceDate: new Date().toJSON(),
+            products: order.items.map(item => ({
+                quantity: item.quantity,
+                description: item.productId.name,
+                price: item.price,
+            })),
+            total: `₹${totalAmount.toFixed(2)}`,
+            tax: 0,
+            bottomNotice: 'Thank you for shopping at VintageRags!',
+        };
+
+        const result = await easyinvoice.createInvoice(data);
+        const pdfBuffer = Buffer.from(result.pdf, 'base64');
+        return pdfBuffer;
+    } catch (error) {
+        console.log(error);
+        res.render('user/serverError');
+    }
+};
+
 
 const itemCancel = async (req, res) => {
     try {
@@ -429,7 +499,11 @@ const wallet=async(req,res)=>{
         const userId=req.session.userId;
         const categories = await catModel.find()
         const user=await userModel.findOne({ _id: userId})
-        const wallet = await walletModel.findOne({ userId: userId })
+        const wallet = await walletModel.aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(userId) } }, 
+            { $unwind: "$history" },
+            { $sort: { "history.date": -1 } }
+          ]);
         res.render('user/wallet', { wallet: wallet, user: user ,categories})
     }catch(error){
         console.log(error)
@@ -477,4 +551,4 @@ const walletTopup = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel ,wallet,walletupi,walletTopup}
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel ,wallet,walletupi,walletTopup ,downloadInvoice}

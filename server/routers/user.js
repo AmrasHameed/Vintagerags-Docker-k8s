@@ -31,6 +31,7 @@ userRouter.get('/itemCancel/:orderId/:productId',logged,profileController.itemCa
 userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
 userRouter.post('/returnReason',profileController.returnReason)
 userRouter.get('/order-tracking/:id', logged, profileController.ordertracking)
+userRouter.get('/downloadInvoice/:id',logged,profileController.downloadInvoice)
 userRouter.get('/resetpassword',logged,profileController.resetPassword)
 userRouter.post('/passwordUpdating',logged,profileController.updatePassword)
 userRouter.get('/address',logged,profileController.showaddress)
@@ -58,6 +59,7 @@ userRouter.post('/create/orderId',logged, checkoutValid, checkoutController.upi)
 userRouter.post('/wallettransaction',logged,checkoutValid, checkoutController.wallet)
 userRouter.post("/applyCoupon",logged,checkoutValid,checkoutController.applyCoupon)
 userRouter.post("/revokeCoupon",logged,checkoutValid,checkoutController.revokeCoupon)
+userRouter.get('/confirmPage',logged,checkoutValid,checkoutController.confirmPage)
 
 
 userRouter.get('/login', ifLogged, userController.login);

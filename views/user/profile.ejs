@@ -1,57 +1,62 @@
 <%- include('header.ejs') %>
-  <div class="account-container">
-    <header class="account-header">
-      <h1>My Account</h1>
-    </header>
-    <main class="account-main">
-      <section class="user-info">
-        <h2>User Information</h2>
-        <p><b>USERNAME:</b>
-          <%=name %>
-        </p>
-        <p><b>EMAIL:</b>
-          <%=email%>
-        </p>
-      </section>
-      <% if(success){%>
-        <div style="color: rgb(0, 149, 22); font-size: 16px; font-weight: bold;">
-            <%= success%>
-            <% } %>
-        </div>
-      <nav class="account-nav">
-        <ul>
-          <li>
-            <div class="option-wrapper">
-              <a href="/orders">My Orders</a>
-            </div>
-          </li>
-          <li>
-            <div class="option-wrapper">
-              <a href="/resetpassword">Reset Password</a>
-            </div>
-          </li>
-          <li>
-            <div class="option-wrapper">
-              <a href="#">Coupons</a>
-            </div>
-          </li>
-          <li>
-            <div class="option-wrapper">
-              <a href="/wallet">Wallet</a>
-            </div>
-          </li>
-          <li>
-            <div class="option-wrapper">
-              <a href="/address">Addresses</a>
-            </div>
-          </li>
-          <li>
-            <div class="option-wrapper">
-              <a href="/logout">Logout</a>
-            </div>
-          </li>
-        </ul>
-      </nav>
-    </main>
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-0">
+        <a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">User</strong>
+      </div>
+    </div>
   </div>
-  <%- include('footer.ejs') %>
+</div>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="account-container shadow p-4">
+        <header class="account-header mb-4">
+          <h1 class="text-center">My Account</h1>
+        </header>
+        <main class="account-main">
+          <section class="user-info mb-4">
+            <h2>User Information</h2>
+            <div class="card">
+              <div class="card-body">
+                <p><b>Username:</b> <%= name %></p>
+                <p><b>Email:</b> <%= email %></p>
+                <!-- Add more user details here -->
+              </div>
+            </div>
+          </section>
+          <% if (success && success.length > 0) { %>
+          <div class="alert alert-success" role="alert">
+            <%= success %>
+          </div>
+          <% } %>
+          <nav class="account-nav">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="/orders" class="btn btn-primary w-100">My Orders</a>
+              </li>
+              <li class="mb-2">
+                <a href="/resetpassword" class="btn btn-secondary w-100">Reset Password</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="btn btn-info w-100">Coupons</a>
+              </li>
+              <li class="mb-2">
+                <a href="/wallet" class="btn btn-success w-100">Wallet</a>
+              </li>
+              <li class="mb-2">
+                <a href="/address" class="btn btn-warning w-100">Addresses</a>
+              </li>
+              <li>
+                <a href="/logout" class="btn btn-danger w-100">Logout</a>
+              </li>
+              <!-- Add more navigation links -->
+            </ul>
+          </nav>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('footer.ejs') %>

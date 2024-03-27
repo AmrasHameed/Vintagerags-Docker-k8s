@@ -40,12 +40,12 @@
                   <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                     data-toggle="dropdown">Sort By</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                    <a class="dropdown-item" href="/shop?sortBy=newArrivals">New Arrivals</a>
-                    <a class="dropdown-item" href="/shop?sortBy=nameAZ">Name, A to Z</a>
-                    <a class="dropdown-item" href="/shop?sortBy=nameZA">Name, Z to A</a>
+                    <a class="dropdown-item" href="?sortBy=newArrivals<%= search ? '&search=' + search : '' %>">New Arrivals</a>
+                    <a class="dropdown-item" href="?sortBy=nameAZ<%= search ? '&search=' + search : '' %>">Name, A to Z</a>
+                    <a class="dropdown-item" href="?sortBy=nameZA<%= search ? '&search=' + search : '' %>">Name, Z to A</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/shop?sortBy=priceHigh">Price, low to high</a>
-                    <a class="dropdown-item" href="/shop?sortBy=priceLow">Price, high to low</a>
+                    <a class="dropdown-item" href="?sortBy=priceHigh<%= search ? '&search=' + search : '' %>">Price, low to high</a>
+                    <a class="dropdown-item" href="?sortBy=priceLow<%= search ? '&search=' + search : '' %>">Price, high to low</a>
                   </div>
                 </div>
               </div>
@@ -91,13 +91,13 @@
                 <div class="site-block-27">
                     <ul>
                         <% if (currentPage > 1) { %>
-                            <li><a href="?page=<%= currentPage - 1 %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&lt;</a></li>
+                            <li><a href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&lt;</a></li>
                         <% } %>
                         <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li <%= currentPage === i ? 'class=active' : '' %>><a href="?page=<%= i %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>"><%= i %></a></li>
+                            <li <%= currentPage === i ? 'class=active' : '' %>><a href="?page=<%= i %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>"><%= i %></a></li>
                         <% } %>
                         <% if (currentPage < totalPages) { %>
-                            <li><a href="?page=<%= currentPage + 1 %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&gt;</a></li>
+                            <li><a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&gt;</a></li>
                         <% } %>
                     </ul>
                 </div>
