@@ -157,7 +157,7 @@
                       <% }) %>
                         <tr>
                           <input type="hidden" name="cartId" value="<%= data._id %>">
-                          <input type="hidden" id="amount" name="amount" value="<%= data.total %>">
+                          <input type="hidden" id="amount" name="amount" value="<%= data.total %>" />
                           <input type="hidden" id="wallet" name="wallet" value="0" />
                           <td class="text-black font-weight-bold">Cart Subtotal:</td>
                           <td class="text-black font-weight-bold">₹<span id="subt">
@@ -328,7 +328,7 @@
           handler: function (response) {
             // alert(response.razorpay_payment_id);
 
-            document.getElementById("amount").value = `${amount}`;
+            document.getElementById("amount").value = `${parseFloat(amount)}`;
             document.getElementById("orderform").method = "post";
             document.getElementById("orderform").action = "/order";
             document.getElementById("orderform").submit();
@@ -340,16 +340,28 @@
         };
         var rzp1 = new Razorpay(options);
         rzp1.on("payment.failed", function (response) {
-          Swal.fire({
-            title: 'Payment Failed',
-            text: 'There was an issue processing your payment.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          }).then(() => {
-            window.location.href = '/paymentFailure';
-          });
+          const amountElement = document.getElementById("amount");
+          if (amountElement) {
+            Swal.fire({
+              title: 'Payment Failed',
+              text: 'There was an issue processing your payment.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                document.getElementById("pay").value = "paymentPending";
+                amountElement.value = `${parseFloat(amount)}`;
+                document.getElementById("orderform").action = "/order";
+                document.getElementById("orderform").method = "post";
+                document.getElementById("orderform").submit();
+              }
+            });
+          } else {
+            console.error("Amount element not found.");
+          }
         });
-        
+
+
         rzp1.open();
         event.preventDefault();
 
@@ -393,6 +405,7 @@
             showCloseButton: true,
             showLoaderOnConfirm: false,
           });
+          return false;
         }
         document.getElementById("orderform").action = "/order";
         document.getElementById("orderform").method = "post";

@@ -14,9 +14,15 @@
 
 <section class="order_details section_gap">
   <div class="container">
+    <% if(order.payment=="paymentPending"){ %>
+      <h2 class="title_confirmation mb-4 text-danger">
+        You Order is Pending due to Unfinished Payment.
+      </h2>
+      <% }else{ %>
     <h2 class="title_confirmation mb-4 text-success">
       Thank you. Your order has been received.
     </h2>
+    <% } %>
     <div class="row order_d_inner text-black">
       <div class="col-lg-6">
         <div class="details_item">
@@ -98,6 +104,12 @@
 </section>
 <hr>
 <div class="text-center">
-<a href="/shop" class="btn btn-primary btn-lg">Back to Shop</a>
+  <% if(order.payment=="paymentPending"){ %>
+    <a href="/orders" class="btn btn-primary btn-lg">Go to My Orders</a>
+
+    <% }else{ %>
+      <a href="/shop" class="btn btn-primary btn-lg">Back to Shop</a>
+  <% } %>
+
 </div>
 <%- include ("footer.ejs") %>

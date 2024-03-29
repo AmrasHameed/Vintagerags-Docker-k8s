@@ -11,7 +11,7 @@ const flash = require('express-flash')
 const Razorpay = require('razorpay')
 const fs = require('fs');
 const path = require('path');
-const easyinvoice=require('easyinvoice')
+const easyinvoice = require('easyinvoice')
 
 
 const order = async (req, res) => {
@@ -51,7 +51,7 @@ const ordercancelling = async (req, res) => {
                             transaction: "Credited",
                             amount: result.amount,
                             date: new Date(),
-                            reason:"Order Cancelled"
+                            reason: "Order Cancelled"
                         }
                     ]
                 })
@@ -61,7 +61,7 @@ const ordercancelling = async (req, res) => {
                     transaction: "Credited",
                     amount: result.amount,
                     date: new Date(),
-                    reason:"Order Cancelled"
+                    reason: "Order Cancelled"
                 })
                 await wallet.save();
             }
@@ -90,21 +90,22 @@ const ordercancelling = async (req, res) => {
 }
 const ordertracking = async (req, res) => {
     try {
-        const id = req.params.id
-        const categories = await catModel.find()
+        const id = req.params.id;
+        const categories = await catModel.find();
         const order = await orderModel.findOne({ _id: id }).populate({
             path: 'items.productId',
             select: 'name images'
-        })
-        res.render('user/ordertracking', { order: order, categories })
+        });
+        const orderSuccess=req.flash('orderSuccess')
+        res.render('user/ordertracking', { order: order, categories ,orderSuccess})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
     }
 }
 
-const downloadInvoice=async(req,res)=>{
-    try{
+const downloadInvoice = async (req, res) => {
+    try {
         const orderId = req.params.id;
         const order = await orderModel.findOne({ orderId: orderId }).populate({
             path: 'items.productId',
@@ -117,7 +118,7 @@ const downloadInvoice=async(req,res)=>{
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderId}.pdf`);
         res.send(pdfBuffer);
-    }catch(error){
+    } catch (error) {
         console.log(error)
         res.render('user/serverError')
     }
@@ -125,16 +126,16 @@ const downloadInvoice=async(req,res)=>{
 
 const generateInvoice = async (order) => {
     try {
-        let totalAmount = order.amount;        
-        const data = {  
+        let totalAmount = order.amount;
+        const data = {
             documentTitle: 'Invoice',
             currency: 'INR',
             marginTop: 25,
             marginRight: 25,
             marginLeft: 25,
             marginBottom: 25,
-            images:{
-                logo:"https://i.ibb.co/6sgJyMz/logo.png",
+            images: {
+                logo: "https://i.ibb.co/6sgJyMz/logo.png",
                 background: "https://public.budgetinvoice.com/img/watermark-draft.jpg"
             },
             sender: {
@@ -169,6 +170,50 @@ const generateInvoice = async (order) => {
 };
 
 
+const reOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const ordersId = orderId.trim();
+        const userId=req.session.userId;
+        const order = await orderModel.findOne({ orderId: ordersId });
+        const { pay, wallet } = req.body;
+        const parsedWallet = parseInt(wallet);
+        if (pay == 'paymentPending') {
+            res.redirect(`/order-tracking/${order._id}`)
+        } else if (pay == 'wallet') {
+            const update = await orderModel.updateOne({ orderId: ordersId }, {
+                wallet: parsedWallet,
+                payment: pay,
+                status: "pending",
+                updated: new Date()
+            })
+            const userWallet = await walletModel.findOne({ userId: userId })
+            userWallet.history.push({
+                transaction: "Debited",
+                amount: parsedWallet,
+                date: new Date(),
+                reason: "Product Purchased"
+            })
+            await userWallet.save();
+            const user = await userModel.findOne({ _id: userId })
+            user.wallet -= parsedWallet;
+            await user.save();
+        } else {
+            const update = await orderModel.updateOne({ orderId: ordersId }, {
+                payment: pay,
+                status: "pending",
+                updated: new Date()
+            })
+        }
+        console.log(orderId, pay);
+        req.flash('orderSuccess', 'Your Order is Successfull!')
+        res.redirect(`/order-tracking/${order._id}`)
+    } catch (error) {
+        console.log(error);
+        res.render('user/serverError');
+    }
+}
+
 const itemCancel = async (req, res) => {
     try {
         const orderId = req.params.orderId;
@@ -190,7 +235,7 @@ const itemCancel = async (req, res) => {
             order.updated = new Date();
         } else {
             order.amount -= product.price;
-            order.items.pull({productId:productId,size: product.size})
+            order.items.pull({ productId: productId, size: product.size })
             order.updated = new Date();
         }
 
@@ -207,11 +252,11 @@ const itemCancel = async (req, res) => {
                 if (!wallet) {
                     const newWallet = new walletModel({
                         userId: userId,
-                        history: [{ transaction: "Credited", amount: product.price, date: new Date(),reason:"Item Cancelled" }]
+                        history: [{ transaction: "Credited", amount: product.price, date: new Date(), reason: "Item Cancelled" }]
                     });
                     await newWallet.save();
                 } else {
-                    wallet.history.push({ transaction: "Credited", amount: product.price, date: new Date() ,reason:"Item Cancelled" });
+                    wallet.history.push({ transaction: "Credited", amount: product.price, date: new Date(), reason: "Item Cancelled" });
                     await wallet.save();
                 }
             }
@@ -221,7 +266,7 @@ const itemCancel = async (req, res) => {
         for (let i = 0; i < products[0].stock.length; i++) {
             if (products[0].stock[i].size === product.size) {
                 sizeIndex = i;
-                break; 
+                break;
             }
         }
 
@@ -242,17 +287,17 @@ const itemCancel = async (req, res) => {
 
 
 
-const returnReason=async(req,res)=>{
-    try{
-        const itemId = req.body.itemId; 
-        const reason = req.body.reason; 
+const returnReason = async (req, res) => {
+    try {
+        const itemId = req.body.itemId;
+        const reason = req.body.reason;
         const update = await orderModel.updateOne(
-            { _id:itemId }, 
-            { $set: { 'return.reason': reason,'return.status': "Pending", updated: new Date() } },
-            { upsert: true } 
-        );  
-        res.status(200).json({ message: 'Order return request processed successfully' });    
-    }catch(error){
+            { _id: itemId },
+            { $set: { 'return.reason': reason, 'return.status': "Pending", updated: new Date() } },
+            { upsert: true }
+        );
+        res.status(200).json({ message: 'Order return request processed successfully' });
+    } catch (error) {
         console.log(error)
         res.render('user/serverError')
     }
@@ -494,18 +539,18 @@ const addaddressPost = async (req, res) => {
     }
 }
 
-const wallet=async(req,res)=>{
-    try{
-        const userId=req.session.userId;
+const wallet = async (req, res) => {
+    try {
+        const userId = req.session.userId;
         const categories = await catModel.find()
-        const user=await userModel.findOne({ _id: userId})
+        const user = await userModel.findOne({ _id: userId })
         const wallet = await walletModel.aggregate([
-            { $match: { userId: new mongoose.Types.ObjectId(userId) } }, 
+            { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             { $unwind: "$history" },
             { $sort: { "history.date": -1 } }
-          ]);
-        res.render('user/wallet', { wallet: wallet, user: user ,categories})
-    }catch(error){
+        ]);
+        res.render('user/wallet', { wallet: wallet, user: user, categories })
+    } catch (error) {
         console.log(error)
         res.render('user/serverError')
     }
@@ -514,9 +559,9 @@ const wallet=async(req,res)=>{
 const instance = new Razorpay({
     key_id: process.env.KEY_ID,
     key_secret: process.env.KEY_SECRET,
-  });
+});
 
-  const walletupi = async (req, res) => {
+const walletupi = async (req, res) => {
     console.log(req.body);
     var options = {
         amount: 500,
@@ -527,7 +572,7 @@ const instance = new Razorpay({
         res.send({ orderId: order.id })
     })
 }
-  
+
 const walletTopup = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -539,7 +584,7 @@ const walletTopup = async (req, res) => {
             transaction: "Credited",
             amount: Amount,
             date: new Date(),
-            reason:"Wallet Topup"
+            reason: "Wallet Topup"
         });
 
         await wallet.save();
@@ -551,4 +596,4 @@ const walletTopup = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel ,wallet,walletupi,walletTopup ,downloadInvoice}
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel, wallet, walletupi, walletTopup, downloadInvoice, reOrder }

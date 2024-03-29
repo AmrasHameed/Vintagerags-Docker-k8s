@@ -70,19 +70,35 @@ const order = async (req, res) => {
       const product = await productModel.findOne({ _id: item.productId })
       const size = product.stock.findIndex(size => size.size == item.size)
       product.stock[size].quantity -= item.quantity
-      product.totalstock-=item.quantity;
+      product.totalstock -= item.quantity;
       await product.save()
     }
-    const order = new orderModel({
-      userId: userId,
-      items: items,
-      amount: amount,
-      wallet: wallet,
-      payment: pay,
-      address: selectedaddress,
-      createdAt: new Date(),
-      updated: new Date()
-    })
+    let order;
+    if (pay == "paymentPending") {
+      console.log("kayari");
+      order = new orderModel({
+        userId: userId,
+        items: items,
+        amount: amount,
+        wallet: wallet,
+        status: "paymentPending",
+        payment: pay,
+        address: selectedaddress,
+        createdAt: new Date(),
+        updated: new Date()
+      })
+    } else {
+      order = new orderModel({
+        userId: userId,
+        items: items,
+        amount: amount,
+        wallet: wallet,
+        payment: pay,
+        address: selectedaddress,
+        createdAt: new Date(),
+        updated: new Date()
+      })
+    }
     cart.item = []
     cart.total = 0
     if (wallet > 0) {
@@ -91,7 +107,7 @@ const order = async (req, res) => {
         transaction: "Debited",
         amount: wallet,
         date: new Date(),
-        reason:"Product Purchased"
+        reason: "Product Purchased"
       })
       await userWallet.save();
       const user = await userModel.findOne({ _id: userId })
@@ -101,7 +117,7 @@ const order = async (req, res) => {
     }
     const savedOrder = await order.save()
     await cart.save()
-    req.session.orderId=savedOrder.orderId;
+    req.session.orderId = savedOrder.orderId;
     res.redirect('/confirmPage')
   } catch (error) {
     console.log(error);
@@ -220,20 +236,20 @@ const revokeCoupon = async (req, res) => {
   }
 };
 
-const confirmPage=async(req,res)=>{
-  try{
-    const categories=await catModel.find()
+const confirmPage = async (req, res) => {
+  try {
+    const categories = await catModel.find()
     // if(req.session.orderId){
-      const orderconfirmation = await orderModel.findOne({ orderId: req.session.orderId}).populate({
-        path: 'items.productId',
-        select: 'name'
-      })
+    const orderconfirmation = await orderModel.findOne({ orderId: req.session.orderId }).populate({
+      path: 'items.productId',
+      select: 'name'
+    })
     // }
-    res.render('user/thankyou', { order: orderconfirmation,categories})
-  }catch(error){
+    res.render('user/thankyou', { order: orderconfirmation, categories })
+  } catch (error) {
     console.log(error);
     res.render("user/serverError")
   }
 }
 
-module.exports = { checkout, order, upi, wallet, applyCoupon, revokeCoupon ,confirmPage}
+module.exports = { checkout, order, upi, wallet, applyCoupon, revokeCoupon, confirmPage }

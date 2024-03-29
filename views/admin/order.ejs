@@ -57,7 +57,10 @@
                                                 id="orderStatusForm_<%= data._id %>">
                                                 <input type="hidden" name="orderId" value="<%= data._id %>">
                                                 <label for="status"></label>
-                                                <% if(data.status==='Cancelled' ) {%>
+                                                
+                                                <% if(data.status==='paymentPending' ) {%>
+                                                    <span class="text-danger">PaymentPending</span>
+                                                <% }else if(data.status==='Cancelled' ) {%>
                                                     <span>Cancelled</span>
                                                     <% }else if(data.status=='returned'){ %>
                                                         <span>Returned</span>
