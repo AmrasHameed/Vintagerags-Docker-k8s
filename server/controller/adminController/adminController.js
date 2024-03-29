@@ -354,6 +354,64 @@ const downloadsales = async (req, res) => {
 };
 
 
+const bestProducts=async(req,res)=>{
+    try{
+        const bestProducts = await orderModel.aggregate([
+            {
+                $unwind: '$items',
+            },
+            {
+                $group: {
+                    _id: '$items.productId',
+                    totalSold: { $sum: '$items.quantity' },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'productDetails',
+                },
+            },
+            {
+                $unwind: '$productDetails',
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'productDetails.category', 
+                    foreignField: '_id',
+                    as: 'categoryDetails',
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalSold: 1,
+                    productName: '$productDetails.name',
+                    productCategory: { $arrayElemAt: ['$categoryDetails.name', 0] }, 
+                    productImage: '$productDetails.image',
+                    stockLeft: '$productDetails.totalstock',
+                },
+            },
+            {
+                $sort: { totalSold: -1 },
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+        
+        console.log(bestProducts);
+        res.render('admin/bestProduct',{bestProducts})
+    }catch(error){
+        console.error(error);
+        res.render("user/serverError");
+    }
+}
 
 
-module.exports = { login, loginPost, adminPanel, adLogout, user, unblock, search, searchView, downloadsales, chartData }
+
+
+module.exports = { login, loginPost, adminPanel, adLogout, user, unblock, search, searchView, downloadsales, chartData ,bestProducts}
