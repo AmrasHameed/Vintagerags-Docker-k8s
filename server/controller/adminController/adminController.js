@@ -402,9 +402,101 @@ const bestProducts=async(req,res)=>{
                 $limit: 10,
             },
         ]);
-        
-        console.log(bestProducts);
-        res.render('admin/bestProduct',{bestProducts})
+        const bestCategories = await orderModel.aggregate([
+            {
+                $unwind: '$items',
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    localField: 'items.productId',
+                    foreignField: '_id',
+                    as: 'productDetails',
+                },
+            },
+            {
+                $unwind: '$productDetails',
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'productDetails.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails',
+                },
+            },
+            {
+                $unwind: '$categoryDetails',
+            },
+            {
+                $group: {
+                    _id: '$categoryDetails.name',
+                    totalSold: { $sum: '$items.quantity' },
+                    numProducts: { $addToSet: '$productDetails._id' },
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalSold: 1,
+                    numProducts: { $size: '$numProducts' },
+                },
+            },
+            {
+                $sort: { totalSold: -1 },
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+        const worstProducts = await orderModel.aggregate([
+            {
+                $unwind: '$items',
+            },
+            {
+                $group: {
+                    _id: '$items.productId',
+                    totalSold: { $sum: '$items.quantity' },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'productDetails',
+                },
+            },
+            {
+                $unwind: '$productDetails',
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'productDetails.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails',
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalSold: 1,
+                    productName: '$productDetails.name',
+                    productCategory: { $arrayElemAt: ['$categoryDetails.name', 0] },
+                    productImage: '$productDetails.image',
+                    stockLeft: '$productDetails.totalstock',
+                },
+            },
+            {
+                $sort: { totalSold: 1 }, 
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+
+        res.render('admin/bestProduct',{bestProducts,bestCategories,worstProducts})
     }catch(error){
         console.error(error);
         res.render("user/serverError");

@@ -54,7 +54,7 @@
                             <% bestProducts.forEach((row,index)=> { %>
                                 <tr>
                                     <td>
-                                        <%= index %>
+                                        <%= index+1 %>
                                     </td>
                                     <td>
                                         <img src="/<%= row.productImage[0] %>" width="55" class="img-thumbnail" alt="image">
@@ -83,10 +83,87 @@
 
         </div>
         <div id="page2" class="page-content" style="display: none;">
-            <h2>Page 2 Content</h2>
+            <div class="table-responsive">
+                <% if(bestCategories !="" ) { %>
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>SR.NO.</th>
+                                <th>Name</th>
+                                <th>Total Sold (Number of Orders)</th>
+                                <th>Numeber of Products Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% bestCategories.forEach((row,index)=> { %>
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td>
+                                        <%= row._id %>
+                                    </td>
+                                    <td>
+                                        <%= row.totalSold %>
+                                    </td>
+                                    <td>
+                                        <%= row.numProducts %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <h1 class="text-center text-secondary mt-5">No Product found in the database
+                        </h1>
+                        <% } %>
+            </div>
+
         </div>
         <div id="page3" class="page-content" style="display: none;">
-            <h2>Page 3 Content</h2>
+            <div class="table-responsive">
+                <% if(worstProducts !="" ) { %>
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>SR.NO.</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Total Sold</th>
+                                <th>Stock Left</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% worstProducts.forEach((row,index)=> { %>
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td>
+                                        <img src="/<%= row.productImage[0] %>" width="55" class="img-thumbnail" alt="image">
+                                    </td>
+                                    <td>
+                                        <%= row.productName %>
+                                    </td>
+                                    <td>
+                                        <%= row.productCategory %>
+                                    </td>
+                                    <td>
+                                        <%= row.totalSold %>
+                                    </td>
+                                    <td>
+                                        <%= row.stockLeft %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <h1 class="text-center text-secondary mt-5">No Product found in the database
+                        </h1>
+                        <% } %>
+            </div>
         </div>
     </div>
 
