@@ -1,10 +1,10 @@
 const adminModel = require('../../model/userModel')
 const orderModel = require('../../model/orderModel')
 const fs = require('fs')
-const os = require('os')
+const os = require('os');
 const path = require('path')
 const puppeteer = require('puppeteer')
-const exceljs=require('exceljs')
+const exceljs = require('exceljs')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
 
@@ -140,7 +140,7 @@ const chartData = async (req, res) => {
                         _id: {
                             month: { $month: '$createdAt' },
                         },
-                        
+
                         totalAmount: { $sum: '$amount' },
 
                     }
@@ -192,11 +192,15 @@ const chartData = async (req, res) => {
 
 const downloadsales = async (req, res) => {
     try {
-        const { startDate, endDate } = req.body;
+        const { startDate, endDate, submitBtn } = req.body;
         console.log(startDate, endDate);
         let sdate = isFutureDate(startDate)
         let edate = isFutureDate(endDate)
-
+        console.log(startDate,endDate);
+        if(!startDate||!endDate){
+            req.flash('derror', 'Choose a date')
+            return res.redirect('/admin/adminPanel')
+        }
         if (sdate) {
             req.flash('derror', 'invalid date')
             return res.redirect('/admin/adminPanel')
@@ -223,15 +227,10 @@ const downloadsales = async (req, res) => {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: '$amount' }, 
+                    totalAmount: { $sum: '$amount' },
                 },
             },
         ]);
-        
-
-
-        console.log("ithu sales", salesData);
-
         const products = await orderModel.aggregate([
             {
                 $match: {
@@ -245,15 +244,9 @@ const downloadsales = async (req, res) => {
                 $unwind: '$items',
             },
             {
-                $group: {
-                    _id: '$items.productId',
-                    totalSold: { $sum: '$items.quantity' },
-                },
-            },
-            {
                 $lookup: {
                     from: 'productdetails',
-                    localField: '_id',
+                    localField: 'items.productId',
                     foreignField: '_id',
                     as: 'productDetailss',
                 },
@@ -262,91 +255,127 @@ const downloadsales = async (req, res) => {
                 $unwind: '$productDetailss',
             },
             {
-                $project: {
-                    _id: 1,
-                    totalSold: 1,
-                    productName: '$productDetailss.name',
+                $group: {
+                    _id: '$items.productId',
+                    totalSold: { $sum: '$items.quantity' },
+                    totalPrice: { $sum: { $multiply: ['$items.quantity', '$productDetailss.price'] } },
+                    totalDiscountPercent: { $first: '$productDetailss.discount' },
+                    productName: { $first: '$productDetailss.name' },
+                },
+            },
+            {
+                $addFields: {
+                    totalDiscount: { $multiply: ['$totalPrice', { $divide: ['$totalDiscountPercent', 100] }] }
                 },
             },
             {
                 $sort: { totalSold: -1 },
             },
         ]);
-        console.log("ithu products", products);
         const htmlContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Sales Report</title>
-          <style>
-              body {
-                  margin-left: 20px;
-              }
-          </style>
-      </head>
-      <body>
-          <h2 align="center"> Sales Report</h2>
-          Start Date:${startDate}<br>
-          End Date:${endDate}<br> 
-          <center>
-              <table style="border-collapse: collapse;">
-                  <thead>
-                      <tr>
-                          <th style="border: 1px solid #000; padding: 8px;">Sl N0</th>
-                          <th style="border: 1px solid #000; padding: 8px;">Product Name</th>
-                          <th style="border: 1px solid #000; padding: 8px;">Quantity Sold</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      ${products
-                .map(
-                    (item, index) => `
-                              <tr>
-                                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
-                                  <td style="border: 1px solid #000; padding: 8px;">${item.productName}</td>
-                                  <td style="border: 1px solid #000; padding: 8px;">${item.totalSold}</td>
-                              </tr>`
-                )
-                .join("")}
-                      <tr>
-                          <td style="border: 1px solid #000; padding: 8px;"></td>
-                          <td style="border: 1px solid #000; padding: 8px;">Total No of Orders</td>
-                          <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalOrders || 0}</td>
-                      </tr>
-                      <tr>
-                          <td style="border: 1px solid #000; padding: 8px;"></td>
-                          <td style="border: 1px solid #000; padding: 8px;">Total Revenue</td>
-                          <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalAmount || 0}</td>
-                      </tr>
-                  </tbody>
-              </table>
-          </center>
-      </body>
-      </html>
-  `;
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Sales Report</title>
+                <style>
+                    body {
+                        margin-left: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <h2 align="center"> Sales Report</h2>
+                Start Date:${startDate}<br>
+                End Date:${endDate}<br> 
+                <center>
+                    <table style="border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid #000; padding: 8px;">Sl N0</th>
+                                <th style="border: 1px solid #000; padding: 8px;">Product Name</th>
+                                <th style="border: 1px solid #000; padding: 8px;">Quantity Sold</th>
+                                <th style="border: 1px solid #000; padding: 8px;">Total Price</th>
+                                <th style="border: 1px solid #000; padding: 8px;">Discount(%)</th>
+                                <th style="border: 1px solid #000; padding: 8px;">Total Discount Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${products.map((item, index) => `
+                                <tr>
+                                    <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item.productName}</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalSold}</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalPrice}</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalDiscountPercent}%</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalDiscount}</td>
+                                </tr>`).join("")}
+                                <tr>
+                                </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;"></td>
+                                <td style="border: 1px solid #000; padding: 8px;">Total No of Orders</td>
+                                <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalOrders || 0}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;"></td>
+                                <td style="border: 1px solid #000; padding: 8px;">Total Revenue</td>
+                                <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalAmount || 0}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </center>
+            </body>
+            </html>
+        `;
+        if (submitBtn == 'pdf') {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.setContent(htmlContent);
+            const pdfBuffer = await page.pdf();
+            await browser.close();
+            const pdfFileName = 'sales.pdf';
+            const pdfFilePath = path.join(os.homedir(), 'Downloads', pdfFileName);
+            fs.writeFileSync(pdfFilePath, pdfBuffer);
+            const pdfUrl = `http://${req.headers.host}/${pdfFileName}`;
+            res.send(`<iframe src="${pdfUrl}" width="100%" height="600px"></iframe>`);
+        } else {
 
-
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.setContent(htmlContent);
-
-        const pdfBuffer = await page.pdf();
-
-        await browser.close();
-
-        const downloadsPath = path.join(os.homedir(), 'Downloads');
-        const pdfFilePath = path.join(downloadsPath, 'sales.pdf');
-
-
-        fs.writeFileSync(pdfFilePath, pdfBuffer);
-
-
-        res.setHeader('Content-Length', pdfBuffer.length);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=sales.pdf');
-        res.status(200).end(pdfBuffer);
+            const totalAmount = salesData[0]?.totalAmount || 0;
+            const workbook = new exceljs.Workbook();
+            const sheet = workbook.addWorksheet("Sales Report");
+            sheet.columns = [
+                { header: "Sl No", key: "slNo", width: 10 },
+                { header: "Product Name", key: "productName", width: 25 },
+                { header: "Quantity Sold", key: "productQuantity", width: 15 },
+                { header: "Total Price", key: "productTotal", width: 15 },
+                { header: "Discount(%)", key: "totalDiscountPercent", width: 15 },
+                { header: "Total Discount Amount", key: "totalDiscount", width: 20 }
+            ];
+            products.forEach((item, index) => {
+                sheet.addRow({
+                    slNo: index + 1,
+                    productName: item.productName,
+                    productQuantity: item.totalSold,
+                    productTotal: item.totalPrice,
+                    totalDiscountPercent: `${item.totalDiscountPercent}%`,
+                    totalDiscount: item.totalDiscount
+                });
+            });
+            sheet.addRow({});
+            sheet.addRow({ productName: 'Total No of Orders', productQuantity: salesData[0]?.totalOrders || 0 });
+            sheet.addRow({ productName: 'Total Revenue', productQuantity: totalAmount });
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                "attachment;filename=report.xlsx"
+            );
+            await workbook.xlsx.write(res);
+        }
     } catch (err) {
         console.error(err);
         res.render("user/serverError");
@@ -354,8 +383,9 @@ const downloadsales = async (req, res) => {
 };
 
 
-const bestProducts=async(req,res)=>{
-    try{
+
+const bestProducts = async (req, res) => {
+    try {
         const bestProducts = await orderModel.aggregate([
             {
                 $unwind: '$items',
@@ -380,7 +410,7 @@ const bestProducts=async(req,res)=>{
             {
                 $lookup: {
                     from: 'categories',
-                    localField: 'productDetails.category', 
+                    localField: 'productDetails.category',
                     foreignField: '_id',
                     as: 'categoryDetails',
                 },
@@ -390,7 +420,7 @@ const bestProducts=async(req,res)=>{
                     _id: 1,
                     totalSold: 1,
                     productName: '$productDetails.name',
-                    productCategory: { $arrayElemAt: ['$categoryDetails.name', 0] }, 
+                    productCategory: { $arrayElemAt: ['$categoryDetails.name', 0] },
                     productImage: '$productDetails.image',
                     stockLeft: '$productDetails.totalstock',
                 },
@@ -489,15 +519,15 @@ const bestProducts=async(req,res)=>{
                 },
             },
             {
-                $sort: { totalSold: 1 }, 
+                $sort: { totalSold: 1 },
             },
             {
                 $limit: 10,
             },
         ]);
 
-        res.render('admin/bestProduct',{bestProducts,bestCategories,worstProducts})
-    }catch(error){
+        res.render('admin/bestProduct', { bestProducts, bestCategories, worstProducts })
+    } catch (error) {
         console.error(error);
         res.render("user/serverError");
     }
@@ -506,4 +536,4 @@ const bestProducts=async(req,res)=>{
 
 
 
-module.exports = { login, loginPost, adminPanel, adLogout, user, unblock, search, searchView, downloadsales, chartData ,bestProducts}
+module.exports = { login, loginPost, adminPanel, adLogout, user, unblock, search, searchView, downloadsales, chartData, bestProducts }

@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const path = require('path');
 const mongoose = require('mongoose');
+const os = require('os');
 const nocache = require('nocache');
 const session = require('express-session');
 const flash = require('express-flash');
@@ -36,6 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(os.homedir(), 'Downloads')));
 
 app.set('view engine', 'ejs');
 app.use('/uploads', express.static("uploads"));

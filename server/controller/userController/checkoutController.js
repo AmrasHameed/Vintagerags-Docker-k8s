@@ -156,11 +156,8 @@ const wallet = async (req, res) => {
 const applyCoupon = async (req, res) => {
   try {
     const { couponCode, subtotal } = req.body;
-    console.log("ithu total", subtotal);
     const userId = req.session.userId;
     const coupon = await couponModel.findOne({ couponCode: couponCode });
-    console.log(coupon);
-
     if (coupon && coupon.status === true) {
       const user = await userModel.findById(userId);
 
@@ -202,11 +199,9 @@ const applyCoupon = async (req, res) => {
 };
 const revokeCoupon = async (req, res) => {
   try {
-    console.log("eeelu kayari");
     const { couponCode, subtotal } = req.body;
     const userId = req.session.userId;
     const coupon = await couponModel.findOne({ couponCode: couponCode });
-    console.log(coupon);
 
     if (coupon) {
       const user = await userModel.findOne({ userId: userId });

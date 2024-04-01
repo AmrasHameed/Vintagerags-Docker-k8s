@@ -1,30 +1,45 @@
 <%-include('adminHead.ejs') %>
+<style>
+  .excel{
+    margin-left: -120px;
+  }
+</style>
 
   <!--  Header End -->
   <div class="container-fluid">
     <!--  Row 1 -->
     <form action="/admin/downloadsales" method="post" class="mb-3">
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <label for="startDate" class="form-label">Start Date:</label>
-          <input type="date" id="startDate" name="startDate" class="form-control" placeholder="Start Date">
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="endDate" class="form-label">End Date:</label>
-          <input type="date" id="endDate" name="endDate" class="form-control" placeholder="End Date">
-        </div>
-        <div class="col-md-4 mt-3">
-          <button type="submit" class="btn btn-primary btn-block mt-2">
-            <i class="mdi mdi-email btn-icon-prepend"></i> Download Report
-          </button>
-        </div>
+      <div class="row align-items-end">
+          <div class="col-md-3 mb-3">
+              <label for="startDate" class="form-label">Start Date:</label>
+              <input type="date" id="startDate" name="startDate" class="form-control" placeholder="Start Date">
+          </div>
+          <div class="col-md-3 mb-3">
+              <label for="endDate" class="form-label">End Date:</label>
+              <input type="date" id="endDate" name="endDate" class="form-control" placeholder="End Date">
+          </div>
+          <div class="col-md-3 mb-3">
+              <button type="submit" name="submitBtn" value="pdf" class="btn btn-primary btn-block mt-3">
+                  Download Pdf
+              </button>
+          </div>
+          <div class="col-md-3 mb-3">
+              <button type="submit" name="submitBtn" value="excel" class="btn btn-primary btn-block excel">
+                  Download Excel
+              </button>
+          </div>
       </div>
-    </form>
-    <% if(expressFlash.derror){%>
-      <div class="alter text-danger text-start">
-        <%= expressFlash.derror%>
-      </div>
-      <%}%>
+  </form>
+  
+  
+  <% if(expressFlash.derror&&expressFlash.derror.length>0){ %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong>
+          <%= expressFlash.derror %>
+      </strong>
+  </div>
+    <% } %>
 
 
         <div class="row my-3">
