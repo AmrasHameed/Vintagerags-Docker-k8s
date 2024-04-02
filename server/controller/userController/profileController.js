@@ -15,14 +15,19 @@ const easyinvoice = require('easyinvoice')
 
 
 const order = async (req, res) => {
+    const categories = await catModel.find();
+    const userId = req.session.userId;
     try {
-        const categories = await catModel.find()
-        const userId = req.session.userId;
-        const order = await orderModel.find({ userId: userId }).sort({ createdAt: -1 }).populate({
+        const orders = await orderModel
+        .find({ userId: userId })
+        .sort({ createdAt: -1 })
+        .populate({
             path: 'items.productId',
-            select: 'name image'
+            select: 'name image _id',
         })
-        res.render('user/orders', { orders: order, categories })
+        .exec();
+    console.log(orders);
+    res.render('user/orders', { orders: orders, categories: categories });
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
