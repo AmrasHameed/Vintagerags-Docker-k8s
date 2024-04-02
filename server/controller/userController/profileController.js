@@ -136,7 +136,6 @@ const generateInvoice = async (order) => {
             marginBottom: 25,
             images: {
                 logo: "https://i.ibb.co/6sgJyMz/logo.png",
-                background: "https://public.budgetinvoice.com/img/watermark-draft.jpg"
             },
             sender: {
                 company: 'VintageRags',
@@ -165,7 +164,6 @@ const generateInvoice = async (order) => {
         return pdfBuffer;
     } catch (error) {
         console.log(error);
-        res.render('user/serverError');
     }
 };
 
@@ -205,7 +203,6 @@ const reOrder = async (req, res) => {
                 updated: new Date()
             })
         }
-        console.log(orderId, pay);
         req.flash('orderSuccess', 'Your Order is Successfull!')
         res.redirect(`/order-tracking/${order._id}`)
     } catch (error) {

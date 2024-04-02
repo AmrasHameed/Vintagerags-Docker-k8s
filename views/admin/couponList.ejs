@@ -11,9 +11,12 @@
                     <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
                 </div>
             </div>
-            <% if(couponExists){%>
-                <div style="color: red; font-size: 16px; font-weight: bold;">
-                    <%= couponExists%>
+            <% if(couponExists&&couponExists.length>0){%>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>
+                        <%= couponExists %>
+                    </strong>
                 </div>
                 <%}%>
             <div class="col-lg-12 mt-4">

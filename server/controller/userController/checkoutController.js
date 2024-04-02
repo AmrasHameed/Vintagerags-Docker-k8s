@@ -75,7 +75,6 @@ const order = async (req, res) => {
     }
     let order;
     if (pay == "paymentPending") {
-      console.log("kayari");
       order = new orderModel({
         userId: userId,
         items: items,

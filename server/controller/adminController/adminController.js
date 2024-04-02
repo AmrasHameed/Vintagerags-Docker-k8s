@@ -196,7 +196,6 @@ const downloadsales = async (req, res) => {
         console.log(startDate, endDate);
         let sdate = isFutureDate(startDate)
         let edate = isFutureDate(endDate)
-        console.log(startDate,endDate);
         if(!startDate||!endDate){
             req.flash('derror', 'Choose a date')
             return res.redirect('/admin/adminPanel')
