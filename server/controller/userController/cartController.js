@@ -1,6 +1,7 @@
 const productModel = require("../../model/productModel");
 const catModel = require("../../model/categModel");
 const cartModel = require("../../model/cartModel");
+const mongoose=require('mongoose')
 const flash=require('express-flash')
 
 const showcart = async (req, res) => {
@@ -32,9 +33,22 @@ const showcart = async (req, res) => {
                 });
             }
         }
+        const result=await cartModel.aggregate([
+            { $match: { userId:new mongoose.Types.ObjectId(id) } },  
+            { $unwind: '$item' }, 
+            { $group: { _id: null, itemCount: { $sum: 1 } } }, 
+        ])
+        console.log(result);
+        if (result.length > 0) {
+            const itemCount = result[0].itemCount;
+            req.session.cartCount=itemCount;
+        } else {
+            console.log('Cart not found for the user.');
+        }
         req.session.checkout = true;
         const nostock=req.flash('nostock')
-        res.render("user/cart", { cart, insufficientStock, categories ,nostock});
+        const itemCount=req.session.cartCount;
+        res.render("user/cart", { cart, insufficientStock, categories ,nostock,itemCount});
     } catch (error) {
         console.log(error);
         res.render("user/serverError");

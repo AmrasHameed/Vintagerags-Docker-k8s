@@ -61,8 +61,8 @@ const shop = async (req, res) => {
 
         const categoryCounts = await getCategoryCounts();
         const categories = await catModel.find();
-
-        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId, search });
+        const itemCount=req.session.cartCount;
+        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId, search ,itemCount});
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
@@ -140,7 +140,8 @@ const shopSingle = async (req, res) => {
             pass = 'Out of Stock'
         }
         const products = await productModel.find({ category: productOne.category });
-        res.render('user/shop-single', { productOne, products, categories, pass });
+        const itemCount=req.session.cartCount;
+        res.render('user/shop-single', { productOne, products, categories, pass,itemCount });
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
@@ -187,7 +188,8 @@ const viewFav = async (req, res) => {
             path: 'item.productId',
             select: "_id name image"
         })
-        res.render('user/wishlist', { fav: fav, categories })
+        const itemCount=req.session.cartCount;
+        res.render('user/wishlist', { fav: fav, categories ,itemCount})
     } catch (error) {
         console.log(error);
         res.render('user/serverError');

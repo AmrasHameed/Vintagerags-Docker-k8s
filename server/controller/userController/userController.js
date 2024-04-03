@@ -2,6 +2,7 @@ const userModel = require('../../model/userModel')
 const otpModel = require('../../model/otpModel')
 const catModel= require('../../model/categModel')
 const productModel=require('../../model/productModel')
+const cartModel=require('../../model/cartModel')
 const passport = require('passport');
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt') 
@@ -62,13 +63,27 @@ const sendmail = async (email, otp) => {
 const index = async (req, res) => {
 
     try {
+        const id=req.session.userId ;
         const categories=await catModel.find()
         const products=await productModel.find().limit(9)
         if (req.user) {
             req.session.isAuth = true;
             req.session.userId = req.user._id;
         }
-        res.render('user/index',{categories,products})
+        const result=await cartModel.aggregate([
+            { $match: { userId:new mongoose.Types.ObjectId(id) } },  
+            { $unwind: '$item' }, 
+            { $group: { _id: null, itemCount: { $sum: 1 } } }, 
+        ])
+        console.log(result);
+        if (result.length > 0) {
+            const itemCount = result[0].itemCount;
+            req.session.cartCount=itemCount;
+        } else {
+            console.log('Cart not found for the user.');
+        }
+        const itemCount=req.session.cartCount;
+        res.render('user/index',{categories,products,itemCount})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -77,7 +92,9 @@ const index = async (req, res) => {
 
 const contact = async (req, res) => {
     try {
-        res.render('user/contact')
+        const categories=await catModel.find()
+        const itemCount=req.session.cartCount;
+        res.render('user/contact',{categories,itemCount})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -331,7 +348,8 @@ const profile = async (req, res) => {
         const name = user.username
         const email = user.email
         const success=req.flash('success')
-        res.render('user/profile', { name, email ,categories,success})
+        const itemCount=req.session.cartCount;
+        res.render('user/profile', { name, email ,categories,success,itemCount})
     } catch (err) {
         console.log(err);
         res.render('user/serverError')

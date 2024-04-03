@@ -27,7 +27,8 @@ const order = async (req, res) => {
         })
         .exec();
     console.log(orders);
-    res.render('user/orders', { orders: orders, categories: categories });
+    const itemCount=req.session.cartCount;
+    res.render('user/orders', { orders: orders, categories: categories ,itemCount});
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -101,8 +102,9 @@ const ordertracking = async (req, res) => {
             path: 'items.productId',
             select: 'name images'
         });
-        const orderSuccess=req.flash('orderSuccess')
-        res.render('user/ordertracking', { order: order, categories ,orderSuccess})
+        const orderSuccess=req.flash('orderSuccess');
+        const itemCount=req.session.cartCount;
+        res.render('user/ordertracking', { order: order, categories ,orderSuccess,itemCount})
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -356,7 +358,8 @@ const showaddress = async (req, res) => {
         const categories = await catModel.find()
         const data = await addressModel.findOne({ userId: userId })
         req.session.checkoutSave = false;
-        res.render('user/address', { userData: data, categories })
+        const itemCount=req.session.cartCount;
+        res.render('user/address', { userData: data, categories,itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -551,7 +554,8 @@ const wallet = async (req, res) => {
             { $unwind: "$history" },
             { $sort: { "history.date": -1 } }
         ]);
-        res.render('user/wallet', { wallet: wallet, user: user, categories })
+        const itemCount=req.session.cartCount;
+        res.render('user/wallet', { wallet: wallet, user: user, categories,itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
