@@ -1,84 +1,116 @@
-<%- include ("header.ejs") %>
-<hr>
-<div class="edit-profile-form" id="addressForm" style="margin: auto; width: 50%;">
-    <!-- Address form -->
-    <p style="font-weight: 600; color: red;">!! The Address May not be saved if you enter invalid details </p>
-    <h2 class="mb-3">Add New Address</h2>
-    <form action="/addressPost" id="addressForm" method="POST">
-      <!-- Personal details -->
-      <div class="form-row">
-        <div class="form-group col-md-6 mb-3">
-          <label for="saveas">Save as</label>
-          <input type="text" id="saveas" name="saveas" class="form-control">
-          <span id="saveasError" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6 mb-3">
-          <label for="fullname">Full Name</label>
-          <input type="text" id="fullname" name="name" class="form-control">
-          <span id="fullnameError" class="text-danger"></span>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>VintageRags</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="../../static/images/logo.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
+    <link rel="stylesheet" href="../../static/css/magiczoom.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="../static/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+
+
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/magnific-popup.css">
+    <link rel="stylesheet" href="../static/css/jquery-ui.css">
+    <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../static/css/owl.theme.default.min.css">
+
+
+    <link rel="stylesheet" href="../static/css/aos.css">
+
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+<div class="container">
+  <div class="row justify-content-center">
+      <div class="col-md-6">
+          <div class="card">
+              <div class="card-body">
+                  <h2 class="card-title text-center mb-4">Add New Address</h2>
+                  <form action="/addressPost" id="addressForm" method="POST" onsubmit="return validateAddress()">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="saveas" class="form-label">Save as</label>
+                          <input type="text" id="saveas" name="saveas" class="form-control">
+                          <span id="saveasError" class="text-danger"></span>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="fullname" class="form-label">Full Name</label>
+                          <input type="text" id="fullname" name="name" class="form-control">
+                          <span id="fullnameError" class="text-danger"></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="email" class="form-label">Email</label>
+                          <input type="email" id="email" name="email" class="form-control">
+                          <span id="emailError" class="text-danger"></span>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="adname" class="form-label">House Name / Flat No</label>
+                          <input type="text" id="adname" name="housename" class="form-control">
+                          <span id="adnameError" class="text-danger"></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="street" class="form-label">Street</label>
+                          <input type="text" id="street" name="street" class="form-control">
+                          <span id="streetError" class="text-danger"></span>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="pincode" class="form-label">Pincode</label>
+                          <input type="number" id="pincode" name="pincode" class="form-control">
+                          <span id="pincodeError" class="text-danger"></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="city" class="form-label">City</label>
+                          <input type="text" id="city" name="city" class="form-control">
+                          <span id="cityError" class="text-danger"></span>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="state" class="form-label">State</label>
+                          <select id="state" name="state" class="form-control" required>
+                              <option value="" disabled selected>Select a state</option>
+                              <option value="Kerala">Kerala</option>
+                              <option value="Karnataka">Karnataka</option>
+                              <option value="TamilNadu">Tamil Nadu</option>
+                          </select>
+                          <span id="stateError" class="text-danger"></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="country" class="form-label">Country</label>
+                          <select id="country" name="country" class="form-control" required>
+                              <option value="India">India</option>
+                          </select>
+                          <span id="countryError" class="text-danger"></span>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="mobile" class="form-label">Phone Number</label>
+                          <input type="number" id="mobile" name="mobile" class="form-control">
+                          <span id="mobileError" class="text-danger"></span>
+                      </div>
+                    </div>  
+                      <div class="form-group text-center">
+                          <button id="saveChangesButton" class="btn btn-primary w-100" type="submit">Save Changes</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
       </div>
-      <div class="form-row">
-        <div class="form-group col-md-6 mb-3">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="form-control">
-          <span id="emailError" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6 mb-3">
-          <label for="adname">House Name / Flat No</label>
-          <input type="text" id="adname" name="housename" class="form-control">
-          <span id="adnameError" class="text-danger"></span>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6 mb-3">
-          <label for="street">Street</label>
-          <input type="text" id="street" name="street" class="form-control">
-          <span id="streetError" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6 mb-3">
-          <label for="pincode">Pincode</label>
-          <input type="number" id="pincode" name="pincode" class="form-control">
-          <span id="pincodeError" class="text-danger"></span>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6 mb-3">
-          <label for="city">City</label>
-          <input type="text" id="city" name="city" class="form-control">
-          <span id="cityError" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6 mb-3">
-          <label for="state">State</label>
-          <select id="state" name="state" class="form-control" required>
-            <option value="" disabled selected>Select a state</option>
-            <option value="Kerala">Kerala</option>
-            <option value="Karnataka">Karnataka</option>
-            <option value="TamilNadu">Tamil Nadu</option>
-          </select>
-          <span id="stateError" class="text-danger"></span>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6 mb-3">
-          <label for="country">Country</label>
-          <select id="country" name="country" class="form-control" required>
-            <option value="India">India</option>
-          </select>
-          <span id="countryError" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6 mb-3">
-          <label for="phone">Phone Number</label>
-          <input type="number" id="mobile" name="mobile" class="form-control">
-          <span id="mobileError" class="text-danger"></span>
-        </div>
-      </div>
-      <div class="form-group col-12 text-center">
-        <button id="saveChangesButton" class="btn btn-primary" >Save Changes</button>
-      </div>
-    </form>
+  </div>
 </div>
-<br><br>
 <script>
     function validateAddress() {
         var errors = '';
@@ -183,4 +215,19 @@
     });
 </script>
 
-<%- include ("footer.ejs") %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/min/tiny-slider.js"></script>
+    <script src="../../static/js/magiczoom.js"></script>
+    <script src="../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/popper.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/jquery-ui.js"></script>
+    <script src="../static/js/owl.carousel.min.js"></script>
+    <script src="../static/js/jquery.magnific-popup.min.js"></script>
+    <script src="../static/js/aos.js"></script>
+
+    <script src="../static/js/main.js"></script>
+
+</body>
+
+</html>

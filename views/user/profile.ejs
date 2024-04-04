@@ -27,10 +27,11 @@
             </div>
           </section>
           <% if (success && success.length > 0) { %>
-          <div class="alert alert-success" role="alert">
-            <%= success %>
-          </div>
-          <% } %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
           <nav class="account-nav">
             <ul class="list-unstyled">
               <li class="mb-2">

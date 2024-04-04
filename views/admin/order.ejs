@@ -33,11 +33,15 @@
                                             <%= data.userId %>
                                         </td>
                                         <td>
-                                            <% data.items.forEach(function(items){ %>
-                                                <%= items.productId.name %>
-                                                    <%= items.quantity %>
-                                                        <br>
-                                                        <% }); %>
+                                            <% data.items.forEach(function(item) { %>
+                                                <% if (item.productId && item.productId.name) { %>
+                                                    <%= item.productId.name %>
+                                                <% } else { %>
+                                                    Product Name Not Available
+                                                <% } %>
+                                                <%= item.quantity %>
+                                                <br>
+                                            <% }); %>
                                         </td>
                                         <td>
                                             <%= data.address[0].save_as %>,
