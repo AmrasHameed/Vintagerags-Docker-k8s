@@ -12,7 +12,8 @@
 <body>
   <div class="container mt-5">
     <h2>Edit Product</h2>
-    <form id="editProductForm" action="/admin/updateProduct/<%= product._id %>" method="POST" enctype="application/x-www-form-urlencoded" onsubmit="return validateForm()">
+    <form id="editProductForm" action="/admin/updateProduct/<%= product._id %>" method="POST"
+      enctype="application/x-www-form-urlencoded" onsubmit="return validateForm()">
       <div class="form-group">
         <label for="name">Name:</label>
         <input type="text" class="form-control" id="name" name="name" value="<%=product.name%>" required>
@@ -30,23 +31,29 @@
         <div id="priceError" class="text-danger"></div>
       </div>
       <div class="form-group ">
-        <label for="price">Discount:   (in Percentage)</label>
-        <input type="number" class="form-control" id="discount" name="discount" min="0" value="<%=product.discount%>" required>
+        <label for="price">Discount: (in Percentage)</label>
+        <input type="number" class="form-control" id="discount" name="discount" min="0" value="<%=product.discount%>"
+          required>
         <div id="discountError" class="text-danger"></div>
       </div>
       <div class="form-group">
         <label for="stock">Stock:</label>
         <div class="mb-3 d-flex">
           <label class="form-label">XS:</label>
-          <input id="s1" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[0].quantity %>" name="s1" min="0" required>
+          <input id="s1" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[0].quantity %>"
+            name="s1" min="0" required>
           <label class="form-label ml-2">S:</label>
-          <input id="s2" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[1].quantity %>" name="s2" min="0" required>
+          <input id="s2" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[1].quantity %>"
+            name="s2" min="0" required>
           <label class="form-label ml-2">M:</label>
-          <input id="s3" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[2].quantity %>" name="s3" min="0" required>
+          <input id="s3" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[2].quantity %>"
+            name="s3" min="0" required>
           <label class="form-label ml-2">L:</label>
-          <input id="s4" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[3].quantity %>" name="s4" min="0" required>
+          <input id="s4" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[3].quantity %>"
+            name="s4" min="0" required>
           <label class="form-label ml-2">XL:</label>
-          <input id="s5" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[4].quantity %>" name="s5" min="0" required>
+          <input id="s5" type="number" class="form-control ml-3 stock-input" value="<%= product.stock[4].quantity %>"
+            name="s5" min="0" required>
         </div>
         <div id="stockError" class="text-danger"></div>
       </div>

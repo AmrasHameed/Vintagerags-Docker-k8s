@@ -40,71 +40,85 @@
                   <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                     data-toggle="dropdown">Sort By</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                    <a class="dropdown-item" href="?sortBy=newArrivals<%= search ? '&search=' + search : '' %>">New Arrivals</a>
-                    <a class="dropdown-item" href="?sortBy=nameAZ<%= search ? '&search=' + search : '' %>">Name, A to Z</a>
-                    <a class="dropdown-item" href="?sortBy=nameZA<%= search ? '&search=' + search : '' %>">Name, Z to A</a>
+                    <a class="dropdown-item" href="?sortBy=newArrivals<%= search ? '&search=' + search : '' %>">New
+                      Arrivals</a>
+                    <a class="dropdown-item" href="?sortBy=nameAZ<%= search ? '&search=' + search : '' %>">Name, A to
+                      Z</a>
+                    <a class="dropdown-item" href="?sortBy=nameZA<%= search ? '&search=' + search : '' %>">Name, Z to
+                      A</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="?sortBy=priceHigh<%= search ? '&search=' + search : '' %>">Price, low to high</a>
-                    <a class="dropdown-item" href="?sortBy=priceLow<%= search ? '&search=' + search : '' %>">Price, high to low</a>
+                    <a class="dropdown-item" href="?sortBy=priceHigh<%= search ? '&search=' + search : '' %>">Price, low
+                      to high</a>
+                    <a class="dropdown-item" href="?sortBy=priceLow<%= search ? '&search=' + search : '' %>">Price, high
+                      to low</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% if (products.length > 0) { %>
+          <% if (products.length> 0) { %>
             <div class="row mb-5">
-                <% products.forEach(product => { %>
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                        <div class="block-4 text-center border">
-                            <figure class="block-4-image imgsize">
-                                <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>"
-                                        alt="<%= product.name %>" class="img-fluid"></a>
-                            </figure>
-                            <div class="block-4-text p-4 descript">
-                                <h3><a href="/shopSingle/<%= product._id %>">
-                                        <%= product.name %>
-                                    </a></h3>
-                                <p class="mb-0">
-                                    <%= product.description %>
-                                </p>
-                                <p class="text-primary font-weight-bold my-0" style="line-height: 2; font-size: 18px;">
-                                  <span style="text-decoration: line-through;"><%= product.price %></span>&nbsp;
-                                  ₹<%= product.discountPrice %>
-                                </p>
-                                <p class="text-primary my-0" style="line-height: 0.5;">
-                                  <%= product.discount %>% OFF
-                                </p>
-                                
-                            </div>
-                        </div>
+              <% products.forEach(product=> { %>
+                <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                  <div class="block-4 text-center border">
+                    <figure class="block-4-image imgsize">
+                      <a href="/shopSingle/<%= product._id %>"><img src="<%= product.image[0] %>"
+                          alt="<%= product.name %>" class="img-fluid"></a>
+                    </figure>
+                    <div class="block-4-text p-4 descript">
+                      <h3><a href="/shopSingle/<%= product._id %>">
+                          <%= product.name %>
+                        </a></h3>
+                      <p class="mb-0">
+                        <%= product.description %>
+                      </p>
+                      <p class="text-primary font-weight-bold my-0" style="line-height: 2; font-size: 18px;">
+                        <span style="text-decoration: line-through;">
+                          <%= product.price %>
+                        </span>&nbsp;
+                        ₹<%= product.discountPrice %>
+                      </p>
+                      <p class="text-primary my-0" style="line-height: 0.5;">
+                        <%= product.discount %>% OFF
+                      </p>
+
                     </div>
+                  </div>
+                </div>
                 <% }); %>
             </div>
-        <% } else { %>
-            <div class="alert alert-warning" role="alert">
+            <% } else { %>
+              <div class="alert alert-warning" role="alert">
                 No products found.
-            </div>
-        <% } %>
-        
-          <div class="row" data-aos="fade-up">
-            <div class="col-md-12 text-center">
-                <div class="site-block-27">
-                    <ul>
-                        <% if (currentPage > 1) { %>
-                            <li><a href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&lt;</a></li>
-                        <% } %>
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li <%= currentPage === i ? 'class=active' : '' %>><a href="?page=<%= i %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>"><%= i %></a></li>
-                        <% } %>
-                        <% if (currentPage < totalPages) { %>
-                            <li><a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&gt;</a></li>
-                        <% } %>
-                    </ul>
+              </div>
+              <% } %>
+
+                <div class="row" data-aos="fade-up">
+                  <div class="col-md-12 text-center">
+                    <div class="site-block-27">
+                      <ul>
+                        <% if (currentPage> 1) { %>
+                          <li><a
+                              href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&lt;</a>
+                          </li>
+                          <% } %>
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                              <li <%=currentPage===i ? 'class=active' : '' %>><a
+                                  href="?page=<%= i %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">
+                                  <%= i %>
+                                </a></li>
+                              <% } %>
+                                <% if (currentPage < totalPages) { %>
+                                  <li><a
+                                      href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %><%= categoryId ? '&category=' + categoryId : '' %>">&gt;</a>
+                                  </li>
+                                  <% } %>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-        
-        
+
+
         </div>
 
         <div class="col-md-3 order-1 mb-5 mb-md-0">

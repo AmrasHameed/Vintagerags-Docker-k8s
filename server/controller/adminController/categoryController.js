@@ -16,8 +16,8 @@ const category = async (req, res) => {
 
 const addCategory = async (req, res) => {
     try {
-        const catError=req.flash('catError');
-        res.render('admin/addCategory',{catError});
+        const catError = req.flash('catError');
+        res.render('admin/addCategory', { catError });
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -28,7 +28,7 @@ const addCategoryPost = async (req, res) => {
     try {
         const catName = req.body.name;
         const catDescription = req.body.description;
-        const discount=req.body.discount;
+        const discount = req.body.discount;
         const catExist = await CatModel.findOne({ name: { $regex: new RegExp("^" + catName + "$", "i") } });
         console.log(catName);
         if (catExist) {
@@ -36,7 +36,7 @@ const addCategoryPost = async (req, res) => {
             req.flash('catError', 'Category Already Exists');
             return res.redirect('/admin/addCategory');
         } else {
-            await CatModel.create({ name: catName, description: catDescription ,discount:discount});
+            await CatModel.create({ name: catName, description: catDescription, discount: discount });
             req.flash('catSuccess', "Category Added Successfully")
             res.redirect('/admin/categories');
         }
@@ -63,8 +63,8 @@ const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
         const category = await CatModel.findById(id);
-        const catError=req.flash('catError');
-        res.render('admin/updateCategory', { category,catError })
+        const catError = req.flash('catError');
+        res.render('admin/updateCategory', { category, catError })
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -74,10 +74,10 @@ const updateCategory = async (req, res) => {
 const updateCategoryPost = async (req, res) => {
     try {
         const id = req.params.id;
-        const product=await productModel.find({category:id})
+        const product = await productModel.find({ category: id })
         const category = await CatModel.findById(id);
         const catName = req.body.name;
-        const isNameModified = catName !== category.name; 
+        const isNameModified = catName !== category.name;
 
         if (isNameModified) {
             const catExist = await CatModel.findOne({ name: { $regex: new RegExp("^" + catName + "$", "i") } });
@@ -90,9 +90,9 @@ const updateCategoryPost = async (req, res) => {
 
         category.description = req.body.description;
         category.discount = req.body.discount;
-        category.name = catName; 
+        category.name = catName;
         await category.save();
-        const categoryDiscount=category.discount;
+        const categoryDiscount = category.discount;
         product.forEach(async (element) => {
             if (categoryDiscount > element.discount) {
                 element.discount = categoryDiscount;

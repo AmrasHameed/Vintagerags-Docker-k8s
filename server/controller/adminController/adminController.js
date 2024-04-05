@@ -36,14 +36,72 @@ const loginPost = async (req, res) => {
     }
 }
 
-const adminPanel = (req, res) => {
+const adminPanel = async (req, res) => {
     try {
+        const perPage = 3;
+        const page = parseInt(req.query.page) || 1;
+        const products = await orderModel.aggregate([
+            {
+                $unwind: '$items',
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    localField: 'items.productId',
+                    foreignField: '_id',
+                    as: 'productDetailss',
+                },
+            },
+            {
+                $unwind: '$productDetailss',
+            },
+            {
+                $group: {
+                    _id: '$items.productId',
+                    totalSold: { $sum: '$items.quantity' },
+                    totalPrice: { $sum: { $multiply: ['$items.quantity', '$productDetailss.price'] } },
+                    totalDiscountPercent: { $first: '$productDetailss.discount' },
+                    productName: { $first: '$productDetailss.name' },
+                    productImage: { $first: '$productDetailss.image' },
+                },
+            },
+            {
+                $addFields: {
+                    totalDiscount: { $multiply: ['$totalPrice', { $divide: ['$totalDiscountPercent', 100] }] },
+                },
+            },
+            {
+                $sort: { totalSold: -1 },
+            },
+        ]);
+        let totalDiscountSum = 0;
 
-        res.render('admin/adminPanel', {
-            expressFlash: {
-                derror: req.flash('derror')
-            }
-        })
+        products.forEach(product => {
+            totalDiscountSum += product.totalDiscount;
+        });
+
+        const orders = await orderModel.aggregate([
+            {
+                $match: {
+                    status: {
+                        $nin: ["Cancelled", "returned"]
+                    }
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalOrders: { $sum: 1 },
+                    totalAmount: { $sum: '$amount' },
+                },
+            },
+        ]);
+        const totalPages = Math.ceil(products.length / perPage);
+        const startIndex = (page - 1) * perPage;
+        const endIndex = page * perPage;
+        const productsPaginated = products.slice(startIndex, endIndex);
+        const derror = req.flash('derror')
+        res.render('admin/adminPanel', { derror, products: productsPaginated, currentPage: page, totalPages, orders, totalDiscountSum })
     } catch (err) {
         console.log(err);
         res.render("user/serverError");
@@ -74,9 +132,9 @@ const unblock = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await adminModel.findById(id);
-        user.blocked = !user.blocked;
+        const newValue = !user.blocked;
+        await adminModel.updateOne({ _id: id }, { $set: { blocked: newValue } });
         req.session.isAuth = false;
-        await user.save();
         res.redirect('/admin/users')
     } catch (err) {
         console.log(err);
@@ -196,7 +254,7 @@ const downloadsales = async (req, res) => {
         console.log(startDate, endDate);
         let sdate = isFutureDate(startDate)
         let edate = isFutureDate(endDate)
-        if(!startDate||!endDate){
+        if (!startDate || !endDate) {
             req.flash('derror', 'Choose a date')
             return res.redirect('/admin/adminPanel')
         }

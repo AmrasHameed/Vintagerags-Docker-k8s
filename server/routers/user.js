@@ -5,10 +5,10 @@ const userRouter = express.Router();
 const userController = require("../controller/userController/userController");
 const productController = require('../controller/userController/productController');
 const cartController = require('../controller/userController/cartController')
-const checkoutController=require('../controller/userController/checkoutController')
-const profileController=require('../controller/userController/profileController')
+const checkoutController = require('../controller/userController/checkoutController')
+const profileController = require('../controller/userController/profileController')
 const session = require('../../middleware/userAuth')
-const { logged, ifLogged, forgot, signed ,checkoutValid} = session
+const { logged, ifLogged, forgot, signed, checkoutValid } = session
 
 
 userRouter.get('/googleSignIn', userController.googleSignIn)
@@ -21,27 +21,27 @@ userRouter.get('/contact', userController.contact);
 
 userRouter.get('/shop', productController.shop);
 userRouter.get('/shopSingle/:id', productController.shopSingle);
-userRouter.get('/addtofavourites/:id',logged,productController.addToFav)
-userRouter.get('/wishlist',logged,productController.viewFav)
-userRouter.get('/removefromfavorites/:id',logged,productController.removeFav)
+userRouter.get('/addtofavourites/:id', logged, productController.addToFav)
+userRouter.get('/wishlist', logged, productController.viewFav)
+userRouter.get('/removefromfavorites/:id', logged, productController.removeFav)
 
 
-userRouter.get('/orders',logged,profileController.order)
-userRouter.get('/itemCancel/:orderId/:productId',logged,profileController.itemCancel)
+userRouter.get('/orders', logged, profileController.order)
+userRouter.get('/itemCancel/:orderId/:productId', logged, profileController.itemCancel)
 userRouter.get('/cancelorder/:id', logged, profileController.ordercancelling)
-userRouter.post('/returnReason',profileController.returnReason)
+userRouter.post('/returnReason', profileController.returnReason)
 userRouter.get('/order-tracking/:id', logged, profileController.ordertracking)
-userRouter.get('/downloadInvoice/:id',logged,profileController.downloadInvoice)
-userRouter.post('/reOrder/:id',logged,profileController.reOrder)
-userRouter.get('/resetpassword',logged,profileController.resetPassword)
-userRouter.post('/passwordUpdating',logged,profileController.updatePassword)
-userRouter.get('/address',logged,profileController.showaddress)
-userRouter.get('/editAddress/:id',logged , profileController.editAddress)
-userRouter.get('/deleteAddress/:id',logged, profileController.deleteAddress)
+userRouter.get('/downloadInvoice/:id', logged, profileController.downloadInvoice)
+userRouter.post('/reOrder/:id', logged, profileController.reOrder)
+userRouter.get('/resetpassword', logged, profileController.resetPassword)
+userRouter.post('/passwordUpdating', logged, profileController.updatePassword)
+userRouter.get('/address', logged, profileController.showaddress)
+userRouter.get('/editAddress/:id', logged, profileController.editAddress)
+userRouter.get('/deleteAddress/:id', logged, profileController.deleteAddress)
 userRouter.post('/addressupdated/:id', logged, profileController.addressPost)
-userRouter.get('/addAddress',logged , profileController.addAddress)
-userRouter.post('/addressPost',logged , profileController.addaddressPost)
-userRouter.get('/wallet',logged , profileController.wallet)
+userRouter.get('/addAddress', logged, profileController.addAddress)
+userRouter.post('/addressPost', logged, profileController.addaddressPost)
+userRouter.get('/wallet', logged, profileController.wallet)
 userRouter.post('/walletcreate/orderId', profileController.walletupi)
 userRouter.post('/walletTopup', profileController.walletTopup)
 
@@ -54,13 +54,13 @@ userRouter.post('/updateCartQuantity/:productId/:size', logged, cartController.u
 userRouter.get('/deletcart/:id/:size', logged, cartController.deleteCart)
 
 
-userRouter.get('/checkout',logged,checkoutValid,checkoutController.checkout)
+userRouter.get('/checkout', logged, checkoutValid, checkoutController.checkout)
 userRouter.post('/order', logged, checkoutValid, checkoutController.order)
-userRouter.post('/create/orderId',logged, checkoutValid, checkoutController.upi)
-userRouter.post('/wallettransaction',logged, checkoutController.wallet)
-userRouter.post("/applyCoupon",logged,checkoutValid,checkoutController.applyCoupon)
-userRouter.post("/revokeCoupon",logged,checkoutValid,checkoutController.revokeCoupon)
-userRouter.get('/confirmPage',logged,checkoutValid,checkoutController.confirmPage)
+userRouter.post('/create/orderId', logged, checkoutValid, checkoutController.upi)
+userRouter.post('/wallettransaction', logged, checkoutController.wallet)
+userRouter.post("/applyCoupon", logged, checkoutValid, checkoutController.applyCoupon)
+userRouter.post("/revokeCoupon", logged, checkoutValid, checkoutController.revokeCoupon)
+userRouter.get('/confirmPage', logged, checkoutValid, checkoutController.confirmPage)
 
 
 userRouter.get('/login', ifLogged, userController.login);

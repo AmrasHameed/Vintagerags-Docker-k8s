@@ -6,7 +6,7 @@ const orderModel = require('../../model/orderModel')
 const catModel = require('../../model/categModel')
 const walletModel = require('../../model/walletModel')
 const couponModel = require('../../model/couponModel')
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
 const Razorpay = require('razorpay');
 
 var instance = new Razorpay({
@@ -43,8 +43,8 @@ const checkout = async (req, res) => {
       couponCode: { $nin: user.usedCoupons },
       status: true,
     });
-    const itemCount=req.session.cartCount;
-    res.render('user/checkout', { data: data, address: address, availableCoupons, categories,itemCount })
+    const itemCount = req.session.cartCount;
+    res.render('user/checkout', { data: data, address: address, availableCoupons, categories, itemCount })
   } catch (error) {
     console.log(error);
     res.render("user/serverError");
@@ -239,9 +239,9 @@ const confirmPage = async (req, res) => {
       path: 'items.productId',
       select: 'name'
     })
-    req.session.cartCount=0;
-    const itemCount=req.session.cartCount;
-    res.render('user/thankyou', { order: orderconfirmation, categories,itemCount })
+    req.session.cartCount = 0;
+    const itemCount = req.session.cartCount;
+    res.render('user/thankyou', { order: orderconfirmation, categories, itemCount })
   } catch (error) {
     console.log(error);
     res.render("user/serverError")

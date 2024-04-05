@@ -38,14 +38,14 @@ const schema = new mongoose.Schema({
         type: String,
         default: "pending",
         required: true
-    }, 
+    },
     address: {
         type: Array,
         required: true
     },
-    amount:{
-        type:Number,
-        required:true
+    amount: {
+        type: Number,
+        required: true
     },
     payment: {
         type: String,
@@ -59,13 +59,13 @@ const schema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    return:[{
+    return: [{
         reason: {
-        type: String,
+            type: String,
         },
         status: {
-        type: String,
-        default:'Pending'
+            type: String,
+            default: 'Pending'
         }
     }]
 })

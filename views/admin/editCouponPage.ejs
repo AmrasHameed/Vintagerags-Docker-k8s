@@ -106,10 +106,11 @@
 
                 <div class="mb-3">
                     <label for="expiry" class="form-label">Expiry:</label>
-                    <input type="date" class="form-control" id="expiry" name="expiry" value="<%= new Date(coupon.expiry).toISOString().slice(0, 10) %>" required>
+                    <input type="date" class="form-control" id="expiry" name="expiry"
+                        value="<%= new Date(coupon.expiry).toISOString().slice(0, 10) %>" required>
                 </div>
-                
-                
+
+
                 <input type="hidden" id="couponId" name="couponId" value="<%= coupon._id %>">
 
 

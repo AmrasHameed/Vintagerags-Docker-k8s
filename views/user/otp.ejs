@@ -45,25 +45,27 @@
                 <form action="/verifyotp" method="post">
                     <div class="form-group">
                         <label for="otp" class="verification-label">Enter your 4-digit OTP:</label>
-                        <input type="text" maxlength="4" id="otp" class="form-control verification-input" name="otp" required>
+                        <input type="text" maxlength="4" id="otp" class="form-control verification-input" name="otp"
+                            required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Submit</button>
                 </form>
-                <% if(expressFlash.otperror && expressFlash.otperror.length > 0){ %>
-                <div class="alert alert-danger mt-3" role="alert">
-                    <%= expressFlash.otperror %>
-                </div>
-                <% } %>
-                <div class="text-center mt-3">
-                    <form action="/resendotp" method="post" style="display: none;" id="resend-form">
-                        <button type="submit" class="btn btn-danger btn-block" id="verification-resend">Resend OTP</button>
-                    </form>
-                    <div id="timer"></div> <!-- Timer div -->
-                </div>
+                <% if(expressFlash.otperror && expressFlash.otperror.length> 0){ %>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <%= expressFlash.otperror %>
+                    </div>
+                    <% } %>
+                        <div class="text-center mt-3">
+                            <form action="/resendotp" method="post" style="display: none;" id="resend-form">
+                                <button type="submit" class="btn btn-danger btn-block" id="verification-resend">Resend
+                                    OTP</button>
+                            </form>
+                            <div id="timer"></div> <!-- Timer div -->
+                        </div>
             </div>
         </div>
     </div>
-    
+
 
     <script>
         (function startTimer() {

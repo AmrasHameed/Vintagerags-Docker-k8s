@@ -10,7 +10,7 @@
             <div class="col-lg-12 mt-4">
                 <div class="table-responsive">
                     <table class="table table-striped text-center">
-                        <thead >
+                        <thead>
                             <tr class="table-primary">
                                 <th>Order ID</th>
                                 <th>User ID</th>
@@ -36,12 +36,12 @@
                                             <% data.items.forEach(function(item) { %>
                                                 <% if (item.productId && item.productId.name) { %>
                                                     <%= item.productId.name %>
-                                                <% } else { %>
-                                                    Product Name Not Available
-                                                <% } %>
-                                                <%= item.quantity %>
-                                                <br>
-                                            <% }); %>
+                                                        <% } else { %>
+                                                            Product Name Not Available
+                                                            <% } %>
+                                                                <%= item.quantity %>
+                                                                    <br>
+                                                                    <% }); %>
                                         </td>
                                         <td>
                                             <%= data.address[0].save_as %>,
@@ -61,27 +61,29 @@
                                                 id="orderStatusForm_<%= data._id %>">
                                                 <input type="hidden" name="orderId" value="<%= data._id %>">
                                                 <label for="status"></label>
-                                                
+
                                                 <% if(data.status==='paymentPending' ) {%>
                                                     <span class="text-danger">PaymentPending</span>
-                                                <% }else if(data.status==='Cancelled' ) {%>
-                                                    <span>Cancelled</span>
-                                                    <% }else if(data.status=='returned'){ %>
-                                                        <span>Returned</span>
-                                                    <% }else{ %>
-                                                        <select name="status" id="status"
-                                                        onchange="submitForm('<%= data._id %>')">
-                                                        <% const statuses=['pending', 'processing' , 'shipped' , 'delivered'
-                                                        ,'Cancelled','returned']; %>
-                                                        <% for (const status of statuses) { %>
-                                                                    <option value="<%= status %>"
-                                                                        <%=data.status===status ? 'selected' : '' %>><%=
-                                                                            status.charAt(0).toUpperCase() +
-                                                                            status.slice(1) %>
-                                                                    </option>
-                                                                    <% } %>
+                                                    <% }else if(data.status==='Cancelled' ) {%>
+                                                        <span>Cancelled</span>
+                                                        <% }else if(data.status=='returned' ){ %>
+                                                            <span>Returned</span>
+                                                            <% }else{ %>
+                                                                <select name="status" id="status"
+                                                                    onchange="submitForm('<%= data._id %>')">
+                                                                    <% const statuses=['pending', 'processing'
+                                                                        , 'shipped' , 'delivered'
+                                                                        ,'Cancelled','returned']; %>
+                                                                        <% for (const status of statuses) { %>
+                                                                            <option value="<%= status %>"
+                                                                                <%=data.status===status ? 'selected'
+                                                                                : '' %>><%=
+                                                                                    status.charAt(0).toUpperCase() +
+                                                                                    status.slice(1) %>
+                                                                            </option>
+                                                                            <% } %>
                                                                 </select>
-                                                        <% } %>
+                                                                <% } %>
                                             </form>
                                         </td>
                                         <td>

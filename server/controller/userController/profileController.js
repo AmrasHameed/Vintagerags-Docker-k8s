@@ -19,16 +19,15 @@ const order = async (req, res) => {
     const userId = req.session.userId;
     try {
         const orders = await orderModel
-        .find({ userId: userId })
-        .sort({ createdAt: -1 })
-        .populate({
-            path: 'items.productId',
-            select: 'name image _id',
-        })
-        .exec();
-    console.log(orders);
-    const itemCount=req.session.cartCount;
-    res.render('user/orders', { orders: orders, categories: categories ,itemCount});
+            .find({ userId: userId })
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'items.productId',
+                select: 'name image _id',
+            })
+            .exec();
+        const itemCount = req.session.cartCount;
+        res.render('user/orders', { orders: orders, categories: categories, itemCount });
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -102,9 +101,9 @@ const ordertracking = async (req, res) => {
             path: 'items.productId',
             select: 'name images'
         });
-        const orderSuccess=req.flash('orderSuccess');
-        const itemCount=req.session.cartCount;
-        res.render('user/ordertracking', { order: order, categories ,orderSuccess,itemCount})
+        const orderSuccess = req.flash('orderSuccess');
+        const itemCount = req.session.cartCount;
+        res.render('user/ordertracking', { order: order, categories, orderSuccess, itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -179,7 +178,7 @@ const reOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
         const ordersId = orderId.trim();
-        const userId=req.session.userId;
+        const userId = req.session.userId;
         const order = await orderModel.findOne({ orderId: ordersId });
         const { pay, wallet } = req.body;
         const parsedWallet = parseInt(wallet);
@@ -295,17 +294,25 @@ const returnReason = async (req, res) => {
     try {
         const itemId = req.body.itemId;
         const reason = req.body.reason;
-        const update = await orderModel.updateOne(
-            { _id: itemId },
-            { $set: { 'return.reason': reason, 'return.status': "Pending", updated: new Date() } },
-            { upsert: true }
-        );
+        const order = await orderModel.findById(itemId);
+        if (!order.return || order.return.length === 0) {
+            order.return = [{ reason, status: "Pending" }];
+        } else {
+            order.return[0].reason = reason;
+            order.return[0].status = "Pending";
+        }
+
+        order.updated = new Date();
+        await order.save();
+
         res.status(200).json({ message: 'Order return request processed successfully' });
     } catch (error) {
-        console.log(error)
-        res.render('user/serverError')
+        console.log(error);
+        res.render('user/serverError');
     }
 }
+
+
 
 const resetPassword = async (req, res) => {
     try {
@@ -358,8 +365,8 @@ const showaddress = async (req, res) => {
         const categories = await catModel.find()
         const data = await addressModel.findOne({ userId: userId })
         req.session.checkoutSave = false;
-        const itemCount=req.session.cartCount;
-        res.render('user/address', { userData: data, categories,itemCount })
+        const itemCount = req.session.cartCount;
+        res.render('user/address', { userData: data, categories, itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -554,8 +561,8 @@ const wallet = async (req, res) => {
             { $unwind: "$history" },
             { $sort: { "history.date": -1 } }
         ]);
-        const itemCount=req.session.cartCount;
-        res.render('user/wallet', { wallet: wallet, user: user, categories,itemCount })
+        const itemCount = req.session.cartCount;
+        res.render('user/wallet', { wallet: wallet, user: user, categories, itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')

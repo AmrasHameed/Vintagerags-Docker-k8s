@@ -32,14 +32,14 @@ const addProduct = async (req, res) => {
 
 const addProductPost = async (req, res) => {
     try {
-        const category= req.body.category;
-        const categories=await categoryModel.findById(category)
-        const categoryDiscount=categories.discount;
-        console.log(req.body.category,categories,categoryDiscount);
+        const category = req.body.category;
+        const categories = await categoryModel.findById(category)
+        const categoryDiscount = categories.discount;
+        console.log(req.body.category, categories, categoryDiscount);
         const price = req.body.price;
-        let discount=req.body.discount;
-        if(categoryDiscount>discount){
-            discount=categoryDiscount;
+        let discount = req.body.discount;
+        if (categoryDiscount > discount) {
+            discount = categoryDiscount;
         }
         const discountPrice = price - (price * (discount / 100));
 
@@ -48,30 +48,30 @@ const addProductPost = async (req, res) => {
             category: category,
             description: req.body.description,
             price: price,
-            discount:discount,
-            discountPrice:discountPrice,
-            stock:[{
-                size:'XS',
-                quantity:req.body.s1,
+            discount: discount,
+            discountPrice: discountPrice,
+            stock: [{
+                size: 'XS',
+                quantity: req.body.s1,
             },
             {
-                size:'S',
-                quantity:req.body.s2,
+                size: 'S',
+                quantity: req.body.s2,
             },
             {
-                size:'M',
-                quantity:req.body.s3,
+                size: 'M',
+                quantity: req.body.s3,
             },
             {
-                size:'L',
-                quantity:req.body.s4,
+                size: 'L',
+                quantity: req.body.s4,
             },
             {
-                size:'XL',
-                quantity:req.body.s5,
+                size: 'XL',
+                quantity: req.body.s5,
             }
             ],
-            totalstock:parseInt(req.body.s1)+parseInt(req.body.s2)+parseInt(req.body.s3)+parseInt(req.body.s4)+parseInt(req.body.s5),
+            totalstock: parseInt(req.body.s1) + parseInt(req.body.s2) + parseInt(req.body.s3) + parseInt(req.body.s4) + parseInt(req.body.s5),
             image: req.files.map(file => file.path),
         })
         await product.save()
@@ -111,28 +111,28 @@ const updateProductPost = async (req, res) => {
         const id = req.params.id;
 
         const product = await productModel.findOne({ _id: id })
-        const category=product.category;
-        const categories=await categoryModel.findById(category)
-        const categoryDiscount=categories.discount;
+        const category = product.category;
+        const categories = await categoryModel.findById(category)
+        const categoryDiscount = categories.discount;
         const price = req.body.price;
-        let discount=req.body.discount;
-        if(categoryDiscount>discount){
-            discount=categoryDiscount;
+        let discount = req.body.discount;
+        if (categoryDiscount > discount) {
+            discount = categoryDiscount;
         }
         const discountPrice = price - (price * (discount / 100));
         product.name = req.body.name
         product.description = req.body.description
         product.price = price
-        product.discount=discount
-        product.discountPrice=discountPrice
+        product.discount = discount
+        product.discountPrice = discountPrice
         product.stock = [
-            {size:'XS',quantity:req.body.s1},
-            {size:'S',quantity:req.body.s2},
-            {size:'M',quantity:req.body.s3},
-            {size:'L',quantity:req.body.s4},
-            {size:'XL',quantity:req.body.s5},
+            { size: 'XS', quantity: req.body.s1 },
+            { size: 'S', quantity: req.body.s2 },
+            { size: 'M', quantity: req.body.s3 },
+            { size: 'L', quantity: req.body.s4 },
+            { size: 'XL', quantity: req.body.s5 },
         ]
-        product.totalstock=parseInt(req.body.s1)+parseInt(req.body.s2)+parseInt(req.body.s3)+parseInt(req.body.s4)+parseInt(req.body.s5)
+        product.totalstock = parseInt(req.body.s1) + parseInt(req.body.s2) + parseInt(req.body.s3) + parseInt(req.body.s4) + parseInt(req.body.s5)
         await product.save();
         req.flash('updateSuccess', "Product Updated Successfully")
         res.redirect('/admin/products')
@@ -199,34 +199,34 @@ const updateImage = async (req, res) => {
     }
 }
 
-const searchProduct=async(req,res)=>{
-    try{
-        const searchName=req.body.search;
-        const data=await productModel.find({
+const searchProduct = async (req, res) => {
+    try {
+        const searchName = req.body.search;
+        const data = await productModel.find({
             name: { $regex: new RegExp(`^${searchName}`, `i`) },
-          }).populate({
+        }).populate({
             path: 'category',
             select: 'name'
         });
 
-        req.session.searchProduct=data;
+        req.session.searchProduct = data;
         res.redirect('/admin/searchProductView')
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.render("user/serverError")
     }
 }
 
-const searchProductView= async(req,res)=>{
-    try{
+const searchProductView = async (req, res) => {
+    try {
         const productSuccess = req.flash('productSuccess');
         const updateSuccess = req.flash('updateSuccess');
-        const product=req.session.searchProduct;
-        res.render('admin/products', { product,productSuccess, updateSuccess})
-    }catch(err){
+        const product = req.session.searchProduct;
+        res.render('admin/products', { product, productSuccess, updateSuccess })
+    } catch (err) {
         console.log(err);
         res.render("user/serverError")
     }
 }
 
-module.exports = { product, addProduct, addProductPost, unlist, updateProduct, updateProductPost, editImage, deleteImage, updateImage ,searchProduct,searchProductView}
+module.exports = { product, addProduct, addProductPost, unlist, updateProduct, updateProductPost, editImage, deleteImage, updateImage, searchProduct, searchProductView }

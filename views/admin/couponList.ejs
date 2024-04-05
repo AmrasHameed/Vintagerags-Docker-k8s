@@ -19,73 +19,73 @@
                     </strong>
                 </div>
                 <%}%>
-            <div class="col-lg-12 mt-4">
-                <div class="table-responsive">
-                    <% if(coupons !="" ) { %>
-                        <table class="table table-striped text-center">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th>Coupon Code</th>
-                                    <th>Type</th>
-                                    <th>Min.Price</th>
-                                    <th>Discount</th>
-                                    <th>Max.Redeemable</th>
-                                    <th>Expiry</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if(locals.coupons && locals.coupons !==null) { %>
-                                    <% coupons.forEach(function(data) { %>
-                                        <tr>
-                                            <td>
-                                                <%= data.couponCode %>
-                                            </td>
-                                            <td>
-                                                <%= data.type%>
-                                            </td>
-                                            <td>
-                                                <%=data.minimumPrice%>
-                                            </td>
-                                            <td>
-                                                <%= data.discount %>
-                                            </td>
-                                            <td>
-                                                <%= data.maxRedeem %>
-                                            </td>
-
-                                            <td>
-                                                <%= data.expiry.toLocaleString('en-US', { month: 'short' ,
-                                                    day: 'numeric' , year: 'numeric' , hour: 'numeric' ,
-                                                    minute: 'numeric' , hour12: true })%>
-                                            </td>
-                                            <td>
-                                                <%= data.status? 'Listed' : 'Unlisted' %>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-secondary btn-sm"
-                                                    onclick="confirmUnlistt('<%= data._id %>')">
-                                                    <%= data.status ? 'Unlist' : 'List' %>
-                                                </a>
-                                                <a href="/admin/editCouponGet/<%= data._id%>"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                            </td>
+                    <div class="col-lg-12 mt-4">
+                        <div class="table-responsive">
+                            <% if(coupons !="" ) { %>
+                                <table class="table table-striped text-center">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th>Coupon Code</th>
+                                            <th>Type</th>
+                                            <th>Min.Price</th>
+                                            <th>Discount</th>
+                                            <th>Max.Redeemable</th>
+                                            <th>Expiry</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
-                                        <% }) %>
-                                            <% } else { %>
+                                    </thead>
+                                    <tbody>
+                                        <% if(locals.coupons && locals.coupons !==null) { %>
+                                            <% coupons.forEach(function(data) { %>
                                                 <tr>
-                                                    <td colspan="5">No results found.</td>
+                                                    <td>
+                                                        <%= data.couponCode %>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.type%>
+                                                    </td>
+                                                    <td>
+                                                        <%=data.minimumPrice%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.discount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.maxRedeem %>
+                                                    </td>
+
+                                                    <td>
+                                                        <%= data.expiry.toLocaleString('en-US', { month: 'short' ,
+                                                            day: 'numeric' , year: 'numeric' , hour: 'numeric' ,
+                                                            minute: 'numeric' , hour12: true })%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.status? 'Listed' : 'Unlisted' %>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-secondary btn-sm"
+                                                            onclick="confirmUnlistt('<%= data._id %>')">
+                                                            <%= data.status ? 'Unlist' : 'List' %>
+                                                        </a>
+                                                        <a href="/admin/editCouponGet/<%= data._id%>"
+                                                            class="btn btn-primary btn-sm">Edit</a>
+                                                    </td>
                                                 </tr>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                        <% } else { %>
-                            <h1 class="text-center text-secondary mt-5">No Coupons found in the
-                                database</h1>
-                            <% } %>
-                </div>
-            </div>
+                                                <% }) %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="5">No results found.</td>
+                                                        </tr>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                                <% } else { %>
+                                    <h1 class="text-center text-secondary mt-5">No Coupons found in the
+                                        database</h1>
+                                    <% } %>
+                        </div>
+                    </div>
         </div>
     </div>
     <script>

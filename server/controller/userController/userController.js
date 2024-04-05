@@ -1,11 +1,11 @@
 const userModel = require('../../model/userModel')
 const otpModel = require('../../model/otpModel')
-const catModel= require('../../model/categModel')
-const productModel=require('../../model/productModel')
-const cartModel=require('../../model/cartModel')
+const catModel = require('../../model/categModel')
+const productModel = require('../../model/productModel')
+const cartModel = require('../../model/cartModel')
 const passport = require('passport');
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt') 
+const bcrypt = require('bcrypt')
 const flash = require('express-flash')
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
@@ -63,27 +63,27 @@ const sendmail = async (email, otp) => {
 const index = async (req, res) => {
 
     try {
-        const id=req.session.userId ;
-        const categories=await catModel.find()
-        const products=await productModel.find().limit(9)
+        const id = req.session.userId;
+        const categories = await catModel.find({ status: true })
+        const products = await productModel.find().limit(9)
         if (req.user) {
             req.session.isAuth = true;
             req.session.userId = req.user._id;
         }
-        const result=await cartModel.aggregate([
-            { $match: { userId:new mongoose.Types.ObjectId(id) } },  
-            { $unwind: '$item' }, 
-            { $group: { _id: null, itemCount: { $sum: 1 } } }, 
+        const result = await cartModel.aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(id) } },
+            { $unwind: '$item' },
+            { $group: { _id: null, itemCount: { $sum: 1 } } },
         ])
         console.log(result);
         if (result.length > 0) {
             const itemCount = result[0].itemCount;
-            req.session.cartCount=itemCount;
+            req.session.cartCount = itemCount;
         } else {
             console.log('Cart not found for the user.');
         }
-        const itemCount=req.session.cartCount;
-        res.render('user/index',{categories,products,itemCount})
+        const itemCount = req.session.cartCount;
+        res.render('user/index', { categories, products, itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -92,9 +92,9 @@ const index = async (req, res) => {
 
 const contact = async (req, res) => {
     try {
-        const categories=await catModel.find()
-        const itemCount=req.session.cartCount;
-        res.render('user/contact',{categories,itemCount})
+        const categories = await catModel.find()
+        const itemCount = req.session.cartCount;
+        res.render('user/contact', { categories, itemCount })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -107,8 +107,7 @@ const contact = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const categories=await catModel.find()
-        res.render('user/login', {categories,
+        res.render('user/login', {
             expressFlash: {
                 invaliduser: req.flash('invaliduser'),
                 invalidpassword: req.flash('invalidpassword'),
@@ -122,8 +121,7 @@ const login = async (req, res) => {
 }
 const signup = async (req, res) => {
     try {
-        const categories=await catModel.find()
-        res.render('user/signup', {categories,
+        res.render('user/signup', {
             expressFlash: {
                 emailerror: req.flash('emailerror'),
                 passworderror: req.flash('passworderror')
@@ -183,9 +181,8 @@ const signupPost = async (req, res) => {
 
 const otp = async (req, res) => {
     try {
-        const categories=await catModel.find()
         const otp = await otpModel.findOne({ email: req.session.user.email })
-        res.render('user/otp', {categories,
+        res.render('user/otp', {
             expressFlash: {
                 otperror: req.flash('otperror')
             },
@@ -209,7 +206,7 @@ const verifyotp = async (req, res) => {
         // console.log(otp,expiry)
         if (enteredotp == otp && expiry.getTime() >= Date.now()) {
             user.isVerified = true;
-            if(req.session.forgot){
+            if (req.session.forgot) {
                 res.redirect('/newpassword')
             }
             if (req.session.signup) {
@@ -254,7 +251,7 @@ const loginPost = async (req, res) => {
         const password = req.body.password;
 
         const user = await userModel.findOne({ email: email });
-        if (user.blocked==false && await bcrypt.compare(password, user.password)) {
+        if (user.blocked == false && await bcrypt.compare(password, user.password)) {
             req.session.userId = user._id;
             req.session.username = user.username;
             req.session.user = user
@@ -270,26 +267,26 @@ const loginPost = async (req, res) => {
     }
 }
 
-const forgotPassword=async(req,res)=>{
-    try{
-        const categories= await catModel.find()
-        const emailExist=req.flash('emailExist')
-        res.render('user/forgot',{categories,emailExist})
-    }catch(err){
+const forgotPassword = async (req, res) => {
+    try {
+        const categories = await catModel.find()
+        const emailExist = req.flash('emailExist')
+        res.render('user/forgot', { categories, emailExist })
+    } catch (err) {
         console.log(err);
         res.render('user/serverError')
     }
 }
 
-const forgotPasswordPost=async(req,res)=>{
-    try{
-        const email=req.body.gmail;
-        const emailExist=await userModel.find({email})
-        console.log(email,emailExist);
-        if(emailExist[0].email==email){
-            req.session.forgot=true;
-            req.session.signup=false;
-            req.session.user={email:email}
+const forgotPasswordPost = async (req, res) => {
+    try {
+        const email = req.body.gmail;
+        const emailExist = await userModel.find({ email })
+        console.log(email, emailExist);
+        if (emailExist[0].email == email) {
+            req.session.forgot = true;
+            req.session.signup = false;
+            req.session.user = { email: email }
             const otp = generateotp();
             // console.log(req.session.user)
 
@@ -298,42 +295,41 @@ const forgotPasswordPost=async(req,res)=>{
             await otpModel.updateOne({ email: email }, { $set: { email: email, otp: otp, expiry: new Date(expTime) } }, { upsert: true });
             await sendmail(email, otp);
             res.redirect('/otp')
-        }else{
-            req.flash('emailExist','Email Already Exist')
+        } else {
+            req.flash('emailExist', 'Email Already Exist')
             res.redirect('/forgotPassword')
         }
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.render('user/serverError')
     }
 }
 
-const newPassword=async(req,res)=>{
-    try{
-        const categories= await catModel.find()
-        const passwordError=req.flash('passwordError')
-        res.render('user/newPassword',{categories,passwordError})
-    }catch(err){
+const newPassword = async (req, res) => {
+    try {
+        const passwordError = req.flash('passwordError')
+        res.render('user/newPassword', { passwordError })
+    } catch (err) {
         console.log(err);
         res.render('user/serverError')
     }
 }
 
-const newPasswordPost=async(req,res)=>{
-    try{
-        const password=req.body.password;
-        const cpassword=req.body.cpassword;
-        if(password===cpassword){
+const newPasswordPost = async (req, res) => {
+    try {
+        const password = req.body.password;
+        const cpassword = req.body.cpassword;
+        if (password === cpassword) {
             const hashedpassword = await bcrypt.hash(password, 10);
             const email = req.session.user.email;
             await userModel.updateOne({ email: email }, { password: hashedpassword });
             req.session.forgot = false;
             res.redirect("/");
-        }else{
-            req.flash('passwordError','Password Does not match')
+        } else {
+            req.flash('passwordError', 'Password Does not match')
             res.redirect('/newPassword')
         }
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.render('user/serverError')
     }
@@ -343,13 +339,13 @@ const newPasswordPost=async(req,res)=>{
 const profile = async (req, res) => {
     try {
         const id = req.session.userId;
-        const categories=await catModel.find()
+        const categories = await catModel.find()
         const user = await userModel.findOne({ _id: id })
         const name = user.username
         const email = user.email
-        const success=req.flash('success')
-        const itemCount=req.session.cartCount;
-        res.render('user/profile', { name, email ,categories,success,itemCount})
+        const success = req.flash('success')
+        const itemCount = req.session.cartCount;
+        res.render('user/profile', { name, email, categories, success, itemCount })
     } catch (err) {
         console.log(err);
         res.render('user/serverError')
@@ -386,4 +382,4 @@ const authFailure = (req, res) => {
 };
 
 
-module.exports = { index, contact,login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure ,forgotPassword,forgotPasswordPost, newPassword,newPasswordPost};
+module.exports = { index, contact, login, signup, signupPost, loginPost, otp, verifyotp, resendotp, profile, logout, googleSignIn, googleCallback, authFailure, forgotPassword, forgotPasswordPost, newPassword, newPasswordPost };

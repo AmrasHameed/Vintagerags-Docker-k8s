@@ -14,70 +14,69 @@
 
   <div class="row justify-content-center">
     <div class="col-md-9 py-2">
-        <h2 class="h3 mb-3 text-black text-center">Coupon Code</h2>
-        <div class="p-3 p-lg-5 border bg-white">
-            <!-- Button to open the modal -->
-            <button onclick="openModal()" class="btn btn-primary d-block mx-auto mb-3">
-                <h2>Available Coupons</h2>
-            </button>
+      <h2 class="h3 mb-3 text-black text-center">Coupon Code</h2>
+      <div class="p-3 p-lg-5 border bg-white">
+        <!-- Button to open the modal -->
+        <button onclick="openModal()" class="btn btn-primary d-block mx-auto mb-3">
+          <h2>Available Coupons</h2>
+        </button>
 
-            <!-- Modal -->
-            <div id="couponModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <ul>
-                        <% if(availableCoupons.length > 0) { %>
-                        <% availableCoupons.forEach(coupon=> { %>
-                        <li>
-                            <div class="row">
-                                <div class="col-3 text-dark">
-                                    <%= coupon.couponCode %> &nbsp;&nbsp;
-                                    <% if (coupon.type==="percentageDiscount" ) { %>
-                                    <p>
-                                        <%= coupon.discount %>% off on Rs.<%= coupon.minimumPrice %> purchase (Maximum
-                                        Redeemable: <%= coupon.maxRedeem %>)
-                                    </p><br>
-                                    <% } else { %>
-                                    <p>Flat Rs. <%= coupon.discount %> off on <%= coupon.minimumPrice %> purchase</p><br>
-                                    <% } %>
-                                </div>
-                                <div class="col-3 mt-2">
-                                    <button onclick="copyToClipboard('<%= coupon.couponCode %>')" class="btn btn-primary">
-                                        Copy Code
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                        <% }); %>
-                        <% } else { %>
-                        <p>No coupons available</p>
-                        <% } %>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Coupon code input form -->
-            <form>
-                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="c_code" placeholder="Coupon Code"
-                        aria-label="Coupon Code" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" id="button-addon2" onclick="couponApply()">
-                            Apply
+        <!-- Modal -->
+        <div id="couponModal" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <ul>
+              <% if(availableCoupons.length> 0) { %>
+                <% availableCoupons.forEach(coupon=> { %>
+                  <li>
+                    <div class="row">
+                      <div class="col-3 text-dark">
+                        <%= coupon.couponCode %> &nbsp;&nbsp;
+                          <% if (coupon.type==="percentageDiscount" ) { %>
+                            <p>
+                              <%= coupon.discount %>% off on Rs.<%= coupon.minimumPrice %> purchase (Maximum
+                                  Redeemable: <%= coupon.maxRedeem %>)
+                            </p><br>
+                            <% } else { %>
+                              <p>Flat Rs. <%= coupon.discount %> off on <%= coupon.minimumPrice %> purchase</p><br>
+                              <% } %>
+                      </div>
+                      <div class="col-3 mt-2">
+                        <button onclick="copyToClipboard('<%= coupon.couponCode %>')" class="btn btn-primary">
+                          Copy Code
                         </button>
+                      </div>
                     </div>
-                    <div class="input-group-append">
-                        <button 
-                            class="btn btn-outline-primary" type="button" id="button-addon3" onclick="couponRevoke()">
-                            Clear
-                        </button>
-                    </div>
-                </div>
-            </form>
+                  </li>
+                  <% }); %>
+                    <% } else { %>
+                      <p>No coupons available</p>
+                      <% } %>
+            </ul>
+          </div>
         </div>
+
+        <!-- Coupon code input form -->
+        <form>
+          <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code"
+              aria-describedby="button-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary" type="button" id="button-addon2" onclick="couponApply()">
+                Apply
+              </button>
+            </div>
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary" type="button" id="button-addon3" onclick="couponRevoke()">
+                Clear
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
 
 
 

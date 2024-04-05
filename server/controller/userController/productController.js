@@ -15,7 +15,7 @@ const shop = async (req, res) => {
         const perPage = 3;
         const categoryId = req.query.category;
         const sortBy = req.query.sortBy;
-        const search = req.query.search; 
+        const search = req.query.search;
         const page = parseInt(req.query.page) || 1;
 
         if (search) {
@@ -24,15 +24,15 @@ const shop = async (req, res) => {
 
             if (req.session.filterCat) {
                 searchCriteria.category = new mongoose.Types.ObjectId(req.session.filterCat);
-                console.log("one",req.session.filterCat);
+                console.log("one", req.session.filterCat);
             }
 
             if (sortBy) {
                 products = await getProductsWithSorting(searchCriteria, sortBy);
-                console.log("two",req.session.filterCat);
+                console.log("two", req.session.filterCat);
             } else {
                 products = await productModel.find(searchCriteria).exec();
-                console.log("three",req.session.filterCat);
+                console.log("three", req.session.filterCat);
             }
         } else {
             if (sortBy) {
@@ -60,9 +60,9 @@ const shop = async (req, res) => {
         const productsPaginated = products.slice(startIndex, endIndex);
 
         const categoryCounts = await getCategoryCounts();
-        const categories = await catModel.find();
-        const itemCount=req.session.cartCount;
-        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId, search ,itemCount});
+        const categories = await catModel.find({ status: true });
+        const itemCount = req.session.cartCount;
+        res.render('user/shop', { products: productsPaginated, categories, categoryCounts, currentPage: page, totalPages, sortBy, categoryId, search, itemCount });
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
@@ -140,8 +140,8 @@ const shopSingle = async (req, res) => {
             pass = 'Out of Stock'
         }
         const products = await productModel.find({ category: productOne.category });
-        const itemCount=req.session.cartCount;
-        res.render('user/shop-single', { productOne, products, categories, pass,itemCount });
+        const itemCount = req.session.cartCount;
+        res.render('user/shop-single', { productOne, products, categories, pass, itemCount });
     } catch (error) {
         console.log(error);
         res.render('user/serverError');
@@ -188,8 +188,8 @@ const viewFav = async (req, res) => {
             path: 'item.productId',
             select: "_id name image"
         })
-        const itemCount=req.session.cartCount;
-        res.render('user/wishlist', { fav: fav, categories ,itemCount})
+        const itemCount = req.session.cartCount;
+        res.render('user/wishlist', { fav: fav, categories, itemCount })
     } catch (error) {
         console.log(error);
         res.render('user/serverError');

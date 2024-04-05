@@ -5,38 +5,38 @@ const cartSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'userDetails'
     },
-    sessionId:String,
+    sessionId: String,
     item: [
         {
-            productId:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'productDetails',
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'productDetails',
                 required: true
             },
-            stock:{
-                type:String,
-                required:true,
+            stock: {
+                type: String,
+                required: true,
             },
-            quantity:{
-                type:Number,
-                required:true
+            quantity: {
+                type: Number,
+                required: true
             },
-            size:{
-                type:String,
-                required:true
+            size: {
+                type: String,
+                required: true
             },
-            price:{
-                type:Number,
-                required:true
+            price: {
+                type: Number,
+                required: true
             },
-            total:{
-                type:Number,
-                required:true
+            total: {
+                type: Number,
+                required: true
             },
         }
     ],
-    total:Number,
-},{strictPopulate:false});
+    total: Number,
+}, { strictPopulate: false });
 
 const cartModel = mongoose.model('cart', cartSchema);
 
