@@ -44,6 +44,8 @@ userRouter.post('/addressPost', logged, profileController.addaddressPost)
 userRouter.get('/wallet', logged, profileController.wallet)
 userRouter.post('/walletcreate/orderId', profileController.walletupi)
 userRouter.post('/walletTopup', profileController.walletTopup)
+userRouter.get('/coupons', logged, profileController.coupons)
+
 
 
 

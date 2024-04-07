@@ -15,13 +15,21 @@ const showcart = async (req, res) => {
                 path: "item.productId",
                 select: "name stock image",
             });
-        } else if (!cart || !cart.item) {
+        } else {
+            cart = await cartModel.findOne({ sessionId }).populate({
+                path: "item.productId",
+                select: "name stock image",
+            });
+        }
+        
+        if (!cart || !cart.item) {
             cart = new cartModel({
                 sessionId: req.session.id,
                 item: [],
                 total: 0
-            })
+            });
         }
+        
         const insufficientStock = [];
         for (const cartItem of cart.item) {
             const product = cartItem.productId;
@@ -38,12 +46,12 @@ const showcart = async (req, res) => {
             { $unwind: '$item' },
             { $group: { _id: null, itemCount: { $sum: 1 } } },
         ])
-        console.log(result);
         if (result.length > 0) {
             const itemCount = result[0].itemCount;
             req.session.cartCount = itemCount;
-        } else {
-            console.log('Cart not found for the user.');
+        } 
+        if(result.length===0){
+            req.session.cartCount=0;
         }
         req.session.checkout = true;
         const nostock = req.flash('nostock')

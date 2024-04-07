@@ -5,6 +5,7 @@ const addressModel = require('../../model/addressModel')
 const orderModel = require('../../model/orderModel')
 const catModel = require('../../model/categModel')
 const walletModel = require('../../model/walletModel')
+const couponModel=require('../../model/couponModel')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
@@ -609,4 +610,16 @@ const walletTopup = async (req, res) => {
     }
 }
 
-module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel, wallet, walletupi, walletTopup, downloadInvoice, reOrder }
+const coupons=async(req,res)=>{
+    try{
+        const categories = await catModel.find();
+        const coupons = await couponModel.find({status:true})
+        const itemCount = req.session.cartCount;
+        res.render('user/coupons',{coupons,itemCount,categories})
+    }catch(error){
+        console.log(error)
+        res.render('user/serverError')
+    }
+}
+
+module.exports = { order, ordercancelling, ordertracking, resetPassword, updatePassword, showaddress, editAddress, deleteAddress, addressPost, addAddress, addaddressPost, returnReason, itemCancel, wallet, walletupi, walletTopup, downloadInvoice, reOrder ,coupons}

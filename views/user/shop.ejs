@@ -26,22 +26,14 @@
                     Latest
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                    <ul class="dropdown">
-                      <% categories.forEach(category=> { %>
-                        <li><a href="/shop?category=<%= category._id %>">
-                            <%= category.name %>
-                          </a></li>
-                        <% }); %>
-
-                    </ul>
+                    <a class="dropdown-item" href="?sortBy=newArrivals<%= search ? '&search=' + search : '' %>">New
+                      Arrivals</a>
                   </div>
                 </div>
                 <div class="btn-group">
                   <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                     data-toggle="dropdown">Sort By</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                    <a class="dropdown-item" href="?sortBy=newArrivals<%= search ? '&search=' + search : '' %>">New
-                      Arrivals</a>
                     <a class="dropdown-item" href="?sortBy=nameAZ<%= search ? '&search=' + search : '' %>">Name, A to
                       Z</a>
                     <a class="dropdown-item" href="?sortBy=nameZA<%= search ? '&search=' + search : '' %>">Name, Z to
