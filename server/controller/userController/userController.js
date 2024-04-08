@@ -283,7 +283,10 @@ const forgotPasswordPost = async (req, res) => {
         const email = req.body.gmail;
         const emailExist = await userModel.find({ email })
         console.log(email, emailExist);
-        if (emailExist[0].email == email) {
+        if(emailExist.length==0){
+            req.flash('emailExist', 'User Not Exist')
+            res.redirect('/forgotPassword')
+        }else if (emailExist[0].email == email) {
             req.session.forgot = true;
             req.session.signup = false;
             req.session.user = { email: email }
