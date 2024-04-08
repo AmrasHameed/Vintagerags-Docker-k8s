@@ -3,7 +3,7 @@ const orderModel = require('../../model/orderModel')
 const fs = require('fs')
 const os = require('os');
 const path = require('path')
-const puppeteer = require('puppeteer')
+const easyinvoice = require('easyinvoice')
 const exceljs = require('exceljs')
 const bcrypt = require('bcrypt')
 const flash = require('express-flash')
@@ -314,6 +314,7 @@ const downloadsales = async (req, res) => {
             {
                 $group: {
                     _id: '$items.productId',
+                    productPrice: { $first: '$productDetailss.discountPrice' },
                     totalSold: { $sum: '$items.quantity' },
                     totalPrice: { $sum: { $multiply: ['$items.quantity', '$productDetailss.price'] } },
                     totalDiscountPercent: { $first: '$productDetailss.discount' },
@@ -329,74 +330,11 @@ const downloadsales = async (req, res) => {
                 $sort: { totalSold: -1 },
             },
         ]);
-        const htmlContent = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Sales Report</title>
-                <style>
-                    body {
-                        margin-left: 20px;
-                    }
-                </style>
-            </head>
-            <body>
-                <h2 align="center"> Sales Report</h2>
-                Start Date:${startDate}<br>
-                End Date:${endDate}<br> 
-                <center>
-                    <table style="border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th style="border: 1px solid #000; padding: 8px;">Sl N0</th>
-                                <th style="border: 1px solid #000; padding: 8px;">Product Name</th>
-                                <th style="border: 1px solid #000; padding: 8px;">Quantity Sold</th>
-                                <th style="border: 1px solid #000; padding: 8px;">Total Price</th>
-                                <th style="border: 1px solid #000; padding: 8px;">Discount(%)</th>
-                                <th style="border: 1px solid #000; padding: 8px;">Total Discount Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${products.map((item, index) => `
-                                <tr>
-                                    <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
-                                    <td style="border: 1px solid #000; padding: 8px;">${item.productName}</td>
-                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalSold}</td>
-                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalPrice}</td>
-                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalDiscountPercent}%</td>
-                                    <td style="border: 1px solid #000; padding: 8px;">${item.totalDiscount}</td>
-                                </tr>`).join("")}
-                                <tr>
-                                </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 8px;"></td>
-                                <td style="border: 1px solid #000; padding: 8px;">Total No of Orders</td>
-                                <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalOrders || 0}</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 8px;"></td>
-                                <td style="border: 1px solid #000; padding: 8px;">Total Revenue</td>
-                                <td style="border: 1px solid #000; padding: 8px;">${salesData[0]?.totalAmount || 0}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </center>
-            </body>
-            </html>
-        `;
         if (submitBtn == 'pdf') {
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.setContent(htmlContent);
-            const pdfBuffer = await page.pdf();
-            await browser.close();
-            const pdfFileName = 'sales.pdf';
-            const pdfFilePath = path.join(os.homedir(), 'Downloads', pdfFileName);
-            fs.writeFileSync(pdfFilePath, pdfBuffer);
-            const pdfUrl = `http://${req.headers.host}/${pdfFileName}`;
-            res.send(`<iframe src="${pdfUrl}" width="100%" height="600px"></iframe>`);
+            const pdfBuffer = await generateInvoice(salesData, products);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=report-${new Date().toISOString().split('T')[0]}.pdf`);
+            res.send(pdfBuffer);
         } else {
 
             const totalAmount = salesData[0]?.totalAmount || 0;
@@ -439,6 +377,47 @@ const downloadsales = async (req, res) => {
     }
 };
 
+const generateInvoice = async (salesData, products) => {
+    try {
+        let totalAmount = salesData[0].totalAmount;
+        const data = {
+            currency: 'INR',
+            marginTop: 25,
+            marginRight: 25,
+            marginLeft: 25,
+            marginBottom: 25,
+            images: {
+                logo: "https://i.ibb.co/6sgJyMz/logo.png",
+            },
+            sender: {
+                company: 'VintageRags',
+                address: '13th Cross, Madiwala, Banglore, India',
+                zip: '651323',
+                city: 'Banglore',
+                country: 'INDIA',
+                phone: '9605912125',
+                email: 'vintageragsonline@gmail.com',
+                website: 'www.vintagerags.com',
+            },
+            invoiceNumber: `report-${new Date().toISOString().split('T')[0]}`,
+            invoiceDate: new Date().toJSON(),
+            products: products.map(item => ({
+                quantity: item.totalSold,
+                description: item.productName,
+                price: item.productPrice,
+            })),
+            totalAmount: `₹${totalAmount.toFixed(2)}`,
+            tax: 0,
+            bottomNotice: 'VintageRags!',
+        };
+
+        const result = await easyinvoice.createInvoice(data);
+        const pdfBuffer = Buffer.from(result.pdf, 'base64');
+        return pdfBuffer;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 
 const bestProducts = async (req, res) => {
