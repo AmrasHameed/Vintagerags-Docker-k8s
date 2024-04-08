@@ -543,7 +543,7 @@ const addaddressPost = async (req, res) => {
             },
         });
         if (req.session.checkoutSave) {
-            res.redirect(`/checkout`)
+            return res.redirect(`/checkout`)
         }
         res.redirect('/address');
     } catch (error) {
