@@ -122,80 +122,89 @@
     <script>
         function validateAddress() {
             var errors = '';
-            var name = document.getElementById('name').value;
+            var saveas = document.getElementById('saveas').value;
+            var fullname = document.getElementById('name').value;
             var email = document.getElementById('email').value;
-            var mobile = document.getElementById('mobile').value;
-            var housename = document.getElementById('housename').value;
+            var adname = document.getElementById('housename').value;
             var street = document.getElementById('street').value;
             var pincode = document.getElementById('pincode').value;
             var city = document.getElementById('city').value;
             var state = document.getElementById('state').value;
             var country = document.getElementById('country').value;
+            var mobile = document.getElementById('mobile').value;
 
-            var nameError = document.getElementById('nameError');
+            var saveasError = document.getElementById('saveasError');
+            var fullnameError = document.getElementById('nameError');
             var emailError = document.getElementById('emailError');
-            var mobileError = document.getElementById('mobileError');
-            var housenameError = document.getElementById('housenameError');
+            var adnameError = document.getElementById('housenameError');
             var streetError = document.getElementById('streetError');
             var pincodeError = document.getElementById('pincodeError');
             var cityError = document.getElementById('cityError');
             var stateError = document.getElementById('stateError');
             var countryError = document.getElementById('countryError');
+            var mobileError = document.getElementById('mobileError');
 
-            nameError.innerHTML = '';
+            saveasError.innerHTML = '';
+            fullnameError.innerHTML = '';
             emailError.innerHTML = '';
-            mobileError.innerHTML = '';
-            housenameError.innerHTML = '';
+            adnameError.innerHTML = '';
             streetError.innerHTML = '';
             pincodeError.innerHTML = '';
             cityError.innerHTML = '';
             stateError.innerHTML = '';
             countryError.innerHTML = '';
+            mobileError.innerHTML = '';
 
-            if (!name) {
-                nameError.innerHTML = 'Name is required.';
-                errors += 'Name is required.\n';
+            var spacesRegex = /^\s*$/; // Regex to check for only spaces
+
+            if (spacesRegex.test(saveas)) {
+                saveasError.innerHTML = 'Save as is required.';
+                errors += 'Save as is required.\n';
             }
-            if (!email) {
+            if (spacesRegex.test(fullname)) {
+                fullnameError.innerHTML = 'Full name is required.';
+                errors += 'Full name is required.\n';
+            }
+            if (spacesRegex.test(email)) {
                 emailError.innerHTML = 'Email is required.';
                 errors += 'Email is required.\n';
             } else if (!email.match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)) {
                 emailError.innerHTML = 'Invalid email address.';
                 errors += 'Invalid email address.\n';
             }
-            if (!mobile) {
-                mobileError.innerHTML = 'Mobile number is required.';
-                errors += 'Mobile number is required.\n';
-            } else if (!mobile.match(/^\d{10}$/)) {
-                mobileError.innerHTML = 'Invalid mobile number.';
-                errors += 'Invalid mobile number.\n';
-            }
-            if (!housename) {
-                housenameError.innerHTML = 'House name/Flat no is required.';
+            if (spacesRegex.test(adname)) {
+                adnameError.innerHTML = 'House name/Flat no is required.';
                 errors += 'House name/Flat no is required.\n';
             }
-            if (!street) {
+            if (spacesRegex.test(street)) {
                 streetError.innerHTML = 'Street is required.';
                 errors += 'Street is required.\n';
             }
-            if (!pincode) {
+            if (spacesRegex.test(pincode)) {
                 pincodeError.innerHTML = 'Pincode is required.';
                 errors += 'Pincode is required.\n';
             } else if (!pincode.match(/^\d{6}$/)) {
                 pincodeError.innerHTML = 'Invalid pincode.';
                 errors += 'Invalid pincode.\n';
             }
-            if (!city) {
+            if (spacesRegex.test(city)) {
                 cityError.innerHTML = 'City is required.';
                 errors += 'City is required.\n';
             }
-            if (!state) {
+            if (spacesRegex.test(state)) {
                 stateError.innerHTML = 'State is required.';
                 errors += 'State is required.\n';
             }
-            if (!country) {
+            if (spacesRegex.test(country)) {
                 countryError.innerHTML = 'Country is required.';
                 errors += 'Country is required.\n';
+            }
+            if (spacesRegex.test(mobile)) {
+                mobileError.innerHTML = 'Mobile number is required.';
+                errors += 'Mobile number is required.\n';
+            } else if (!mobile.match(/^\d{10}$/)) {
+                mobileError.innerHTML = 'Invalid mobile number.';
+                errors += 'Invalid mobile number.\n';
             }
 
             if (errors) {
@@ -205,8 +214,7 @@
             }
         }
 
-        document.getElementById('addressForm').addEventListener('submit', function (event) {
-            // Prevent form submission if validation fails
+        document.getElementById('saveChangesButton').addEventListener('click', function (event) {
             if (!validateAddress()) {
                 event.preventDefault();
             }

@@ -148,49 +148,51 @@
             countryError.innerHTML = '';
             mobileError.innerHTML = '';
 
-            if (!saveas) {
+            var spacesRegex = /^\s*$/; // Regex to check for only spaces
+
+            if (spacesRegex.test(saveas)) {
                 saveasError.innerHTML = 'Save as is required.';
                 errors += 'Save as is required.\n';
             }
-            if (!fullname) {
+            if (spacesRegex.test(fullname)) {
                 fullnameError.innerHTML = 'Full name is required.';
                 errors += 'Full name is required.\n';
             }
-            if (!email) {
+            if (spacesRegex.test(email)) {
                 emailError.innerHTML = 'Email is required.';
                 errors += 'Email is required.\n';
             } else if (!email.match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)) {
                 emailError.innerHTML = 'Invalid email address.';
                 errors += 'Invalid email address.\n';
             }
-            if (!adname) {
+            if (spacesRegex.test(adname)) {
                 adnameError.innerHTML = 'House name/Flat no is required.';
                 errors += 'House name/Flat no is required.\n';
             }
-            if (!street) {
+            if (spacesRegex.test(street)) {
                 streetError.innerHTML = 'Street is required.';
                 errors += 'Street is required.\n';
             }
-            if (!pincode) {
+            if (spacesRegex.test(pincode)) {
                 pincodeError.innerHTML = 'Pincode is required.';
                 errors += 'Pincode is required.\n';
             } else if (!pincode.match(/^\d{6}$/)) {
                 pincodeError.innerHTML = 'Invalid pincode.';
                 errors += 'Invalid pincode.\n';
             }
-            if (!city) {
+            if (spacesRegex.test(city)) {
                 cityError.innerHTML = 'City is required.';
                 errors += 'City is required.\n';
             }
-            if (!state) {
+            if (spacesRegex.test(state)) {
                 stateError.innerHTML = 'State is required.';
                 errors += 'State is required.\n';
             }
-            if (!country) {
+            if (spacesRegex.test(country)) {
                 countryError.innerHTML = 'Country is required.';
                 errors += 'Country is required.\n';
             }
-            if (!mobile) {
+            if (spacesRegex.test(mobile)) {
                 mobileError.innerHTML = 'Mobile number is required.';
                 errors += 'Mobile number is required.\n';
             } else if (!mobile.match(/^\d{10}$/)) {
@@ -199,21 +201,18 @@
             }
 
             if (errors) {
-                // Show errors
-                return false; // Return false if there are validation errors
+                return false;
             } else {
-                // No errors, submit the form
-                return true; // Return true if validation passes
+                return true;
             }
         }
 
         document.getElementById('saveChangesButton').addEventListener('click', function (event) {
-            // Validate form when the button is clicked
             if (!validateAddress()) {
-                // If validation fails, prevent form submission
                 event.preventDefault();
             }
         });
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
