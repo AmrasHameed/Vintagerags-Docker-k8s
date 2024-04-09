@@ -23,7 +23,6 @@ passport.use(new GoogleStrategy({
         },
         { upsert: true, new: true }
       );
-      request.session.googleSignin=true;
       return done(null, user);
     } catch (err) {
       console.error("Error updating/inserting user:", err);

@@ -83,10 +83,7 @@ const index = async (req, res) => {
             console.log('Cart not found for the user.');
         }
         const itemCount = req.session.cartCount;
-        let success = req.flash('success')
-        if (req.session.googleSignin) {
-            success = req.flash('success')
-        }
+        const success = req.flash('success')
         res.render('user/index', { categories, products, itemCount, success })
     } catch (error) {
         console.log(error)
@@ -362,7 +359,6 @@ const profile = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        req.session.googleSignin = false;
         req.session.isAuth = false;
         req.logOut(function (err) {
             if (err) {
