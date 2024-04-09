@@ -1,6 +1,16 @@
 <%- include ('header.ejs') %>
-
-
+<style>
+  .alert.alert-success {
+      background-color: #d4edda; 
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+</style>
+<% if(success && success.length > 0) { %> 
+  <div id="successAlert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    <strong><%= success %></strong>
+  </div>
+  <% } %>
   <div class="site-blocks-cover"
     style="background-image: url(../static/images/still-life-with-classic-shirts-hanger_23-2150828574.avif);"
     data-aos="fade">
@@ -148,5 +158,12 @@
       </div>
     </div>
   </div>
-
+  <script>
+    setTimeout(function() {
+      document.getElementById('successAlert').classList.add('fade');
+      setTimeout(function() {
+        document.getElementById('successAlert').remove();
+      }, 500); 
+    }, 2500); 
+  </script>
   <%- include ('footer.ejs') %>

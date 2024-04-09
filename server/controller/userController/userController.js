@@ -83,7 +83,11 @@ const index = async (req, res) => {
             console.log('Cart not found for the user.');
         }
         const itemCount = req.session.cartCount;
-        res.render('user/index', { categories, products, itemCount })
+        let success = req.flash('success')
+        if (req.session.googleSignin) {
+            success = req.flash('success')
+        }
+        res.render('user/index', { categories, products, itemCount, success })
     } catch (error) {
         console.log(error)
         res.render('user/serverError')
@@ -256,6 +260,7 @@ const loginPost = async (req, res) => {
             req.session.username = user.username;
             req.session.user = user
             req.session.isAuth = true;
+            req.flash('success', 'Logged in Successfully');
             res.redirect('/');
         } else {
             req.flash('invalidpassword', "Invalid Email or Password");
@@ -283,10 +288,10 @@ const forgotPasswordPost = async (req, res) => {
         const email = req.body.gmail;
         const emailExist = await userModel.find({ email })
         console.log(email, emailExist);
-        if(emailExist.length==0){
+        if (emailExist.length == 0) {
             req.flash('emailExist', 'User Not Exist')
             res.redirect('/forgotPassword')
-        }else if (emailExist[0].email == email) {
+        } else if (emailExist[0].email == email) {
             req.session.forgot = true;
             req.session.signup = false;
             req.session.user = { email: email }
@@ -357,14 +362,14 @@ const profile = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
+        req.session.googleSignin = false;
         req.session.isAuth = false;
         req.logOut(function (err) {
             if (err) {
                 console.error("Error logging out:", err);
-                // Handle error, if any
                 return res.render('user/serverError');
             }
-            // Redirect to the home page after successful logout
+            req.flash('success', 'Logged out Successfully')
             res.redirect('/');
         });
     } catch (err) {
