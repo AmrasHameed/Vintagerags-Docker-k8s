@@ -216,6 +216,7 @@ const verifyotp = async (req, res) => {
                 req.session.userId = userdata._id;
                 req.session.isAuth = true;
                 req.session.signup = false;
+                req.flash('success', 'Logged in Successfully');
                 res.redirect('/')
             }
         } else {
