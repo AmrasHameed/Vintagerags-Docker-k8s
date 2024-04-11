@@ -314,7 +314,7 @@ const forgotPasswordPost = async (req, res) => {
 const newPassword = async (req, res) => {
     try {
         const passwordError = req.flash('passwordError')
-        res.render('user/newPassword', { passwordError })
+        res.render('user/newpassword', { passwordError })
     } catch (err) {
         console.log(err);
         res.render('user/serverError')
