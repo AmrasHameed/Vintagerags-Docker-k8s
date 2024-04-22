@@ -9,6 +9,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../static/admin/css/styles.min.css" />
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
   <style>
     .center-container {
       display: flex;
@@ -53,17 +54,26 @@
           </div>
           <% } %>
             <form action="/admin/updateImage/<%= product._id %>" method="post" enctype="multipart/form-data">
-              <% product.image.forEach(item=>{ %>
+
+              <% if(product.image&&product.image.length>0){ %>
+                <% product.image.forEach(item=>{ %>
                 <div class="image-button-container">
-                  <img src="/<%= item %>">
+                  <% if(item&&item.length>0){ %>
+                    <img src="/<%= item %>" alt="image not found">
+                  <% }else{%>
+
+                  <% } %>
                   <div>
-                    <a href="/admin/deleteImage?pid=<%= product._id %>&filename=<%= item %>"
+                    <a onclick="delImage('?pid=<%= encodeURIComponent(product._id) %>&filename=<%= encodeURIComponent(item) %>')" 
                       class="btn btn-danger btn-xs">Delete</a>
-                    <a href="/admin/resizeimg?pid=<%= product._id %>&filename=<%= item %>"
-                      class="btn btn-primary btn-xs">Resize</a>
                   </div>
                 </div>
                 <% }) %>
+              <% }else{ %>
+                <div>
+                  <h2 class="text-danger">No Images Found</h2>
+                </div>
+              <% } %>
                   <div class="mb-3">
                     <label for="image" class="form-label">Add New Images:</label>
                     <input type="file" class="form-control" id="image" name="image" accept="image/*" multiple>
@@ -98,7 +108,30 @@
         reader.readAsDataURL(file);
       }
     });
+    function delImage(id) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to proceed?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      dangerMode: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/admin/deleteImage" + id;
+      } else {
+        console.log("User canceled");
+      }
+    }).catch((error) => {
+      console.error("An error occurred:", error);
+      // Handle error or provide feedback to the user
+    });
+  }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <!-- Bootstrap JS -->
   <script src="../../static/admin/libs/jquery/dist/jquery.min.js"></script>
   <script src="../../static/admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

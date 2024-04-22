@@ -225,7 +225,7 @@
             </div>
 
             <div class="form-group">
-              <button id="placeOrderBtn" class="btn btn-primary btn-lg py-3 btn-block" onclick="proceedToOrder()">Place
+              <button id="placeOrderBtn" class="btn btn-primary btn-lg py-3 btn-block" >Place
                 Order</button>
             </div>
           </div>
@@ -321,18 +321,16 @@
       } else if (selectedPayment.value == 'upi') {
         const amt = document.getElementById("total").textContent.trim();
         const amount = parseFloat(amt.replace(/[^0-9.-]/g, ''));
-        console.log(parseFloat(amount))
         var options = {
           key: 'rzp_test_IjovpkTeb85bN5',
-          amount: parseFloat(amount) * 100,
+          amount: amount * 100,
           currency: "INR",
           name: "VintageRags",
           description: "Test Transaction",
           image: "https://i.ibb.co/6sgJyMz/logo.png",
           order_id: orderId,
           handler: function (response) {
-            // alert(response.razorpay_payment_id);
-
+            alert(response.razorpay_payment_id);
             document.getElementById("amount").value = `${parseFloat(amount)}`;
             document.getElementById("orderform").method = "post";
             document.getElementById("orderform").action = "/order";
@@ -365,11 +363,8 @@
             console.error("Amount element not found.");
           }
         });
-
-
         rzp1.open();
         event.preventDefault();
-
         var orderId;
         $(document).ready(function () {
           var settings = {
@@ -433,11 +428,8 @@
           const data = await response.json();
           if (data.success) {
             document.getElementById("amount").value = `${amount}`;
-            document.getElementById("orderform").method = "post";
-            document.getElementById("orderform").action = "/order";
-            document.getElementById("placeOrderBtn").onclick = function () {
-              formsubmit(amount);
-            };
+            console.log('kdfk');
+            formsubmit(amount);
           } else {
             const discountRow = document.querySelector('.wallet-row');
             discountRow.style.display = '';
@@ -471,6 +463,8 @@
           document.getElementById("pay").value = "wallet";
           console.log(amount);
           document.getElementById("wallet").value = amount;
+          document.getElementById("orderform").method = "post";
+          document.getElementById("orderform").action = "/order";
           document.getElementById("orderform").submit();
         }
       }
