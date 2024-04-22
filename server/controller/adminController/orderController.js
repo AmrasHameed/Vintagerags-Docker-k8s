@@ -6,10 +6,18 @@ const walletModel = require('../../model/walletModel')
 
 const order = async (req, res) => {
     try {
-        const order = await orderModel.find({}).sort({ createdAt: -1 }).populate({
-            path: 'items.productId',
-            select: 'name'
-        })
+        const search=req.query.search;
+        let order;
+        if(search){
+            order=await orderModel.find({
+                orderId: { $regex: new RegExp(`^${search}`, `i`) },
+            })
+        }else{
+            order = await orderModel.find({}).sort({ createdAt: -1 }).populate({
+                path: 'items.productId',
+                select: 'name'
+            })
+        }
         res.render("admin/order", { order: order })
     } catch (error) {
         console.log(error);
@@ -27,6 +35,24 @@ const orderstatus = async (req, res) => {
         res.render("user/serverError");
     }
 }
+
+const viewOrder = async (req,res)=>{
+    try{
+        const id=req.params.id;
+        const order = await orderModel.findOne({ _id: id }).populate({
+            path: 'items.productId',
+            select: 'name image discount'
+        });
+        res.render('admin/viewOrder',{order})
+        console.log(order);
+
+    }catch(error){
+        console.log(error);
+        res.render("user/serverError");
+    }
+}
+
+
 
 const orderReturn = async (req, res) => {
     try {
@@ -114,4 +140,4 @@ const returnReject = async (req, res) => {
     }
 }
 
-module.exports = { order, orderstatus, orderReturn, returnApprove, returnReject }
+module.exports = { order, orderstatus, orderReturn, returnApprove, returnReject ,viewOrder}

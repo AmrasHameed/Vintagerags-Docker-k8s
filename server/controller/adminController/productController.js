@@ -2,7 +2,7 @@ const productModel = require('../../model/productModel')
 const categoryModel = require('../../model/categModel')
 const path = require('path')
 const fs = require('fs');
-const { search } = require('../../routers/user');
+
 
 
 const product = async (req, res) => {

@@ -2,10 +2,12 @@
     <div class="container-fluid">
         <div class="row my-4">
             <div class="col-lg-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." id="searchInput">
-                    <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-                </div>
+                <form action="/admin/orders " method="get" class="site-block-top-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="searchInput" name="search">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                  </form>
             </div>
             <div class="col-lg-12 mt-4">
                 <div class="table-responsive">
@@ -28,6 +30,7 @@
                                     <tr>
                                         <td>
                                             <%= data.orderId %>
+                                            <a style="text-decoration: underline;" href="/admin/viewOrder/<%= data._id %>">View Details</a>
                                         </td>
                                         <td>
                                             <%= data.userId %>

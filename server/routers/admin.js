@@ -45,10 +45,13 @@ adminRouter.get('/updateCategory/:id', sessions.adAuth, categoryController.updat
 adminRouter.post('/updateCategory/:id', sessions.adAuth, categoryController.updateCategoryPost)
 
 adminRouter.get('/orders', sessions.adAuth, orderController.order)
+adminRouter.get('/viewOrder/:id', sessions.adAuth, orderController.viewOrder)
 adminRouter.post('/updateOrderStatus', sessions.adAuth, orderController.orderstatus)
 adminRouter.get('/orderReturn', sessions.adAuth, orderController.orderReturn)
 adminRouter.get('/returnApprove/:id', sessions.adAuth, orderController.returnApprove)
 adminRouter.get('/returnReject/:id', sessions.adAuth, orderController.returnReject)
+
+
 
 
 

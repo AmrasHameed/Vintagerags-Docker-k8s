@@ -1,0 +1,188 @@
+<%-include('adminHead.ejs') %>
+<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/admin/orders" class="btn btn-primary"><i class="fas fa-arrow-left"></i> 
+        &nbsp;Back</a>
+    <div class="container mt-5 text-center">
+        <div class="row">
+            <div class="col-12 col-md-10 hh-grayBox mx-auto text-center pt-4 pb-4">
+                <div class="order-tracking-flow">
+                    <% if (order.status==='pending' ) { %>
+                        <div class="order-tracking-item completed">
+                            <span class="is-complete"></span>
+                            <p class="bg-primary rounded px-3 text-white">
+                                <%= order.updated.toLocaleString('en-US', { year: 'numeric' , month: 'short' ,
+                                    day: 'numeric' }) %><br>Ordered
+                            </p>
+                        </div>
+                        <div class="order-tracking-item">
+                            <span class="is-complete"></span>
+                            <p class="text-dark">Processing</p>
+                        </div>
+                        <div class="order-tracking-item">
+                            <span class="is-complete"></span>
+                            <p class="text-dark">Shipped</p>
+                        </div>
+                        <div class="order-tracking-item">
+                            <span class="is-complete"></span>
+                            <p class="text-dark">Delivered</p>
+                        </div>
+                        <% } else if (order.status==='processing' ) { %>
+                            <!-- Adjusted alignment -->
+                            <div class="order-tracking-item completed">
+                                <span class="is-complete"></span>
+                                <p class="text-dark">Ordered</p>
+                            </div>
+                            <div class="order-tracking-item completed">
+                                <span class="is-complete"></span>
+                                <p class="bg-primary rounded px-3 text-white">
+                                    <%= order.updated.toLocaleString('en-US', { year: 'numeric' , month: 'short' ,
+                                        day: 'numeric' }) %><br>Processing
+                                </p>
+                            </div>
+                            <div class="order-tracking-item">
+                                <span class="is-complete"></span>
+                                <p class="text-dark">Shipped</p>
+                            </div>
+                            <div class="order-tracking-item">
+                                <span class="is-complete"></span>
+                                <p class="text-dark">Delivered</p>
+                            </div>
+                            <% } else if (order.status==='shipped' ) { %>
+                                <!-- Adjusted alignment -->
+                                <div class="order-tracking-item completed">
+                                    <span class="is-complete"></span>
+                                    <p class="text-dark">Ordered</p>
+                                </div>
+                                <div class="order-tracking-item completed">
+                                    <span class="is-complete"></span>
+                                    <p class="text-dark">Processing</p>
+                                </div>
+                                <div class="order-tracking-item completed">
+                                    <span class="is-complete"></span>
+                                    <p class="bg-primary rounded px-3 text-white">
+                                        <%= order.updated.toLocaleString('en-US', { year: 'numeric' , month: 'short' ,
+                                            day: 'numeric' }) %><br>Shipped
+                                    </p>
+                                </div>
+                                <div class="order-tracking-item">
+                                    <span class="is-complete"></span>
+                                    <p class="text-dark">Delivered</p>
+                                </div>
+                                <% } else if (order.status==='delivered' ) { %>
+                                    <!-- Adjusted alignment -->
+                                    <div class="order-tracking-item completed">
+                                        <span class="is-complete"></span>
+                                        <p class="text-dark">Ordered</p>
+                                    </div>
+                                    <div class="order-tracking-item completed">
+                                        <span class="is-complete"></span>
+                                        <p class="text-dark">Processing</p>
+                                    </div>
+                                    <div class="order-tracking-item completed">
+                                        <span class="is-complete"></span>
+                                        <p class="text-dark">Shipped</p>
+                                    </div>
+                                    <div class="order-tracking-item completed">
+                                        <span class="is-complete"></span>
+                                        <p class="bg-primary rounded px-3 text-white">
+                                            <%= order.updated.toLocaleString('en-US', { year: 'numeric' , month: 'short'
+                                                , day: 'numeric' }) %><br>Delivered
+                                        </p>
+                                    </div>
+                                    <% } else if (order.status==='Cancelled' ) { %>
+                                        <!-- Adjusted alignment -->
+                                        <div class="order-tracking-item completed cancelled">
+                                            <span class="is-complete"></span>
+                                            <p class="text-dark">Ordered</p>
+                                        </div>
+                                        <div class="order-tracking-item completed cancelled">
+                                            <span class="is-complete"></span>
+                                            <p class="text-dark">Cancel Requested</p>
+                                        </div>
+                                        <div class="order-tracking-item completed cancelled">
+                                            <span class="is-complete"></span>
+                                            <p class="text-dark">Accepted</p>
+                                        </div>
+                                        <div class="order-tracking-item completed cancelled">
+                                            <span class="is-complete"></span>
+                                            <p class="bg-primary rounded px-3 text-white">
+                                                <%= order.updated.toLocaleString('en-US', { year: 'numeric' ,
+                                                    month: 'short' , day: 'numeric' }) %><br>Cancelled
+                                            </p>
+                                        </div>
+                                        <% } else if (order.status==='paymentPending' ) { %>
+                                            <div>
+                                                <h2 class="text-danger">Order is Pending due to Unfinished
+                                                    Payment.</h2>
+                                            </div>
+                                            <% } else { %>
+                                                <h2 class="text-dark">No Order Details</h2>
+                                                <% } %>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="text-dark">Order ID: <span id="orderId">
+                <%= order.orderId %>
+            </span>
+        </h5>
+        <p class="text-dark">Delivery Address: <%= order.address[0].save_as %>,
+                <%= order.address[0].housename %>,
+                    <%= order.address[0].city %>,
+                        <%= order.address[0].pincode %>
+        </p>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-dark">Product Name</th>
+                        <th class="text-dark">Product Image</th>
+                        <th class="text-dark">Size</th>
+                        <th class="text-dark">Quantity</th>
+                        <th class="text-dark">Price</th>
+                        <th class="text-dark">Total</th>
+                        <th class="text-dark">Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% order.items.forEach(item=> { %>
+                        <tr>
+                            <td class="text-dark">
+                                <%= item.productId.name %>
+                            </td>
+                            <td class="text-dark">
+                               <img src="/<%= item.productId.image[0] %>" width="85" alt="image"> 
+                            </td>
+                            <td class="text-dark">
+                                <%= item.size %>
+                            </td>
+                            <td class="text-dark">
+                                <%= item.quantity %>
+                            </td>
+                            <td class="text-dark">
+                                <%= item.price %>
+                            </td>
+                            <td class="text-dark">
+                                <%= item.quantity * item.price %>
+                            </td>
+                            <td class="text-dark">
+                                <%= order.payment %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                            <tr>
+                                <td colspan="4" class="text-dark"></td> <!-- Colspan to merge cells -->
+                                <td class="text-dark">Total Amount </td>
+                                <td class="text-dark">
+                                    ₹<span id="total">
+                                        <%= order.amount %>
+                                    </span>
+                                </td>
+                            </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <%-include('adminFooter.ejs') %>
