@@ -44,8 +44,6 @@ const viewOrder = async (req,res)=>{
             select: 'name image discount'
         });
         res.render('admin/viewOrder',{order})
-        console.log(order);
-
     }catch(error){
         console.log(error);
         res.render("user/serverError");
