@@ -164,12 +164,12 @@ const deleteImage = async (req, res) => {
             try {
                 fs.unlinkSync(filename);
                 console.log("Image deleted");
-                res.redirect("/admin/editImage/" + pid);
-
+                
                 await productModel.updateOne(
                     { _id: pid },
                     { $pull: { image: filename } }
                 );
+                res.redirect("/admin/editImage/" + pid);
             } catch (err) {
                 console.log("error deleting image:", err);
                 res.status(500).send("Internal Server Error");
