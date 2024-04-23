@@ -160,7 +160,6 @@ const deleteImage = async (req, res) => {
         const filename = req.query.filename;
         if (filename) {
             try {
-                fs.unlinkSync(filename);
                 console.log("Image deleted");
                 
                 await productModel.updateOne(
