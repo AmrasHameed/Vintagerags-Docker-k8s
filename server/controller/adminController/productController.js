@@ -158,9 +158,7 @@ const deleteImage = async (req, res) => {
     try {
         const pid = req.query.pid;
         const filename = req.query.filename;
-        const imagePath = path.join("uploads", filename);
-        console.log(fs.existsSync(filename));
-        if (fs.existsSync(filename)) {
+        if (filename) {
             try {
                 fs.unlinkSync(filename);
                 console.log("Image deleted");
