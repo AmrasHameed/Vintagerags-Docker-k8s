@@ -259,7 +259,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      // Close the modal if the user clicks outside of it
       window.addEventListener('click', function (event) {
         var modal = document.getElementById('couponModal');
         if (event.target === modal) {
@@ -389,7 +388,7 @@
         console.log("Cash on Delivery selected");
         const amt = document.getElementById("total").textContent.trim();
         const amount = parseFloat(amt.replace(/[^0-9.-]/g, ''));
-        console.log(amount);
+        console.log(typeof amount);
         if (amount > 1000) {
           Swal.fire({
             title: 'COD Not Available',
@@ -410,8 +409,8 @@
         document.getElementById("orderform").action = "/order";
         document.getElementById("orderform").method = "post";
         document.getElementById("orderform").submit();
-        document.getElementById("total").innerText = `${amount}`;
-        document.getElementById("amount").value = `${amount}`;
+        document.getElementById("total").innerText = amount;
+        document.getElementById("amount").value = amount;
       } else if (selectedPayment.value == 'wallet') {
         try {
           const amt = document.getElementById("total").textContent.trim();

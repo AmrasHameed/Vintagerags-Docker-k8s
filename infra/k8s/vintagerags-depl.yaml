@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vintagerags-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vintagerags
+  template:
+    metadata:
+      labels:
+        app: vintagerags
+    spec:
+      containers:
+        - name: vintagerags
+          image: amrashameed/vintagerags
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: MONGO_URL
+            - name: Email
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: Email
+            - name: pass
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: pass
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: KEY_ID
+            - name: KEY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vintagerags-secrets
+                  key: KEY_SECRET
+            - name: PORT
+              value: "8000"
